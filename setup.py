@@ -21,22 +21,6 @@ with open(path.join(here, "README.rst"), encoding="utf-8") as f:
     long_description = f.read()
 
 
-class PostDevelopCommand(develop):
-    """Post-installation for development mode."""
-
-    def run(self):
-        print("TODO: PostDevelopCommand")
-        develop.run(self)
-
-
-class PostInstallCommand(install):
-    """Post-installation for installation mode."""
-
-    def run(self):
-        print("TODO: PostInstallCommand")
-        install.run(self)
-
-
 class Tox(TestCommand):
     user_options = [("tox-args=", "a", "Arguments to pass to tox")]
 
@@ -59,7 +43,6 @@ class Tox(TestCommand):
             args = shlex.split(self.tox_args)
         tox.cmdline(args=args)
 
-
 setup(
     name="ethnicolr",
     # Versions should comply with PEP440.  For a discussion on single-sourcing
@@ -70,10 +53,10 @@ setup(
                  " in the Name"),
     long_description=long_description,
     # The project's main homepage.
-    url="https://github.com/appeler/ethnicolr",
+    url="https://github.com/appeler/ethnicolr2",
     # Author details
-    author="Suriyan Laohaprapanon, Gaurav Sood, Bashar Naji",
-    author_email="suriyant@gmail.com, gsood07@gmail.com, balkuwai@gmail.com",
+    author="Rajashekar Chintalapati, Suriyan Laohaprapanon, Gaurav Sood",
+    author_email="rajshekar.ch@gmail.com, suriyant@gmail.com, gsood07@gmail.com",
     # Choose your license
     license="MIT",
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -83,15 +66,7 @@ setup(
         #   4 - Beta
         #   5 - Production/Stable
         "Development Status :: 4 - Beta",
-        # Indicate who your project is intended for
-        "Intended Audience :: Developers",
-        # Pick your license as you wish (should match "license" above)
         "License :: OSI Approved :: MIT License",
-        # Specify the Python versions you support here. In particular, ensure
-        # that you indicate whether you support Python 2, Python 3 or both.
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Topic :: Scientific/Engineering :: Information Analysis",
@@ -110,9 +85,7 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=["tensorflow>=2.7.2,<3;platform_machine!='aarch64'",
-                      "tensorflow-aarch64>=2.7.2,<3;platform_machine=='aarch64'",
-                      "pandas>=1.3.0", "torch==2.0.1", "joblib==1.3.1", "tqdm==4.65.0",
+    install_requires=["pandas>=1.3.0", "torch==2.0.1", "joblib==1.3.1", "tqdm==4.65.0",
                       "scikit-learn==1.3.0"],
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
@@ -156,17 +129,12 @@ setup(
         "console_scripts": [
             "census_ln=ethnicolr.census_ln:main",
             "pred_census_ln=ethnicolr.pred_census_ln:main",
-            "pred_wiki_name=ethnicolr.pred_wiki_name:main",
-            "pred_wiki_ln=ethnicolr.pred_wiki_ln:main",
             "pred_fl_reg_name=ethnicolr.pred_fl_reg_name:main",
             "pred_fl_reg_ln=ethnicolr.pred_fl_reg_ln:main",
             "pred_fl_reg_ln_five_cat=ethnicolr.pred_fl_reg_ln_five_cat:main",
             "pred_fl_full_name=ethnicolr.pred_fl_full_name:main",
             "pred_fl_last_name=ethnicolr.pred_fl_last_name:main",
             "pred_census_last_name=ethnicolr.pred_census_last_name:main",
-            ("pred_fl_reg_name_five_cat="
-             "ethnicolr.pred_fl_reg_name_five_cat:main"),
-            "pred_nc_reg_name=ethnicolr.pred_nc_reg_name:main",
         ],
     },
     cmdclass={

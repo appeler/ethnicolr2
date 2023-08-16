@@ -1,13 +1,6 @@
 
 from ethnicolr.census_ln import census_ln
-from ethnicolr.pred_census_ln import pred_census_ln
-from ethnicolr.pred_wiki_ln import pred_wiki_ln
-from ethnicolr.pred_wiki_name import pred_wiki_name
-from ethnicolr.pred_fl_reg_ln import pred_fl_reg_ln
-from ethnicolr.pred_fl_reg_name import pred_fl_reg_name
-from ethnicolr.pred_nc_reg_name import pred_nc_reg_name
-from ethnicolr.pred_fl_reg_ln_five_cat import pred_fl_reg_ln_five_cat
-from ethnicolr.pred_fl_reg_name_five_cat import pred_fl_reg_name_five_cat
+from ethnicolr.pred_cen_ln_lstm import pred_census_ln
 from ethnicolr.pred_fl_fn_lstm import pred_fl_full_name
 from ethnicolr.pred_fl_ln_lstm import pred_fl_last_name
 from ethnicolr.pred_cen_ln_lstm import pred_census_last_name
