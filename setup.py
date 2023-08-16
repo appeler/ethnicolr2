@@ -20,6 +20,7 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, "README.rst"), encoding="utf-8") as f:
     long_description = f.read()
 
+
 class PostDevelopCommand(develop):
     """Post-installation for development mode."""
     def run(self):
@@ -29,7 +30,7 @@ class PostInstallCommand(install):
     """Post-installation for installation mode."""
     def run(self):
         install.run(self)
-
+        
 class Tox(TestCommand):
     user_options = [("tox-args=", "a", "Arguments to pass to tox")]
 
@@ -53,11 +54,11 @@ class Tox(TestCommand):
         tox.cmdline(args=args)
 
 setup(
-    name="ethnicolr",
+    name="ethnicolr2",
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version="0.9.6",
+    version="0.1.0",
     description=("Predict Race/Ethnicity Based on Sequence of Characters"
                  " in the Name"),
     long_description=long_description,
@@ -76,8 +77,7 @@ setup(
         #   5 - Production/Stable
         "Development Status :: 4 - Beta",
         "License :: OSI Approved :: MIT License",
-        "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "Topic :: Scientific/Engineering :: Information Analysis",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Utilities",
@@ -105,7 +105,7 @@ setup(
     # installed, specify them here.  If using Python 2.6 or less, then these
     # have to be included in MANIFEST.in as well.
     package_data={
-        "ethnicolr": [
+        "ethnicolr2": [
             "data/census/census_2000.csv",
             "data/census/census_2010.csv",
             "data/census/readme.md",
@@ -121,17 +121,17 @@ setup(
     # Although 'package_data' is the preferred approach, in some case you may
     # need to place data files outside of your packages. See:
     # http://docs.python.org/3.4/distutils/setupscript.html#installing-additional-files # noqa
-    # In this case, 'ethnicolr' will be installed into '<sys.prefix>/ethnicolr'
-    # data_files=[('ethnicolr', ['ethnicolr/data/test.txt'])],
+    # In this case, 'ethnicolr2' will be installed into '<sys.prefix>/ethnicolr2'
+    # data_files=[('ethnicolr2', ['ethnicolr/data/test.txt'])],
     # To provide executable scripts, use entry points in preference to the
     # "scripts" keyword. Entry points provide cross-platform support and allow
     # pip to create the appropriate form of executable for the target platform.
     entry_points={
         "console_scripts": [
-            "census_ln=ethnicolr.census_ln:main",
-            "pred_fl_full_name=ethnicolr.pred_fl_full_name:main",
-            "pred_fl_last_name=ethnicolr.pred_fl_last_name:main",
-            "pred_census_last_name=ethnicolr.pred_census_last_name:main",
+            "census_ln=ethnicolr2.census_ln:main",
+            "pred_fl_full_name=ethnicolr2.pred_fl_full_name:main",
+            "pred_fl_last_name=ethnicolr2.pred_fl_last_name:main",
+            "pred_census_last_name=ethnicolr2.pred_census_last_name:main",
         ],
     },
     cmdclass={

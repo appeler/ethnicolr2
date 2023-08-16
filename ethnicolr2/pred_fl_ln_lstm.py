@@ -9,8 +9,8 @@ from .utils import arg_parser
 
 
 class LastNameLstmModel(EthnicolrModelClass):
-    MODEL_FN = "models/pytorch/lstm_lastname_gen.pt"
-    VOCAB_FN = "models/pytorch/pt_vec_lastname.joblib"
+    MODEL_FN = "models/lstm_lastname_gen.pt"
+    VOCAB_FN = "models/pt_vec_lastname.joblib"
 
     @classmethod
     def pred_fl_last_name(cls,

@@ -9,10 +9,10 @@ from .utils import arg_parser
 
 
 class FullNameLstmModel(EthnicolrModelClass):
-    """ To predict ethnicity based on fullname """
+    """Predict ethnicity based on fullname """
 
-    MODEL_FN = "models/pytorch/lstm_fullname.pt"
-    VOCAB_FN = "models/pytorch/pt_vec_fullname.joblib"
+    MODEL_FN = "models/lstm_fullname.pt"
+    VOCAB_FN = "models/pt_vec_fullname.joblib"
 
     @classmethod
     def pred_fl_full_name(cls,
@@ -33,8 +33,8 @@ class FullNameLstmModel(EthnicolrModelClass):
 
         Returns:
             DataFrame: Pandas DataFrame with additional columns:
-                - `race` the predict result
-                - Additional columns for probability of each classes.
+                - `race` the prediction result
+                - Additional columns for the probability of each of the classes.
 
         """
 

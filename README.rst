@@ -8,15 +8,12 @@ ethnicolr2: Predict Race and Ethnicity From Name
 .. image:: https://pepy.tech/badge/ethnicolr2
     :target: https://pepy.tech/project/ethnicolr2
 
-We exploit the US census data, and the Florida voting registration data, to predict race
-and ethnicity based on first and last name or just the last name. The granularity 
-at which we predict the race: Non-Hispanic Whites, Non-Hispanic Blacks, Asians, Hispanics, and 
-Other (Native Americans, Bi-Racial, Other).
+A pytorch implementation of `ethnicolr <https://github.com/appeler/ethnicolr>`__  with new models that make different assumptions (for instance, this package has models trained on unique names) than ethnicolr. The package uses the US census data and the Florida voting registration data to build models to predict the race and ethnicity (Non-Hispanic Whites, Non-Hispanic Blacks, Asians, Hispanics, and Other) based on first and last name or just the last name. For notebooks underlying the package, see `here <https://github.com/appeler/ethnicolr_v2>`__.
 
 Caveats and Notes
 -----------------------
 
-If you picked a person at random with the last name 'Smith' in the US in 2010 and asked us to guess this person's race (as measured by the census), the best guess would be based on what is available from the aggregated Census file. It is the Bayes Optimal Solution. So what good are last-name-only predictive models for? A few things---if you want to impute race and ethnicity for last names that are not in the census file, infer the race and ethnicity in different years than when the census was conducted (if some assumptions hold), infer the race of people in different countries (if some assumptions hold), etc. The biggest benefit comes in cases where both the first name and last name are known.
+If you picked a random person with the last name 'Smith' in the US in 2010 and asked us to guess this person's race (as measured by the census), the best guess is the modal race of the person named Smith (which you can get from the census popular last name data file). It is the Bayes Optimal Solution. So what good are predictive models? A few things---if you want to impute race and ethnicity for last names that are not in the census file, which can be because of errors, infer the race and ethnicity in different years than when the census was conducted (if some assumptions hold), infer the race of people in different countries (if some assumptions hold), etc. The biggest benefit comes in cases where both the first and last name are known.
 
 Install
 ----------
@@ -56,18 +53,18 @@ To see the available command line options for any function, please type in
 Examples
 ----------
 
-To append census data from 2010 to a `file with column header in the first row <ethnicolr/data/input-with-header.csv>`__, specify the column name carrying last names using the ``-l`` option, keeping the rest the same:
+To append census data from 2010 to a `file with column header in the first row <ethnicolr2/data/input-with-header.csv>`__, specify the column name carrying last names using the ``-l`` option, keeping the rest the same:
 
 ::
 
    census_ln -y 2010 -o output-census2010.csv -l last_name input-with-header.csv   
 
 
-To predict race/ethnicity using `Wikipedia full name model <ethnicolr/models/ethnicolr_keras_lstm_wiki_name.ipynb>`__, specify the column name of last name and first name by using ``-l`` and ``-f`` flags respectively.
+To predict race/ethnicity using the Florida Last Name Model, specify the column name of last name and first name by using ``-l`` and ``-f`` flags respectively.
 
 ::
 
-   pred_wiki_name -o output-wiki-pred-race.csv -l last_name -f first_name input-with-header.csv
+   pred_fl_last_name -o output-wiki-pred-race.csv -l last_name -f first_name input-with-header.csv
 
 
 Functions
