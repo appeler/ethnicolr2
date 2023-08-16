@@ -1,10 +1,10 @@
-ethnicolr: Predict Race and Ethnicity From Name
+ethnicolr2: Predict Race and Ethnicity From Name
 ----------------------------------------------------
 
-.. image:: https://github.com/appeler/ethnicolr/workflows/test/badge.svg
-    :target: https://github.com/appeler/ethnicolr/actions?query=workflow%3Atest
-.. image:: https://img.shields.io/pypi/v/ethnicolr.svg
-    :target: https://pypi.python.org/pypi/ethnicolr
+.. image:: https://github.com/appeler/ethnicolr2/workflows/test/badge.svg
+    :target: https://github.com/appeler/ethnicolr2/actions?query=workflow%3Atest
+.. image:: https://img.shields.io/pypi/v/ethnicolr2.svg
+    :target: https://pypi.python.org/pypi/ethnicolr2
 .. image:: https://pepy.tech/badge/ethnicolr2
     :target: https://pepy.tech/project/ethnicolr2
 
