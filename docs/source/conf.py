@@ -46,7 +46,7 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = u"ethnicolr"
+project = u"ethnicolr2"
 copyright = u"2023, Rajashekar Chintalapati, Suriyan Laohaprapanon, Gaurav Sood"
 author = u"Rajashekar Chintalapati, Suriyan Laohaprapanon, Gaurav Sood"
 
