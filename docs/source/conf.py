@@ -47,8 +47,8 @@ master_doc = "index"
 
 # General information about the project.
 project = u"ethnicolr"
-copyright = u"2018, Suriyan Laohaprapanon, Gaurav Sood, Bashar Naji"
-author = u"Suriyan Laohaprapanon, Gaurav Sood, Bashar Naji"
+copyright = u"2023, Rajashekar Chintalapati, Suriyan Laohaprapanon, Gaurav Sood"
+author = u"Rajashekar Chintalapati, Suriyan Laohaprapanon, Gaurav Sood"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -110,7 +110,7 @@ html_sidebars = {
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "ethnicolrdoc"
+htmlhelp_basename = "ethnicolr2doc"
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -137,8 +137,8 @@ latex_documents = [
     (
         master_doc,
         "ethnicolr.tex",
-        u"ethnicolr Documentation",
-        u"Suriyan Laohaprapanon, Gaurav Sood, Bashar Naji",
+        u"ethnicolr2 Documentation",
+        u"Rajashekar Chintalapati, Suriyan Laohaprapanon, Gaurav Sood",
         "manual",
     ),
 ]
@@ -148,7 +148,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, "ethnicolr", u"ethnicolr Documentation",
+man_pages = [(master_doc, "ethnicolr2", u"ethnicolr2 Documentation",
               [author], 1)]
 
 
@@ -160,10 +160,10 @@ man_pages = [(master_doc, "ethnicolr", u"ethnicolr Documentation",
 texinfo_documents = [
     (
         master_doc,
-        "ethnicolr",
-        u"ethnicolr Documentation",
+        "ethnicolr2",
+        u"ethnicolr2 Documentation",
         author,
-        "ethnicolr",
+        "ethnicolr2",
         "Predict Race and Ethnicity from Names",
         "Miscellaneous",
     ),

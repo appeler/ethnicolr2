@@ -1,0 +1,958 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>ethnicolr: Predict Race and Ethnicity From Name &#8212; ethnicolr 0.1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="ethnicolr2: Predict Race and Ethnicity From Name" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="ethnicolr-predict-race-and-ethnicity-from-name">
+<h1>ethnicolr: Predict Race and Ethnicity From Name<a class="headerlink" href="#ethnicolr-predict-race-and-ethnicity-from-name" title="Permalink to this heading">¶</a></h1>
+<a class="reference external image-reference" href="https://github.com/appeler/ethnicolr2/actions?query=workflow%3Atest"><img alt="https://github.com/appeler/ethnicolr2/workflows/test/badge.svg" src="https://github.com/appeler/ethnicolr2/workflows/test/badge.svg" /></a>
+<a class="reference external image-reference" href="https://ci.appveyor.com/project/soodoku/ethnicolr-m6u1p"><img alt="https://ci.appveyor.com/api/projects/status/u9fe72hn8nnhmaxt?svg=true" src="https://ci.appveyor.com/api/projects/status/u9fe72hn8nnhmaxt?svg=true" /></a>
+<a class="reference external image-reference" href="https://pypi.python.org/pypi/ethnicolr2"><img alt="https://img.shields.io/pypi/v/ethnicolr.svg" src="https://img.shields.io/pypi/v/ethnicolr.svg" /></a>
+<a class="reference external image-reference" href="https://anaconda.org/soodoku/ethnicolr2/"><img alt="https://anaconda.org/soodoku/ethnicolr2/badges/version.svg" src="https://anaconda.org/soodoku/ethnicolr2/badges/version.svg" /></a>
+<a class="reference external image-reference" href="https://pepy.tech/project/ethnicolr2"><img alt="https://pepy.tech/badge/ethnicolr2" src="https://pepy.tech/badge/ethnicolr2" /></a>
+<p>We exploit the US census data, the Florida voting registration data, and
+the Wikipedia data collected by Skiena and colleagues, to predict race
+and ethnicity based on first and last name or just the last name. The granularity
+at which we predict the race depends on the dataset. For instance,
+Skiena et al.’ Wikipedia data is at the ethnic group level, while the
+census data we use in the model (the raw data has additional categories of
+Native Americans and Bi-racial) merely categorizes between Non-Hispanic Whites,
+Non-Hispanic Blacks, Asians, and Hispanics.</p>
+</section>
+<section id="dime-race">
+<h1>DIME Race<a class="headerlink" href="#dime-race" title="Permalink to this heading">¶</a></h1>
+<p>Data on race of all the people in the <a class="reference external" href="https://data.stanford.edu/dime">DIME data</a>
+is posted <a class="reference external" href="http://dx.doi.org/10.7910/DVN/M5K7VR">here</a> The underlying python scripts
+are posted <a class="reference external" href="https://github.com/appeler/dime_race">here</a></p>
+</section>
+<section id="caveats-and-notes">
+<h1>Caveats and Notes<a class="headerlink" href="#caveats-and-notes" title="Permalink to this heading">¶</a></h1>
+<p>If you picked a random individual with last name ‘Smith’ from the US in 2010
+and asked us to guess this person’s race (measured as crudely as by the census),
+the best guess would be based on what is available from the aggregated Census file.
+It is the Bayes Optimal Solution. So what good are last name only predictive models
+for? A few things—if you want to impute ethnicity at a more granular level,
+guess the race of people in different years (than when the census was conducted
+if some assumptions hold), guess the race of people in different countries (again if some
+assumptions hold), when names are slightly different (again with some assumptions), etc.
+The big benefit comes from when both the first name and last name is known.</p>
+</section>
+<section id="install">
+<h1>Install<a class="headerlink" href="#install" title="Permalink to this heading">¶</a></h1>
+<p>We strongly recommend installing <cite>ethnicolor</cite> inside a Python virtual environment
+(see <a class="reference external" href="https://docs.python.org/3/library/venv.html#creating-virtual-environments">venv documentation</a>)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">ethnicolr</span>
+</pre></div>
+</div>
+<p>Or</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">soodoku</span> <span class="n">ethnicolr</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Notes:</dt><dd><ul class="simple">
+<li><p>The models are run and verified on TensorFlow 2.x using Python 3.7 and 3.8 and lower will work. TensorFlow 1.x has been deprecated.</p></li>
+<li><p>If you are installing on Windows, Theano installation typically needs admin. privileges on the shell.</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="general-api">
+<h1>General API<a class="headerlink" href="#general-api" title="Permalink to this heading">¶</a></h1>
+<p>To see the available command line options for any function, please type in
+<code class="docutils literal notranslate"><span class="pre">&lt;function-name&gt;</span> <span class="pre">--help</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># census_ln --help</span>
+<span class="n">usage</span><span class="p">:</span> <span class="n">census_ln</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">y</span> <span class="p">{</span><span class="mi">2000</span><span class="p">,</span><span class="mi">2010</span><span class="p">}]</span> <span class="p">[</span><span class="o">-</span><span class="n">o</span> <span class="n">OUTPUT</span><span class="p">]</span> <span class="o">-</span><span class="n">l</span> <span class="n">LAST</span> <span class="nb">input</span>
+
+<span class="n">Appends</span> <span class="n">Census</span> <span class="n">columns</span> <span class="n">by</span> <span class="n">last</span> <span class="n">name</span>
+
+<span class="n">positional</span> <span class="n">arguments</span><span class="p">:</span>
+  <span class="nb">input</span>                 <span class="n">Input</span> <span class="n">file</span>
+
+<span class="n">optional</span> <span class="n">arguments</span><span class="p">:</span>
+  <span class="o">-</span><span class="n">h</span><span class="p">,</span> <span class="o">--</span><span class="n">help</span>            <span class="n">show</span> <span class="n">this</span> <span class="n">help</span> <span class="n">message</span> <span class="ow">and</span> <span class="n">exit</span>
+  <span class="o">-</span><span class="n">y</span> <span class="p">{</span><span class="mi">2000</span><span class="p">,</span><span class="mi">2010</span><span class="p">},</span> <span class="o">--</span><span class="n">year</span> <span class="p">{</span><span class="mi">2000</span><span class="p">,</span><span class="mi">2010</span><span class="p">}</span>
+                        <span class="n">Year</span> <span class="n">of</span> <span class="n">Census</span> <span class="n">data</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">2000</span><span class="p">)</span>
+  <span class="o">-</span><span class="n">o</span> <span class="n">OUTPUT</span><span class="p">,</span> <span class="o">--</span><span class="n">output</span> <span class="n">OUTPUT</span>
+                        <span class="n">Output</span> <span class="n">file</span> <span class="k">with</span> <span class="n">Census</span> <span class="n">data</span> <span class="n">columns</span>
+  <span class="o">-</span><span class="n">l</span> <span class="n">LAST</span><span class="p">,</span> <span class="o">--</span><span class="n">last</span> <span class="n">LAST</span>  <span class="n">Name</span> <span class="ow">or</span> <span class="n">index</span> <span class="n">location</span> <span class="n">of</span> <span class="n">column</span> <span class="n">contains</span> <span class="n">the</span> <span class="n">last</span>
+                        <span class="n">name</span>
+</pre></div>
+</div>
+</section>
+<section id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h1>
+<p>To append census data from 2010 to a <a class="reference external" href="ethnicolr/data/input-without-header.csv">file without column headers</a> and the first column carries the last name, use <code class="docutils literal notranslate"><span class="pre">-l</span> <span class="pre">0</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">census_ln</span> <span class="o">-</span><span class="n">y</span> <span class="mi">2010</span> <span class="o">-</span><span class="n">o</span> <span class="n">output</span><span class="o">-</span><span class="n">census2010</span><span class="o">.</span><span class="n">csv</span> <span class="o">-</span><span class="n">l</span> <span class="mi">0</span> <span class="nb">input</span><span class="o">-</span><span class="n">without</span><span class="o">-</span><span class="n">header</span><span class="o">.</span><span class="n">csv</span>
+</pre></div>
+</div>
+<p>To append census data from 2010 to a <a class="reference external" href="ethnicolr/data/input-with-header.csv">file with column header in the first row</a>, specify the column name carrying last names using the <code class="docutils literal notranslate"><span class="pre">-l</span></code> option, keeping the rest the same:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">census_ln</span> <span class="o">-</span><span class="n">y</span> <span class="mi">2010</span> <span class="o">-</span><span class="n">o</span> <span class="n">output</span><span class="o">-</span><span class="n">census2010</span><span class="o">.</span><span class="n">csv</span> <span class="o">-</span><span class="n">l</span> <span class="n">last_name</span> <span class="nb">input</span><span class="o">-</span><span class="k">with</span><span class="o">-</span><span class="n">header</span><span class="o">.</span><span class="n">csv</span>
+</pre></div>
+</div>
+<p>To predict race/ethnicity using <a class="reference external" href="ethnicolr/models/ethnicolr_keras_lstm_wiki_name.ipynb">Wikipedia full name model</a>, if the input file doesn’t have any column headers, you must using <code class="docutils literal notranslate"><span class="pre">-l</span></code> and <code class="docutils literal notranslate"><span class="pre">-f</span></code> to specify the index of column carrying the last name and first name respectively (first column has index 0).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pred_wiki_name</span> <span class="o">-</span><span class="n">o</span> <span class="n">output</span><span class="o">-</span><span class="n">wiki</span><span class="o">-</span><span class="n">pred</span><span class="o">-</span><span class="n">race</span><span class="o">.</span><span class="n">csv</span> <span class="o">-</span><span class="n">l</span> <span class="mi">0</span> <span class="o">-</span><span class="n">f</span> <span class="mi">1</span> <span class="nb">input</span><span class="o">-</span><span class="n">without</span><span class="o">-</span><span class="n">header</span><span class="o">.</span><span class="n">csv</span>
+</pre></div>
+</div>
+<p>And to predict race/ethnicity using <a class="reference external" href="ethnicolr/models/ethnicolr_keras_lstm_wiki_name.ipynb">Wikipedia full name model</a> for a file with column headers, you can specify the column name of last name and first name by using <code class="docutils literal notranslate"><span class="pre">-l</span></code> and <code class="docutils literal notranslate"><span class="pre">-f</span></code> flags respectively.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pred_wiki_name</span> <span class="o">-</span><span class="n">o</span> <span class="n">output</span><span class="o">-</span><span class="n">wiki</span><span class="o">-</span><span class="n">pred</span><span class="o">-</span><span class="n">race</span><span class="o">.</span><span class="n">csv</span> <span class="o">-</span><span class="n">l</span> <span class="n">last_name</span> <span class="o">-</span><span class="n">f</span> <span class="n">first_name</span> <span class="nb">input</span><span class="o">-</span><span class="k">with</span><span class="o">-</span><span class="n">header</span><span class="o">.</span><span class="n">csv</span>
+</pre></div>
+</div>
+</section>
+<section id="functions">
+<h1>Functions<a class="headerlink" href="#functions" title="Permalink to this heading">¶</a></h1>
+<p>We expose 6 functions, each of which either take a pandas DataFrame or a
+CSV. If the CSV doesn’t have a header, we make some assumptions about
+where the data is:</p>
+<ul class="simple">
+<li><p><strong>census_ln(df, namecol, year=2000)</strong></p>
+<ul>
+<li><p>What it does:</p>
+<ul>
+<li><p>Removes extra space</p></li>
+<li><p>For names in the <a class="reference external" href="ethnicolr/data/census">census file</a>, it appends
+relevant data of what probability the name provided is of a certain race/ethnicity</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<div><table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameters</p></th>
+<th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td><p><strong>df</strong> : <em>{DataFrame, csv}</em> Pandas dataframe of CSV file contains the names of the individual to be inferred</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p><strong>namecol</strong> : <em>{string, list, int}</em> string or list of the name or location of the column containing the last name</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p><strong>Year</strong> : <em>{2000, 2010}, default=2000</em> year of census to use</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<ul>
+<li><p>Output: Appends the following columns to the pandas DataFrame or CSV:
+pctwhite, pctblack, pctapi, pctaian, pct2prace, pcthispanic.
+See <a class="reference external" href="https://github.com/appeler/ethnicolr/blob/master/ethnicolr/data/census/census_2000.pdf">here</a>
+for what the column names mean.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ethnicolr</span> <span class="kn">import</span> <span class="n">census_ln</span><span class="p">,</span> <span class="n">pred_census_ln</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">names</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;smith&#39;</span><span class="p">},</span>
+<span class="gp">... </span>        <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;zhang&#39;</span><span class="p">},</span>
+<span class="gp">... </span>        <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;jackson&#39;</span><span class="p">}]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span>
+<span class="go">      name</span>
+<span class="go">0    smith</span>
+<span class="go">1    zhang</span>
+<span class="go">2  jackson</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">census_ln</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">)</span>
+<span class="go">      name pctwhite pctblack pctapi pctaian pct2prace pcthispanic</span>
+<span class="go">0    smith    73.35    22.22   0.40    0.85      1.63        1.56</span>
+<span class="go">1    zhang     0.61     0.09  98.16    0.02      0.96        0.16</span>
+<span class="go">2  jackson    41.93    53.02   0.31    1.04      2.18        1.53</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>pred_census_ln(df, namecol, year=2000, num_iter=100, conf_int=1.0)</strong></p>
+<ul class="simple">
+<li><p>What it does:</p>
+<ul>
+<li><p>Removes extra space.</p></li>
+<li><p>Uses the <a class="reference external" href="ethnicolr/models/ethnicolr_keras_lstm_census2000_ln.ipynb">last name census 2000
+model</a> or
+<a class="reference external" href="ethnicolr/models/ethnicolr_keras_lstm_census2010_ln.ipynb">last name census 2010 model</a>
+to predict the race and ethnicity.</p></li>
+</ul>
+</li>
+</ul>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameters</p></th>
+<th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td><p><strong>df</strong> : <em>{DataFrame, csv}</em> Pandas dataframe of CSV file contains the names of the individual to be inferred</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p><strong>namecol</strong> : <em>{string, list, int}</em> string or list of the name or location of the column containing the last name</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p><strong>year</strong> : <em>{2000, 2010}, default=2000</em> year of census to use</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p><strong>num_iter</strong> : <em>int, default=100</em> number of iterations to calculate uncertainty in model</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p><strong>conf_int</strong> : <em>float, default=1.0</em> confidence interval in predicted class</p></td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><p>Output: Appends the following columns to the pandas DataFrame or CSV:
+race (white, black, asian, or hispanic), api (percentage chance
+asian), black, hispanic, white. For each race it will provide the
+mean, standard error, lower &amp; upper bound of confidence interval</p></li>
+</ul>
+<p><em>(Using the same dataframe from example above)</em></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">census_ln</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">)</span>
+<span class="go">      name pctwhite pctblack pctapi pctaian pct2prace pcthispanic</span>
+<span class="go">0    smith    73.35    22.22   0.40    0.85      1.63        1.56</span>
+<span class="go">1    zhang     0.61     0.09  98.16    0.02      0.96        0.16</span>
+<span class="go">2  jackson    41.93    53.02   0.31    1.04      2.18        1.53</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">census_ln</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="mi">2010</span><span class="p">)</span>
+<span class="go">      name   race pctwhite pctblack pctapi pctaian pct2prace pcthispanic</span>
+<span class="go">0    smith  white     70.9    23.11    0.5    0.89      2.19         2.4</span>
+<span class="go">1    zhang    api     0.99     0.16  98.06    0.02      0.62        0.15</span>
+<span class="go">2  jackson  black    39.89    53.04   0.39    1.06      3.12         2.5</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pred_census_ln</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">)</span>
+<span class="go">      name   race       api     black  hispanic     white</span>
+<span class="go">0    smith  white  0.002019  0.247235  0.014485  0.736260</span>
+<span class="go">1    zhang    api  0.997807  0.000149  0.000470  0.001574</span>
+<span class="go">2  jackson  black  0.002797  0.528193  0.014605  0.454405</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>pred_wiki_ln( df, namecol, num_iter=100, conf_int=1.0)</strong></p>
+<ul class="simple">
+<li><p>What it does:</p>
+<ul>
+<li><p>Removes extra space.</p></li>
+<li><p>Uses the <a class="reference external" href="ethnicolr/models/ethnicolr_keras_lstm_wiki_ln.ipynb">last name wiki
+model</a> to
+predict the race and ethnicity.</p></li>
+</ul>
+</li>
+</ul>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameters</p></th>
+<th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td><p><strong>df</strong> : <em>{DataFrame, csv}</em> Pandas dataframe of CSV file contains the names of the individual to be inferred</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p><strong>namecol</strong> : <em>{string, list, int}</em> string or list of the name or location of the column containing the last name</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p><strong>num_iter</strong> : <em>int, default=100</em> number of iterations to calculate uncertainty in model</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p><strong>conf_int</strong> : <em>float, default=1.0</em> confidence interval in predicted class</p></td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><p>Output: Appends the following columns to the pandas DataFrame or CSV:
+race (categorical variable — category with the highest probability).
+For each race it will provide the mean, standard error, lower &amp; upper
+bound of confidence interval</p></li>
+</ul>
+<dl class="simple">
+<dt>::</dt><dd><p>“Asian,GreaterEastAsian,EastAsian”,
+“Asian,GreaterEastAsian,Japanese”, “Asian,IndianSubContinent”,
+“GreaterAfrican,Africans”, “GreaterAfrican,Muslim”,
+“GreaterEuropean,British”,”GreaterEuropean,EastEuropean”,
+“GreaterEuropean,Jewish”,”GreaterEuropean,WestEuropean,French”,
+“GreaterEuropean,WestEuropean,Germanic”,”GreaterEuropean,WestEuropean,Hispanic”,
+“GreaterEuropean,WestEuropean,Italian”,”GreaterEuropean,WestEuropean,Nordic”.</p>
+</dd>
+</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">names</span> <span class="o">=</span> <span class="p">[</span>
+<span class="gp">... </span>            <span class="p">{</span><span class="s2">&quot;last&quot;</span><span class="p">:</span> <span class="s2">&quot;smith&quot;</span><span class="p">,</span> <span class="s2">&quot;first&quot;</span><span class="p">:</span> <span class="s2">&quot;john&quot;</span><span class="p">,</span> <span class="s2">&quot;true_race&quot;</span><span class="p">:</span> <span class="s2">&quot;GreaterEuropean,British&quot;</span><span class="p">},</span>
+<span class="gp">... </span>            <span class="p">{</span>
+<span class="gp">... </span>                <span class="s2">&quot;last&quot;</span><span class="p">:</span> <span class="s2">&quot;zhang&quot;</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="s2">&quot;first&quot;</span><span class="p">:</span> <span class="s2">&quot;simon&quot;</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="s2">&quot;true_race&quot;</span><span class="p">:</span> <span class="s2">&quot;Asian,GreaterEastAsian,EastAsian&quot;</span><span class="p">,</span>
+<span class="gp">... </span>            <span class="p">},</span>
+<span class="gp">... </span>        <span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ethnicolr</span> <span class="kn">import</span> <span class="n">pred_wiki_ln</span><span class="p">,</span> <span class="n">pred_wiki_name</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">odf</span> <span class="o">=</span> <span class="n">pred_wiki_ln</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="s1">&#39;last&#39;</span><span class="p">,</span> <span class="n">conf_int</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+<span class="go">[&#39;Asian,GreaterEastAsian,EastAsian&#39;, &#39;Asian,GreaterEastAsian,Japanese&#39;, &#39;Asian,IndianSubContinent&#39;, &#39;GreaterAfrican,Africans&#39;, &#39;GreaterAfrican,Muslim&#39;, &#39;GreaterEuropean,British&#39;, &#39;GreaterEuropean,EastEuropean&#39;, &#39;GreaterEuropean,Jewish&#39;, &#39;GreaterEuropean,WestEuropean,French&#39;, &#39;GreaterEuropean,WestEuropean,Germanic&#39;, &#39;GreaterEuropean,WestEuropean,Hispanic&#39;, &#39;GreaterEuropean,WestEuropean,Italian&#39;, &#39;GreaterEuropean,WestEuropean,Nordic&#39;]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">odf</span>
+<span class="go">   last  first                         true_race  ...  GreaterEuropean,WestEuropean,Nordic_lb  GreaterEuropean,WestEuropean,Nordic_ub                              race</span>
+<span class="go">0  Smith   john           GreaterEuropean,British                               0.016103  ...                                 0.014135                                0.007382                                0.048828           GreaterEuropean,British</span>
+<span class="go">1  Zhang  simon  Asian,GreaterEastAsian,EastAsian                               0.863391  ...                                 0.017452                                0.001844                                0.027252  Asian,GreaterEastAsian,EastAsian</span>
+
+<span class="go">[2 rows x 56 columns]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">odf</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:</span><span class="mi">8</span><span class="p">]</span>
+<span class="go">last                                                       Smith</span>
+<span class="go">first                                                       john</span>
+<span class="go">true_race                                GreaterEuropean,British</span>
+<span class="go">Asian,GreaterEastAsian,EastAsian_mean                   0.016103</span>
+<span class="go">Asian,GreaterEastAsian,EastAsian_std                    0.009735</span>
+<span class="go">Asian,GreaterEastAsian,EastAsian_lb                     0.005873</span>
+<span class="go">Asian,GreaterEastAsian,EastAsian_ub                     0.034637</span>
+<span class="go">Asian,GreaterEastAsian,Japanese_mean                    0.003814</span>
+<span class="go">Name: 0, dtype: object</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>pred_wiki_name(df, namecol, num_iter=100, conf_int=1.0)</strong></p>
+<ul class="simple">
+<li><p>What it does:</p>
+<ul>
+<li><p>Removes extra space.</p></li>
+<li><p>Uses the <a class="reference external" href="ethnicolr/models/ethnicolr_keras_lstm_wiki_name.ipynb">full name wiki
+model</a>
+to predict the race and ethnicity.</p></li>
+</ul>
+</li>
+</ul>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameters</p></th>
+<th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td><p><strong>df</strong> : <em>{DataFrame, csv}</em> Pandas dataframe of CSV file contains the names of the individual to be inferred</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p><strong>namecol</strong> : <em>{string, list}</em> string or list of the name or location of the column containing the first name, last name, middle name, and suffix, if there. The first name and last name columns are required. If no middle name of suffix columns are there, it is assumed that there are no middle names or suffixes.</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p><strong>num_iter</strong> : <em>int, default=100</em> number of iterations to calculate uncertainty in model</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p><strong>conf_int</strong> : <em>float, default=1.0</em> confidence interval in predicted class</p></td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><p>Output: Appends the following columns to the pandas DataFrame or CSV:
+race (categorical variable—category with the highest probability),
+“Asian,GreaterEastAsian,EastAsian”,
+“Asian,GreaterEastAsian,Japanese”, “Asian,IndianSubContinent”,
+“GreaterAfrican,Africans”, “GreaterAfrican,Muslim”,
+“GreaterEuropean,British”,”GreaterEuropean,EastEuropean”,
+“GreaterEuropean,Jewish”,”GreaterEuropean,WestEuropean,French”,
+“GreaterEuropean,WestEuropean,Germanic”,”GreaterEuropean,WestEuropean,Hispanic”,
+“GreaterEuropean,WestEuropean,Italian”,”GreaterEuropean,WestEuropean,Nordic”.
+For each race it will provide the mean, standard error, lower &amp; upper
+bound of confidence interval</p></li>
+</ul>
+<p><em>(Using the same dataframe from example above)</em></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">odf</span> <span class="o">=</span> <span class="n">pred_wiki_name</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="s1">&#39;last&#39;</span><span class="p">,</span> <span class="s1">&#39;first&#39;</span><span class="p">,</span> <span class="n">conf_int</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+<span class="go">[&#39;Asian,GreaterEastAsian,EastAsian&#39;, &#39;Asian,GreaterEastAsian,Japanese&#39;, &#39;Asian,IndianSubContinent&#39;, &#39;GreaterAfrican,Africans&#39;, &#39;GreaterAfrican,Muslim&#39;, &#39;GreaterEuropean,British&#39;, &#39;GreaterEuropean,EastEuropean&#39;, &#39;GreaterEuropean,Jewish&#39;, &#39;GreaterEuropean,WestEuropean,French&#39;, &#39;GreaterEuropean,WestEuropean,Germanic&#39;, &#39;GreaterEuropean,WestEuropean,Hispanic&#39;, &#39;GreaterEuropean,WestEuropean,Italian&#39;, &#39;GreaterEuropean,WestEuropean,Nordic&#39;]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">odf</span>
+<span class="go">   last  first                         true_race       __name  Asian,GreaterEastAsian,EastAsian_mean  ...  GreaterEuropean,WestEuropean,Nordic_mean  GreaterEuropean,WestEuropean,Nordic_std  GreaterEuropean,WestEuropean,Nordic_lb  GreaterEuropean,WestEuropean,Nordic_ub                              race</span>
+<span class="go">0  Smith   john           GreaterEuropean,British   Smith John                               0.004111  ...                                  0.006246                                 0.004760                                0.001048                                0.016288           GreaterEuropean,British</span>
+<span class="go">1  Zhang  simon  Asian,GreaterEastAsian,EastAsian  Zhang Simon                               0.944203  ...                                  0.000793                                 0.002557                                0.000019                                0.002470  Asian,GreaterEastAsian,EastAsian</span>
+
+<span class="go">[2 rows x 57 columns]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">odf</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">,:</span><span class="mi">8</span><span class="p">]</span>
+<span class="go">last                                                       Smith</span>
+<span class="go">first                                                       john</span>
+<span class="go">true_race                                GreaterEuropean,British</span>
+<span class="go">__name                                                Smith John</span>
+<span class="go">Asian,GreaterEastAsian,EastAsian_mean                   0.004111</span>
+<span class="go">Asian,GreaterEastAsian,EastAsian_std                    0.002929</span>
+<span class="go">Asian,GreaterEastAsian,EastAsian_lb                     0.001356</span>
+<span class="go">Asian,GreaterEastAsian,EastAsian_ub                     0.010571</span>
+<span class="go">Name: 0, dtype: object</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>pred_fl_reg_ln(df, namecol, num_iter=100, conf_int=1.0)</strong></p>
+<ul class="simple">
+<li><p>What it does?:</p>
+<ul>
+<li><p>Removes extra space, if there.</p></li>
+<li><p>Uses the <a class="reference external" href="ethnicolr/models/ethnicolr_keras_lstm_fl_voter_ln.ipynb">last name FL registration
+model</a>
+to predict the race and ethnicity.</p></li>
+</ul>
+</li>
+</ul>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameters</p></th>
+<th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td><p><strong>df</strong> : <em>{DataFrame, csv}</em> Pandas dataframe of CSV file contains the names of the individual to be inferred</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p><strong>namecol</strong> : <em>{string, list, int}</em> string or list of the name or location of the column containing the last name</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p><strong>num_iter</strong> : <em>int, default=100</em> number of iterations to calculate uncertainty in model</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p><strong>conf_int</strong> : <em>float, default=1.0</em> confidence interval in predicted class</p></td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><p>Output: Appends the following columns to the pandas DataFrame or CSV:
+race (white, black, asian, or hispanic), asian (percentage chance
+Asian), hispanic, nh_black, nh_white. For each race it will provide
+the mean, standard error, lower &amp; upper bound of confidence interval</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">names</span> <span class="o">=</span> <span class="p">[</span>
+<span class="gp">... </span>            <span class="p">{</span><span class="s2">&quot;last&quot;</span><span class="p">:</span> <span class="s2">&quot;sawyer&quot;</span><span class="p">,</span> <span class="s2">&quot;first&quot;</span><span class="p">:</span> <span class="s2">&quot;john&quot;</span><span class="p">,</span> <span class="s2">&quot;true_race&quot;</span><span class="p">:</span> <span class="s2">&quot;nh_white&quot;</span><span class="p">},</span>
+<span class="gp">... </span>            <span class="p">{</span><span class="s2">&quot;last&quot;</span><span class="p">:</span> <span class="s2">&quot;torres&quot;</span><span class="p">,</span> <span class="s2">&quot;first&quot;</span><span class="p">:</span> <span class="s2">&quot;raul&quot;</span><span class="p">,</span> <span class="s2">&quot;true_race&quot;</span><span class="p">:</span> <span class="s2">&quot;hispanic&quot;</span><span class="p">},</span>
+<span class="gp">... </span>        <span class="p">]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ethnicolr</span> <span class="kn">import</span> <span class="n">pred_fl_reg_ln</span><span class="p">,</span> <span class="n">pred_fl_reg_name</span><span class="p">,</span> <span class="n">pred_fl_reg_ln_five_cat</span><span class="p">,</span> <span class="n">pred_fl_reg_name_five_cat</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">odf</span> <span class="o">=</span> <span class="n">pred_fl_reg_ln</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;last&#39;</span><span class="p">,</span> <span class="n">conf_int</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+<span class="go">[&#39;asian&#39;, &#39;hispanic&#39;, &#39;nh_black&#39;, &#39;nh_white&#39;]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">odf</span>
+<span class="go">   last first true_race  asian_mean  asian_std  asian_lb  asian_ub  hispanic_mean  hispanic_std  hispanic_lb  hispanic_ub  nh_black_mean  nh_black_std  nh_black_lb  nh_black_ub  nh_white_mean  nh_white_std  nh_white_lb  nh_white_ub      race</span>
+<span class="go">0  Sawyer  john  nh_white    0.009859   0.006819  0.005338  0.019673       0.021488      0.004602     0.014802     0.030148       0.180929      0.052784     0.105756     0.270238       0.787724      0.051082     0.705290     0.860286  nh_white</span>
+<span class="go">1  Torres  raul  hispanic    0.006463   0.001985  0.003915  0.010146       0.878119      0.021998     0.839274     0.909151       0.013118      0.005002     0.007364     0.021633       0.102300      0.017828     0.075911     0.130929  hispanic</span>
+
+<span class="go">[2 rows x 20 columns]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">odf</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">last               Sawyer</span>
+<span class="go">first                john</span>
+<span class="go">true_race        nh_white</span>
+<span class="go">asian_mean       0.009859</span>
+<span class="go">asian_std        0.006819</span>
+<span class="go">asian_lb         0.005338</span>
+<span class="go">asian_ub         0.019673</span>
+<span class="go">hispanic_mean    0.021488</span>
+<span class="go">hispanic_std     0.004602</span>
+<span class="go">hispanic_lb      0.014802</span>
+<span class="go">hispanic_ub      0.030148</span>
+<span class="go">nh_black_mean    0.180929</span>
+<span class="go">nh_black_std     0.052784</span>
+<span class="go">nh_black_lb      0.105756</span>
+<span class="go">nh_black_ub      0.270238</span>
+<span class="go">nh_white_mean    0.787724</span>
+<span class="go">nh_white_std     0.051082</span>
+<span class="go">nh_white_lb       0.70529</span>
+<span class="go">nh_white_ub      0.860286</span>
+<span class="go">race             nh_white</span>
+<span class="go">Name: 0, dtype: object</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>pred_fl_reg_name(df, namecol, num_iter=100, conf_int=1.0)</strong></p>
+<ul class="simple">
+<li><p>What it does:</p>
+<ul>
+<li><p>Removes extra space.</p></li>
+<li><p>Uses the <a class="reference external" href="ethnicolr/models/ethnicolr_keras_lstm_fl_voter_name.ipynb">full name FL
+model</a>
+to predict the race and ethnicity.</p></li>
+</ul>
+</li>
+</ul>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameters</p></th>
+<th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td><p><strong>df</strong> : <em>{DataFrame, csv}</em> Pandas dataframe of CSV file contains the names of the individual to be inferred</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p><strong>namecol</strong> : <em>{string, list}</em> string or list of the name or location of the column containing the first name, last name, middle name, and suffix, if there. The first name and last name columns are required. If no middle name of suffix columns are there, it is assumed that there are no middle names or suffixes.</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p><strong>num_iter</strong> : <em>int, default=100</em> number of iterations to calculate uncertainty in model</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p><strong>conf_int</strong> : <em>float, default=1.0</em> confidence interval in predicted class</p></td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><p>Output: Appends the following columns to the pandas DataFrame or CSV:
+race (white, black, asian, or hispanic), asian (percentage chance
+Asian), hispanic, nh_black, nh_white. For each race it will provide
+the mean, standard error, lower &amp; upper bound of confidence interval</p></li>
+</ul>
+<p><em>(Using the same dataframe from example above)</em></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">odf</span> <span class="o">=</span> <span class="n">pred_fl_reg_name</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;last&#39;</span><span class="p">,</span> <span class="s1">&#39;first&#39;</span><span class="p">,</span> <span class="n">conf_int</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+<span class="go">[&#39;asian&#39;, &#39;hispanic&#39;, &#39;nh_black&#39;, &#39;nh_white&#39;]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">odf</span>
+<span class="go">   last first true_race  asian_mean  asian_std  asian_lb  asian_ub  hispanic_mean  hispanic_std  hispanic_lb  hispanic_ub  nh_black_mean  nh_black_std  nh_black_lb  nh_black_ub  nh_white_mean  nh_white_std  nh_white_lb  nh_white_ub      race</span>
+<span class="go">0  Sawyer  john  nh_white    0.001534   0.000850  0.000636  0.002691       0.006818      0.002557     0.003684     0.011660       0.028068      0.015095     0.011488     0.055149       0.963581      0.015738     0.935445     0.983224  nh_white</span>
+<span class="go">1  Torres  raul  hispanic    0.005791   0.002906  0.002446  0.011748       0.890561      0.029581     0.841328     0.937706       0.011397      0.004682     0.005829     0.020796       0.092251      0.026675     0.049868     0.139210  hispanic</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">odf</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">last               Torres</span>
+<span class="go">first                raul</span>
+<span class="go">true_race        hispanic</span>
+<span class="go">asian_mean       0.005791</span>
+<span class="go">asian_std        0.002906</span>
+<span class="go">asian_lb         0.002446</span>
+<span class="go">asian_ub         0.011748</span>
+<span class="go">hispanic_mean    0.890561</span>
+<span class="go">hispanic_std     0.029581</span>
+<span class="go">hispanic_lb      0.841328</span>
+<span class="go">hispanic_ub      0.937706</span>
+<span class="go">nh_black_mean    0.011397</span>
+<span class="go">nh_black_std     0.004682</span>
+<span class="go">nh_black_lb      0.005829</span>
+<span class="go">nh_black_ub      0.020796</span>
+<span class="go">nh_white_mean    0.092251</span>
+<span class="go">nh_white_std     0.026675</span>
+<span class="go">nh_white_lb      0.049868</span>
+<span class="go">nh_white_ub       0.13921</span>
+<span class="go">race             hispanic</span>
+<span class="go">Name: 1, dtype: object</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>pred_fl_reg_ln_five_cat(df, namecol, num_iter=100, conf_int=1.0)</strong></p>
+<ul class="simple">
+<li><p>What it does?:</p>
+<ul>
+<li><p>Removes extra space, if there.</p></li>
+<li><p>Uses the <a class="reference external" href="ethnicolr/models/ethnicolr_keras_lstm_fl_voter_ln_five_cat.ipynb">last name FL registration
+model</a>
+to predict the race and ethnicity.</p></li>
+</ul>
+</li>
+</ul>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameters</p></th>
+<th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td><p><strong>df</strong> : <em>{DataFrame, csv}</em> Pandas dataframe of CSV file contains the names of the individual to be inferred</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p><strong>namecol</strong> : <em>{string, list, int}</em> string or list of the name or location of the column containing the last name</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p><strong>num_iter</strong> : <em>int, default=100</em> number of iterations to calculate uncertainty in model</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p><strong>conf_int</strong> : <em>float, default=1.0</em> confidence interval in predicted class</p></td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><p>Output: Appends the following columns to the pandas DataFrame or CSV:
+race (white, black, asian, hispanic or other), asian (percentage
+chance Asian), hispanic, nh_black, nh_white, other. For each race
+it will provide the mean, standard error, lower &amp; upper bound of
+confidence interval</p></li>
+</ul>
+<p><em>(Using the same dataframe from example above)</em></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">odf</span> <span class="o">=</span> <span class="n">pred_fl_reg_ln_five_cat</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="s1">&#39;last&#39;</span><span class="p">)</span>
+<span class="go">[&#39;asian&#39;, &#39;hispanic&#39;, &#39;nh_black&#39;, &#39;nh_white&#39;, &#39;other&#39;]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">odf</span>
+<span class="go">   last first true_race  asian_mean  asian_std  asian_lb  asian_ub  hispanic_mean  hispanic_std  ...  nh_white_mean  nh_white_std  nh_white_lb  nh_white_ub  other_mean  other_std  other_lb  other_ub      race</span>
+<span class="go">0  Sawyer  john  nh_white    0.100038   0.020539  0.073266  0.143334       0.044263      0.013077  ...       0.376639      0.048289     0.296989     0.452834    0.248466   0.021040  0.219721  0.283785  nh_white</span>
+<span class="go">1  Torres  raul  hispanic    0.062390   0.021863  0.033837  0.103737       0.774414      0.043238  ...       0.030393      0.009591     0.019713     0.046483    0.117761   0.019524  0.089418  0.150615  hispanic</span>
+
+<span class="go">[2 rows x 24 columns]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">odf</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">last               Sawyer</span>
+<span class="go">first                john</span>
+<span class="go">true_race        nh_white</span>
+<span class="go">asian_mean       0.100038</span>
+<span class="go">asian_std        0.020539</span>
+<span class="go">asian_lb         0.073266</span>
+<span class="go">asian_ub         0.143334</span>
+<span class="go">hispanic_mean    0.044263</span>
+<span class="go">hispanic_std     0.013077</span>
+<span class="go">hispanic_lb       0.02476</span>
+<span class="go">hispanic_ub      0.067965</span>
+<span class="go">nh_black_mean    0.230593</span>
+<span class="go">nh_black_std     0.063948</span>
+<span class="go">nh_black_lb      0.130577</span>
+<span class="go">nh_black_ub      0.343513</span>
+<span class="go">nh_white_mean    0.376639</span>
+<span class="go">nh_white_std     0.048289</span>
+<span class="go">nh_white_lb      0.296989</span>
+<span class="go">nh_white_ub      0.452834</span>
+<span class="go">other_mean       0.248466</span>
+<span class="go">other_std         0.02104</span>
+<span class="go">other_lb         0.219721</span>
+<span class="go">other_ub         0.283785</span>
+<span class="go">race             nh_white</span>
+<span class="go">Name: 0, dtype: object</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>pred_fl_reg_name_five_cat(df, namecol, num_iter=100, conf_int=1.0)</strong></p>
+<ul class="simple">
+<li><p>What it does:</p>
+<ul>
+<li><p>Removes extra space.</p></li>
+<li><p>Uses the <a class="reference external" href="ethnicolr/models/ethnicolr_keras_lstm_fl_voter_ln_five_cat.ipynb">full name FL
+model</a>
+to predict the race and ethnicity.</p></li>
+</ul>
+</li>
+</ul>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameters</p></th>
+<th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td><p><strong>df</strong> : <em>{DataFrame, csv}</em> Pandas dataframe of CSV file contains the names of the individual to be inferred</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p><strong>namecol</strong> : <em>{string, list}</em> string or list of the name or location of the column containing the first name, last name, middle name, and suffix, if there. The first name and last name columns are required. If no middle name of suffix columns are there, it is assumed that there are no middle names or suffixes.</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p><strong>num_iter</strong> : <em>int, default=100</em> number of iterations to calculate uncertainty in model</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p><strong>conf_int</strong> : <em>float, default=1.0</em> confidence interval in predicted class</p></td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><p>Output: Appends the following columns to the pandas DataFrame or CSV:
+race (white, black, asian, hispanic, or other), asian (percentage
+chance Asian), hispanic, nh_black, nh_white, other. For each race
+it will provide the mean, standard error, lower &amp; upper bound of
+confidence interval</p></li>
+</ul>
+<p><em>(Using the same dataframe from example above)</em></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">odf</span> <span class="o">=</span> <span class="n">pred_fl_reg_name_five_cat</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;last&#39;</span><span class="p">,</span><span class="s1">&#39;first&#39;</span><span class="p">)</span>
+<span class="go">[&#39;asian&#39;, &#39;hispanic&#39;, &#39;nh_black&#39;, &#39;nh_white&#39;, &#39;other&#39;]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">odf</span>
+<span class="go">   last first true_race  asian_mean  asian_std  asian_lb  asian_ub  hispanic_mean  hispanic_std  ...  nh_white_mean  nh_white_std  nh_white_lb  nh_white_ub  other_mean  other_std  other_lb  other_ub      race</span>
+<span class="go">0  Sawyer  john  nh_white    0.039310   0.011657  0.025982  0.059719       0.019737      0.005813  ...       0.650306      0.059327     0.553913     0.733201    0.192242   0.021004  0.160185  0.226063  nh_white</span>
+<span class="go">1  Torres  raul  hispanic    0.020086   0.011765  0.008240  0.041741       0.899110      0.042237  ...       0.019073      0.009901     0.010166     0.040081    0.055774   0.017897  0.036245  0.088741  hispanic</span>
+
+<span class="go">[2 rows x 24 columns]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">odf</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">last               Torres</span>
+<span class="go">first                raul</span>
+<span class="go">true_race        hispanic</span>
+<span class="go">asian_mean       0.020086</span>
+<span class="go">asian_std        0.011765</span>
+<span class="go">asian_lb          0.00824</span>
+<span class="go">asian_ub         0.041741</span>
+<span class="go">hispanic_mean     0.89911</span>
+<span class="go">hispanic_std     0.042237</span>
+<span class="go">hispanic_lb      0.823799</span>
+<span class="go">hispanic_ub      0.937612</span>
+<span class="go">nh_black_mean    0.005956</span>
+<span class="go">nh_black_std     0.006528</span>
+<span class="go">nh_black_lb      0.002686</span>
+<span class="go">nh_black_ub      0.010134</span>
+<span class="go">nh_white_mean    0.019073</span>
+<span class="go">nh_white_std     0.009901</span>
+<span class="go">nh_white_lb      0.010166</span>
+<span class="go">nh_white_ub      0.040081</span>
+<span class="go">other_mean       0.055774</span>
+<span class="go">other_std        0.017897</span>
+<span class="go">other_lb         0.036245</span>
+<span class="go">other_ub         0.088741</span>
+<span class="go">race             hispanic</span>
+<span class="go">Name: 1, dtype: object</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>pred_nc_reg_name(df, namecol, num_iter=100, conf_int=1.0)</strong></p>
+<ul class="simple">
+<li><p>What it does:</p>
+<ul>
+<li><p>Removes extra space.</p></li>
+<li><p>Uses the <a class="reference external" href="ethnicolr/models/ethnicolr_keras_lstm_nc_12_cat_model.ipynb">full name NC
+model</a>
+to predict the race and ethnicity.</p></li>
+</ul>
+</li>
+</ul>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameters</p></th>
+<th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td><p><strong>df</strong> : <em>{DataFrame, csv}</em> Pandas dataframe of CSV file contains the names of the individual to be inferred</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p><strong>namecol</strong> : <em>{string, list}</em> string or list of the name or location of the column containing the first name, last name, middle name, and suffix, if there. The first name and last name columns are required. If no middle name of suffix columns are there, it is assumed that there are no middle names or suffixes.</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p><strong>num_iter</strong> : <em>int, default=100</em> number of iterations to calculate uncertainty in model</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p><strong>conf_int</strong> : <em>float, default=1.0</em> confidence interval in predicted class</p></td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><p>Output: Appends the following columns to the pandas DataFrame or CSV:
+race + ethnicity. The codebook is
+<a class="reference external" href="https://github.com/appeler/nc_race_ethnicity">here</a>. For each
+race it will provide the mean, standard error, lower &amp; upper bound of
+confidence interval</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">names</span> <span class="o">=</span> <span class="p">[</span>
+<span class="gp">... </span>            <span class="p">{</span><span class="s2">&quot;last&quot;</span><span class="p">:</span> <span class="s2">&quot;hernandez&quot;</span><span class="p">,</span> <span class="s2">&quot;first&quot;</span><span class="p">:</span> <span class="s2">&quot;hector&quot;</span><span class="p">,</span> <span class="s2">&quot;true_race&quot;</span><span class="p">:</span> <span class="s2">&quot;HL+O&quot;</span><span class="p">},</span>
+<span class="gp">... </span>            <span class="p">{</span><span class="s2">&quot;last&quot;</span><span class="p">:</span> <span class="s2">&quot;zhang&quot;</span><span class="p">,</span> <span class="s2">&quot;first&quot;</span><span class="p">:</span> <span class="s2">&quot;simon&quot;</span><span class="p">,</span> <span class="s2">&quot;true_race&quot;</span><span class="p">:</span> <span class="s2">&quot;NL+A&quot;</span><span class="p">},</span>
+<span class="gp">... </span>        <span class="p">]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ethnicolr</span> <span class="kn">import</span> <span class="n">pred_nc_reg_name</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">odf</span> <span class="o">=</span> <span class="n">pred_nc_reg_name</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;last&#39;</span><span class="p">,</span><span class="s1">&#39;first&#39;</span><span class="p">,</span> <span class="n">conf_int</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+<span class="go">[&#39;HL+A&#39;, &#39;HL+B&#39;, &#39;HL+I&#39;, &#39;HL+M&#39;, &#39;HL+O&#39;, &#39;HL+W&#39;, &#39;NL+A&#39;, &#39;NL+B&#39;, &#39;NL+I&#39;, &#39;NL+M&#39;, &#39;NL+O&#39;, &#39;NL+W&#39;]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">odf</span>
+<span class="go">      last   first true_race            __name     HL+A_mean  HL+A_std       HL+A_lb       HL+A_ub     HL+B_mean  HL+B_std       HL+B_lb       HL+B_ub  HL+I_mean  ...     NL+M_mean  NL+M_std       NL+M_lb       NL+M_ub  NL+O_mean  NL+O_std   NL+O_lb   NL+O_ub  NL+W_mean  NL+W_std   NL+W_lb   NL+W_ub  race</span>
+<span class="go">0  hernandez  hector      HL+O  Hernandez Hector  2.727371e-13       0.0  2.727372e-13  2.727372e-13  6.542178e-04       0.0  6.542183e-04  6.542183e-04   0.000032  ...  7.863581e-06       0.0  7.863589e-06  7.863589e-06   0.184513       0.0  0.184514  0.184514   0.001256       0.0  0.001256  0.001256  HL+O</span>
+<span class="go">1      zhang   simon      NL+A       Zhang Simon  1.985421e-06       0.0  1.985423e-06  1.985423e-06  8.708256e-09       0.0  8.708265e-09  8.708265e-09   0.000049  ...  1.446786e-07       0.0  1.446784e-07  1.446784e-07   0.003238       0.0  0.003238  0.003238   0.000154       0.0  0.000154  0.000154  NL+A</span>
+
+<span class="go">[2 rows x 53 columns]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">odf</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">last                hernandez</span>
+<span class="go">first                  hector</span>
+<span class="go">true_race                HL+O</span>
+<span class="go">__name       Hernandez Hector</span>
+<span class="go">HL+A_mean                 0.0</span>
+<span class="go">HL+A_std                  0.0</span>
+<span class="go">HL+A_lb                   0.0</span>
+<span class="go">HL+A_ub                   0.0</span>
+<span class="go">HL+B_mean            0.000654</span>
+<span class="go">HL+B_std                  0.0</span>
+<span class="go">HL+B_lb              0.000654</span>
+<span class="go">HL+B_ub              0.000654</span>
+<span class="go">HL+I_mean            0.000032</span>
+<span class="go">HL+I_std                  0.0</span>
+<span class="go">HL+I_lb              0.000032</span>
+<span class="go">HL+I_ub              0.000032</span>
+<span class="go">HL+M_mean            0.000541</span>
+<span class="go">HL+M_std                  0.0</span>
+<span class="go">HL+M_lb              0.000541</span>
+<span class="go">HL+M_ub              0.000541</span>
+<span class="go">HL+O_mean             0.58944</span>
+<span class="go">HL+O_std                  0.0</span>
+<span class="go">HL+O_lb               0.58944</span>
+<span class="go">HL+O_ub               0.58944</span>
+<span class="go">HL+W_mean            0.221309</span>
+<span class="go">HL+W_std                  0.0</span>
+<span class="go">HL+W_lb              0.221309</span>
+<span class="go">HL+W_ub              0.221309</span>
+<span class="go">NL+A_mean            0.000044</span>
+<span class="go">NL+A_std                  0.0</span>
+<span class="go">NL+A_lb              0.000044</span>
+<span class="go">NL+A_ub              0.000044</span>
+<span class="go">NL+B_mean            0.002199</span>
+<span class="go">NL+B_std                  0.0</span>
+<span class="go">NL+B_lb              0.002199</span>
+<span class="go">NL+B_ub              0.002199</span>
+<span class="go">NL+I_mean            0.000004</span>
+<span class="go">NL+I_std                  0.0</span>
+<span class="go">NL+I_lb              0.000004</span>
+<span class="go">NL+I_ub              0.000004</span>
+<span class="go">NL+M_mean            0.000008</span>
+<span class="go">NL+M_std                  0.0</span>
+<span class="go">NL+M_lb              0.000008</span>
+<span class="go">NL+M_ub              0.000008</span>
+<span class="go">NL+O_mean            0.184513</span>
+<span class="go">NL+O_std                  0.0</span>
+<span class="go">NL+O_lb              0.184514</span>
+<span class="go">NL+O_ub              0.184514</span>
+<span class="go">NL+W_mean            0.001256</span>
+<span class="go">NL+W_std                  0.0</span>
+<span class="go">NL+W_lb              0.001256</span>
+<span class="go">NL+W_ub              0.001256</span>
+<span class="go">race                     HL+O</span>
+<span class="go">Name: 0, dtype: object</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="application">
+<h1>Application<a class="headerlink" href="#application" title="Permalink to this heading">¶</a></h1>
+<p>To illustrate how the package can be used, we impute the race of the campaign contributors recorded by FEC for the years 2000 and 2010 and tally campaign contributions by race.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="ethnicolr/examples/ethnicolr_app_contrib20xx-census_ln.ipynb">Contrib 2000/2010 using census_ln</a></p></li>
+<li><p><a class="reference external" href="ethnicolr/examples/ethnicolr_app_contrib20xx.ipynb">Contrib 2000/2010 using pred_census_ln</a></p></li>
+<li><p><a class="reference external" href="ethnicolr/examples/ethnicolr_app_contrib20xx-fl_reg.ipynb">Contrib 2000/2010 using pred_fl_reg_name</a></p></li>
+</ul>
+<p>Data on race of all the people in the <a class="reference external" href="https://data.stanford.edu/dime">DIME data</a> is posted <a class="reference external" href="http://dx.doi.org/10.7910/DVN/M5K7VR">here</a> The underlying python scripts are posted <a class="reference external" href="https://github.com/appeler/dime_race">here</a></p>
+</section>
+<section id="data">
+<h1>Data<a class="headerlink" href="#data" title="Permalink to this heading">¶</a></h1>
+<p>In particular, we utilize the last-name–race data from the <a class="reference external" href="http://www.census.gov/topics/population/genealogy/data/2000_surnames.html">2000
+census</a>
+and <a class="reference external" href="http://www.census.gov/topics/population/genealogy/data/2010_surnames.html">2010
+census</a>,
+the <a class="reference external" href="ethnicolr/data/wiki/">Wikipedia data</a> collected by Skiena and colleagues,
+and the Florida voter registration data from early 2017.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="ethnicolr/data/census/">Census</a></p></li>
+<li><p><a class="reference external" href="ethnicolr/data/wiki/">The Wikipedia dataset</a></p></li>
+<li><p><a class="reference external" href="http://dx.doi.org/10.7910/DVN/UBIG3F">Florida voter registration database</a></p></li>
+</ul>
+</section>
+<section id="evaluation">
+<h1>Evaluation<a class="headerlink" href="#evaluation" title="Permalink to this heading">¶</a></h1>
+<ol class="arabic simple">
+<li><p>SCAN Health Plan, a Medicare Advantage plan that serves over 200,000 members throughout California used the software to better assess racial disparities of health among the people they serve. They only had racial data on about 47% of their members so used it to learn the race of the remaining 53%. On the data they had labels for, they found .9 AUC and 83% accuracy for the last name model.</p></li>
+<li><p>Evaluation on NC Data: <a class="reference external" href="https://github.com/appeler/nc_race_ethnicity">https://github.com/appeler/nc_race_ethnicity</a></p></li>
+</ol>
+</section>
+<section id="authors">
+<h1>Authors<a class="headerlink" href="#authors" title="Permalink to this heading">¶</a></h1>
+<p>Suriyan Laohaprapanon, Gaurav Sood and Bashar Naji</p>
+</section>
+<section id="contributor-code-of-conduct">
+<h1>Contributor Code of Conduct<a class="headerlink" href="#contributor-code-of-conduct" title="Permalink to this heading">¶</a></h1>
+<p>The project welcomes contributions from everyone! In fact, it depends on
+it. To maintain this welcoming atmosphere, and to collaborate in a fun
+and productive way, we expect contributors to the project to abide by
+the <a class="reference external" href="http://contributor-covenant.org/version/1/0/0/">Contributor Code of
+Conduct</a>.</p>
+</section>
+<section id="license">
+<h1>License<a class="headerlink" href="#license" title="Permalink to this heading">¶</a></h1>
+<p>The package is released under the <a class="reference external" href="https://opensource.org/licenses/MIT">MIT
+License</a>.</p>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ethnicolr: Predict Race and Ethnicity From Name</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#dime-race">DIME Race</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#caveats-and-notes">Caveats and Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#install">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#general-api">General API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#examples">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#functions">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#application">Application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#data">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#evaluation">Evaluation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#authors">Authors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#contributor-code-of-conduct">Contributor Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#license">License</a></li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/ethnicolr2.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Rajashekar Chintalapati, Suriyan Laohaprapanon, Gaurav Sood.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 6.1.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/ethnicolr2.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
