@@ -10,8 +10,8 @@ import os
 import shutil
 import unittest
 import pandas as pd
-from ethnicolr2.pred_fl_last_name import pred_fl_last_name
-from ethnicolr2.pred_fl_full_name import pred_fl_full_name
+from ethnicolr2 import pred_fl_last_name
+from ethnicolr2 import pred_fl_full_name
 from pkg_resources import resource_filename
 
 from . import capture
@@ -37,47 +37,11 @@ class TestPredFL(unittest.TestCase):
 
     def test_pred_fl_reg_ln(self):
         odf = pred_fl_full_name(self.df, "last")
-        self.assertTrue(
-            all(
-                odf[[col for col in odf.columns
-                     if col in race]].sum(axis=1).round(1)
-                == 1.0
-            )
-        )
-        self.assertTrue(all(odf.true_race == odf.race))
+        self.assertTrue(all(odf.true_race == odf.preds))
 
     def test_pred_fl_reg_name(self):
         odf = pred_fl_full_name(self.df, "last", "first")
-        self.assertTrue(
-            all(
-                odf[[col for col in odf.columns
-                     if col in race]].sum(axis=1).round(1)
-                == 1.0
-            )
-        )
-        self.assertTrue(all(odf.true_race == odf.race))
-
-    def test_pred_fl_reg_ln_mean(self):
-        odf = pred_fl_last_name(self.df, "last", conf_int=0.9)
-        self.assertTrue(
-            all(
-                odf[[col for col in odf.columns
-                     if col in race_mean]].sum(axis=1).round(1)
-                == 1.0
-            )
-        )
-        self.assertTrue(all(odf.true_race == odf.race))
-
-    def test_pred_fl_reg_name_mean(self):
-        odf = pred_fl_full_name(self.df, "last", "first", conf_int=0.9)
-        self.assertTrue(
-            all(
-                odf[[col for col in odf.columns
-                     if col in race_mean]].sum(axis=1).round(1)
-                == 1.0
-            )
-        )
-        self.assertTrue(all(odf.true_race == odf.race))
+        self.assertTrue(all(odf.true_race == odf.preds))
 
 if __name__ == "__main__":
     unittest.main()
