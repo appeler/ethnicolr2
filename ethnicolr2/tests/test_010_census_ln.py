@@ -10,7 +10,7 @@ import os
 import shutil
 import unittest
 import pandas as pd
-from ethnicolr.census_ln import census_ln
+from ethnicolr2.census_ln import census_ln
 from . import capture
 
 
