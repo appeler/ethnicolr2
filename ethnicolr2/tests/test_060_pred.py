@@ -7,9 +7,9 @@ Tests for pytorch models
 
 import unittest
 import pandas as pd
-from ethnicolr.pred_fl_fn_lstm import pred_fl_full_name
-from ethnicolr.pred_fl_ln_lstm import pred_fl_last_name
-from ethnicolr.pred_cen_ln_lstm import pred_census_last_name
+from ethnicolr2 import pred_fl_full_name
+from ethnicolr2 import pred_fl_last_name
+from ethnicolr2 import pred_census_last_name
 
 
 class TestPytorchModels(unittest.TestCase):
