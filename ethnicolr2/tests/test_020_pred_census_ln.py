@@ -20,8 +20,8 @@ race_mean = ["api_mean", "black_mean", "hispanic_mean", "white_mean"]
 class TestCensusLn(unittest.TestCase):
     def setUp(self):
         names = [
-            {"last": "smith", "true_race": "white"},
-            {"last": "zhang", "true_race": "api"},
+            {"last": "smith", "true_race": "nh_white"},
+            {"last": "zhang", "true_race": "asian"},
         ]
         self.df = pd.DataFrame(names)
 
