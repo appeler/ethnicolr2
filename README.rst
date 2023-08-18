@@ -5,7 +5,7 @@ ethnicolr2: Predict Race and Ethnicity From Name
     :target: https://github.com/appeler/ethnicolr2/actions?query=workflow%3Atest
 .. image:: https://img.shields.io/pypi/v/ethnicolr2.svg
     :target: https://pypi.python.org/pypi/ethnicolr2
-.. image:: https://pepy.tech/badge/ethnicolr2
+.. image:: https://static.pepy.tech/badge/ethnicolr2
     :target: https://pepy.tech/project/ethnicolr2
 
 A pytorch implementation of `ethnicolr <https://github.com/appeler/ethnicolr>`__  with new models that make different assumptions (for instance, this package has models trained on unique names) than ethnicolr. The package uses the US census data and the Florida voting registration data to build models to predict the race and ethnicity (Non-Hispanic Whites, Non-Hispanic Blacks, Asians, Hispanics, and Other) based on first and last name or just the last name. For notebooks underlying the package, see `here <https://github.com/appeler/ethnicolr_v2>`__.
