@@ -16,13 +16,6 @@ from pkg_resources import resource_filename
 
 from . import capture
 
-race = ["asian", "hispanic", "nh_black", "nh_white"]
-race5 = ["asian", "hispanic", "nh_black", "nh_white", "other"]
-
-race_mean = ["asian_mean", "hispanic_mean", "nh_black_mean", "nh_white_mean"]
-race5_mean = ["asian_mean", "hispanic_mean", "nh_black_mean", "nh_white_mean",
-              "other_mean"]
-
 
 class TestPredFL(unittest.TestCase):
     def setUp(self):
@@ -42,6 +35,7 @@ class TestPredFL(unittest.TestCase):
     def test_pred_fl_reg_name(self):
         odf = pred_fl_full_name(self.df, "last", "first")
         self.assertTrue(all(odf.true_race == odf.preds))
+
 
 if __name__ == "__main__":
     unittest.main()

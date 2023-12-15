@@ -23,14 +23,18 @@ with open(path.join(here, "README.rst"), encoding="utf-8") as f:
 
 class PostDevelopCommand(develop):
     """Post-installation for development mode."""
+
     def run(self):
         develop.run(self)
 
+
 class PostInstallCommand(install):
     """Post-installation for installation mode."""
+
     def run(self):
         install.run(self)
-        
+
+
 class Tox(TestCommand):
     user_options = [("tox-args=", "a", "Arguments to pass to tox")]
 
@@ -53,14 +57,16 @@ class Tox(TestCommand):
             args = shlex.split(self.tox_args)
         tox.cmdline(args=args)
 
+
 setup(
     name="ethnicolr2",
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version="0.1.0",
-    description=("Predict Race/Ethnicity Based on Sequence of Characters"
-                 " in the Name"),
+    version="0.1.1",
+    description=(
+        "Predict Race/Ethnicity Based on Sequence of Characters" " in the Name"
+    ),
     long_description=long_description,
     # The project's main homepage.
     url="https://github.com/appeler/ethnicolr2",
@@ -94,13 +100,21 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=["pandas>=1.3.0", "torch==2.0.1", "joblib==1.3.1", "tqdm==4.65.0",
-                      "scikit-learn==1.3.0"],
+    install_requires=[
+        "pandas>=1.3.0",
+        "torch==2.0.1",
+        "joblib==1.3.1",
+        "tqdm==4.65.0",
+        "scikit-learn==1.3.0",
+    ],
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
     # for example:
     # $ pip install -e .[dev,test]
-    extras_require={"dev": ["check-manifest"], "test": ["coverage"], },
+    extras_require={
+        "dev": ["check-manifest"],
+        "test": ["coverage"],
+    },
     # If there are data files included in your packages that need to be
     # installed, specify them here.  If using Python 2.6 or less, then these
     # have to be included in MANIFEST.in as well.

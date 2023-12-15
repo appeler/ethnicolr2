@@ -25,24 +25,27 @@ class TestPytorchModels(unittest.TestCase):
 
     def test_fullname_v1(self):
         odf = pred_fl_full_name(self.df, lname_col="last", fname_col="first")
-        self.assertEqual(odf[odf['last'] == 'hernandez']['preds'].values[0], 'hispanic')
-        self.assertEqual(odf[odf['last'] == 'zhang']['preds'].values[0], 'asian')
+        self.assertEqual(odf[odf["last"] == "hernandez"]["preds"].values[0], "hispanic")
+        self.assertEqual(odf[odf["last"] == "zhang"]["preds"].values[0], "asian")
 
     def test_fullname_v2(self):
-        self.df['fullname'] = self.df['last'] + ' ' + self.df['first']
+        self.df["fullname"] = self.df["last"] + " " + self.df["first"]
         odf = pred_fl_full_name(self.df, full_name_col="fullname")
-        self.assertEqual(odf[odf['last'] == 'hernandez']['preds'].values[0], 'hispanic')
-        self.assertEqual(odf[odf['last'] == 'zhang']['preds'].values[0], 'asian')
+        pd.set_option("display.max_colwidth", None)
+        print(odf)
+        self.assertEqual(odf[odf["last"] == "hernandez"]["preds"].values[0], "hispanic")
+        self.assertEqual(odf[odf["last"] == "zhang"]["preds"].values[0], "asian")
 
     def test_lastname(self):
         odf = pred_fl_last_name(self.df, lname_col="last")
-        self.assertEqual(odf[odf['last'] == 'hernandez']['preds'].values[0], 'hispanic')
-        self.assertEqual(odf[odf['last'] == 'zhang']['preds'].values[0], 'asian')
+        self.assertEqual(odf[odf["last"] == "hernandez"]["preds"].values[0], "hispanic")
+        self.assertEqual(odf[odf["last"] == "zhang"]["preds"].values[0], "asian")
 
     def test_census_lastname(self):
         odf = pred_census_last_name(self.df, lname_col="last")
-        self.assertEqual(odf[odf['last'] == 'hernandez']['preds'].values[0], 'hispanic')
-        self.assertEqual(odf[odf['last'] == 'zhang']['preds'].values[0], 'asian')
+        self.assertEqual(odf[odf["last"] == "hernandez"]["preds"].values[0], "hispanic")
+        self.assertEqual(odf[odf["last"] == "zhang"]["preds"].values[0], "asian")
+
 
 if __name__ == "__main__":
     unittest.main()
