@@ -104,7 +104,7 @@ setup(
         "pandas>=1.3.0",
         "torch==2.0.1",
         "joblib==1.3.1",
-        "tqdm==4.65.0",
+        "tqdm==4.66.3",
         "scikit-learn==1.3.0",
     ],
     # List additional groups of dependencies here (e.g. development
