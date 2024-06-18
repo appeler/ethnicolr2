@@ -105,7 +105,7 @@ setup(
         "torch==2.0.1",
         "joblib==1.3.1",
         "tqdm==4.66.3",
-        "scikit-learn==1.3.0",
+        "scikit-learn==1.5.0",
     ],
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
