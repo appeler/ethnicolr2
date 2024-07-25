@@ -102,7 +102,7 @@ setup(
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[
         "pandas>=1.3.0",
-        "torch==2.0.1",
+        "torch==2.2.0",
         "joblib==1.3.1",
         "tqdm==4.66.3",
         "scikit-learn==1.3.0",
