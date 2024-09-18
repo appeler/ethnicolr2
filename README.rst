@@ -33,6 +33,7 @@ To predict race/ethnicity using the Florida Last Name Model to a `file with firs
 ::
 
    import pandas as pd
+   from ethnicolr2 import pred_fl_last_name, pred_fl_full_name 
    df = pd.read_csv("ethnicolr2/data/input-with-header.csv")
    pred_fl_last_name(df, lname_col = "last_name")
    
@@ -41,7 +42,7 @@ To predict race/ethnicity using the Florida Last Name Model to a `file with firs
     {"last": "sawyer", "first": "john", "true_race": "nh_white"},
     {"last": "torres", "first": "raul", "true_race": "hispanic"},
    ]
-   df = pd.DataFrame(names) 
+   df = pd.DataFrame(names)
    df = pred_fl_full_name(df, lname_col = "last", fname_col = "first")
 
          last  first true_race   preds
