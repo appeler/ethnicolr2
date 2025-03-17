@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ethnicolr2"
+version = "0.1.1"
+description = "Predict Race/Ethnicity Based on Sequence of Characters in the Name"
+readme = "README.rst"
+authors = [
+    {name = "Rajashekar Chintalapati, Suriyan Laohaprapanon, Gaurav Sood", email = "rajshekar.ch@gmail.com, suriyant@gmail.com, gsood07@gmail.com"}
+]
+license = {text = "MIT"}
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Utilities",
+]
+keywords = ["race", "ethnicity", "names"]
+requires-python = ">=3.7"
+dependencies = [
+    "pandas>=1.3.0",
+    "torch==2.2.0",
+    "joblib==1.3.1",
+    "tqdm==4.66.3",
+    "scikit-learn==1.5.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/appeler/ethnicolr2"
+
+[project.optional-dependencies]
+dev = ["check-manifest"]
+test = ["coverage", "tox"]
+
+[project.scripts]
+census_ln = "ethnicolr2.census_ln:main"
+pred_fl_full_name = "ethnicolr2.pred_fl_full_name:main"
+pred_fl_last_name = "ethnicolr2.pred_fl_last_name:main"
+pred_census_last_name = "ethnicolr2.pred_census_last_name:main"
+
+[tool.setuptools]
+packages = ["ethnicolr2"]
+
+[tool.setuptools.package-data]
+ethnicolr2 = [
+    "data/census/census_2000.csv",
+    "data/census/census_2010.csv",
+    "data/census/readme.md",
+    "data/census/*.pdf",
+    "data/census/*.R",
+    "models/*.joblib",
+    "models/*.pt",
+    "models/census/lstm/*.csv",
+    "data/input*.csv",
+    "examples/*.ipynb",
+]
+
+# Custom commands can be implemented by keeping a small setup.py alongside
+# this pyproject.toml file that defines the command classes
