@@ -8,7 +8,9 @@ version = "0.1.1"
 description = "Predict Race/Ethnicity Based on Sequence of Characters in the Name"
 readme = "README.rst"
 authors = [
-    {name = "Rajashekar Chintalapati, Suriyan Laohaprapanon, Gaurav Sood", email = "rajshekar.ch@gmail.com, suriyant@gmail.com, gsood07@gmail.com"}
+  { name = "Rajshekar", email = "rajshekar.ch@gmail.com" },
+  { name = "Suriyan", email = "suriyant@gmail.com" },
+  { name = "Gaurav Sood", email = "gsood07@gmail.com" }
 ]
 license = {text = "MIT"}
 classifiers = [
