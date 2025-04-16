@@ -31,9 +31,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install setuptools wheel
 
-      - name: Install project (with dev/test deps)
+      - name: Install project with test dependencies
         run: |
-          pip install .[dev]  # ensure dev dependencies include `pytest`
+          pip install .[test]
+          pip install pytest  # fallback just in case [test] doesn't include it properly
 
       - name: Run tests with pytest
         run: pytest
