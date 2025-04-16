@@ -39,7 +39,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["check-manifest"]
-test = ["coverage", "tox"]
+test = ["coverage", "tox", "pytest"]
 docs = ["sphinx", "sphinx_rtd_theme"]
 all = ["check-manifest", "coverage", "tox", "sphinx", "sphinx_rtd_theme"]
 
