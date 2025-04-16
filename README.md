@@ -4,12 +4,12 @@
 [![image](https://img.shields.io/pypi/v/ethnicolr2.svg)](https://pypi.python.org/pypi/ethnicolr2)
 [![image](https://static.pepy.tech/badge/ethnicolr2)](https://pepy.tech/project/ethnicolr2)
 
-A pytorch implementation of
+A Pytorch implementation of
 [ethnicolr](https://github.com/appeler/ethnicolr) with new models that
 make different assumptions (for instance, this package has models
 trained on unique names) than ethnicolr. The package uses the US census
 data and the Florida voting registration data to build models to predict
-the race and ethnicity (Non-Hispanic Whites, Non-Hispanic Blacks,
+the race and ethnicity (non-Hispanic whites, Non-Hispanic Blacks,
 Asians, Hispanics, and Other) based on first and last name or just the
 last name. For notebooks underlying the package, see
 [here](https://github.com/appeler/ethnicolr_v2).
@@ -65,7 +65,7 @@ Rajashekar Chintalapati, Suriyan Laohaprapanon, and Gaurav Sood
 # Contributor Code of Conduct
 
 The project welcomes contributions from everyone! In fact, it depends on
-it. To maintain this welcoming atmosphere, and to collaborate in a fun
+it. To maintain this welcoming atmosphere and to collaborate in a fun
 and productive way, we expect contributors to the project to abide by
 the [Contributor Code of
 Conduct](http://contributor-covenant.org/version/1/0/0/).
