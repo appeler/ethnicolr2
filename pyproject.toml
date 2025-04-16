@@ -41,7 +41,7 @@ dependencies = [
 dev = ["check-manifest"]
 test = ["coverage", "pytest"]
 docs = ["sphinx", "sphinx_rtd_theme"]
-all = ["check-manifest", "coverage", sphinx", "sphinx_rtd_theme"]
+all = ["check-manifest", "coverage", "sphinx", "sphinx_rtd_theme"]
 
 [project.scripts]
 census_ln = "ethnicolr2.census_ln:main"
