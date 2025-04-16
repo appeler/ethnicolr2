@@ -39,9 +39,9 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["check-manifest"]
-test = ["coverage", "tox", "pytest"]
+test = ["coverage", "pytest"]
 docs = ["sphinx", "sphinx_rtd_theme"]
-all = ["check-manifest", "coverage", "tox", "sphinx", "sphinx_rtd_theme"]
+all = ["check-manifest", "coverage", sphinx", "sphinx_rtd_theme"]
 
 [project.scripts]
 census_ln = "ethnicolr2.census_ln:main"
