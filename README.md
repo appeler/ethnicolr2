@@ -9,7 +9,7 @@ A Pytorch implementation of
 make different assumptions (for instance, this package has models
 trained on unique names) than ethnicolr. The package uses the US census
 data and the Florida voting registration data to build models to predict
-the race and ethnicity (non-Hispanic whites, Non-Hispanic Blacks,
+the race and ethnicity (non-Hispanic whites, non-Hispanic Blacks,
 Asians, Hispanics, and Other) based on first and last name or just the
 last name. For notebooks underlying the package, see
 [here](https://github.com/appeler/ethnicolr_v2).
