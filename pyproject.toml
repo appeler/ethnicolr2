@@ -6,17 +6,19 @@ build-backend = "setuptools.build_meta"
 name = "ethnicolr2"
 version = "0.1.2"
 description = "Predict Race/Ethnicity Based on Sequence of Characters in the Name"
-readme = "README.rst"
+readme = "README.md"
 authors = [
   { name = "Rajshekar", email = "rajshekar.ch@gmail.com" },
   { name = "Suriyan", email = "suriyant@gmail.com" },
   { name = "Gaurav Sood", email = "gsood07@gmail.com" }
 ]
-license = {text = "MIT"}
+license = "MIT"
 classifiers = [
     "Development Status :: 4 - Beta",
-    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10", 
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering :: Information Analysis",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Utilities",
