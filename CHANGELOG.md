@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.3] - 2024-08-29
+
+### Improved
+- **Test Coverage**: Dramatically improved test coverage from 83% to 92%
+- **Comprehensive Validation Tests**: Added extensive tests for input validation and error handling
+- **Bug Fix Verification**: Added tests to verify all v0.1.2 bug fixes and prevent regressions
+- **CLI Testing**: Added command-line interface testing for all main functions
+- **Edge Case Handling**: Added tests for empty dataframes, missing values, and data integrity
+- **Code Quality**: Enhanced argument parsing with better flexibility and error messages
+
+### Technical Details
+- Added 24 new test cases covering critical functionality
+- All major bug fixes from v0.1.2 now have dedicated regression tests
+- Improved utils.py argument parsing with optional parameters
+- Better test isolation and cleanup procedures
+
 ## [0.1.2] - 2024-08-29
 
 ### Fixed

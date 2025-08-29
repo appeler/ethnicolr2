@@ -72,6 +72,8 @@ def main(argv=sys.argv[1:]) -> None:
         argv,
         title="Predict Race/ethnicity by full name using the Florida voter registration data model.",
         default_out="pred_fl_reg_full_name.csv",
+        first=True,
+        full_name=True,
     )
     df = pd.read_csv(args.input, encoding="utf-8")
     rdf = pred_fl_full_name(

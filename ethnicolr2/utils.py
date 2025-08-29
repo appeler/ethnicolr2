@@ -7,9 +7,10 @@ def arg_parser(
     argv,
     title: str,
     default_out: str,
-    default_year: int,
-    year_choices: list,
+    default_year: int = 2000,
+    year_choices: list = None,
     first: bool = False,
+    full_name: bool = False,
 ):
 
     parser = argparse.ArgumentParser(description=title)
@@ -21,15 +22,24 @@ def arg_parser(
         parser.add_argument(
             "-f",
             "--first",
+            "--fname_col",
+            dest="fname_col",
             required=True,
             help="Column name for the column with the first name",
         )
     parser.add_argument(
         "-l",
         "--last",
-        required=True,
+        "--lname_col",
+        dest="lname_col", 
+        required=not full_name,
         help="Column name for the column with the last name",
     )
+    if full_name:
+        parser.add_argument(
+            "--full_name_col",
+            help="Column name for the full name column",
+        )
     parser.add_argument(
         "-i",
         "--iter",
@@ -44,14 +54,15 @@ def arg_parser(
         type=float,
         help="Confidence interval of Predictions",
     )
-    parser.add_argument(
-        "-y",
-        "--year",
-        type=int,
-        default=default_year,
-        choices=year_choices,
-        help=f"Year of data (default={default_year})",
-    )
+    if year_choices is not None:
+        parser.add_argument(
+            "-y",
+            "--year",
+            type=int,
+            default=default_year,
+            choices=year_choices,
+            help=f"Year of data (default={default_year})",
+        )
     args = parser.parse_args(argv)
 
     print(args)

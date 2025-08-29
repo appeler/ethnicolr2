@@ -93,7 +93,7 @@ def main(argv=sys.argv[1:]) -> None:
 
     df = pd.read_csv(args.input)
 
-    rdf = census_ln(df, args.last, args.year)
+    rdf = census_ln(df, args.lname_col, args.year)
 
     print(f"Saving output to file: `{args.output}`")
     rdf.to_csv(args.output, index=False)
