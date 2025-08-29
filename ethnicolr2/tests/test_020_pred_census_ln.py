@@ -32,5 +32,6 @@ class TestCensusLn(unittest.TestCase):
         odf = pred_census_last_name(self.df, "last")
         self.assertTrue(all(odf.true_race == odf.preds))
 
+
 if __name__ == "__main__":
     unittest.main()

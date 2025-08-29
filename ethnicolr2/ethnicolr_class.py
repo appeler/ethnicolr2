@@ -6,7 +6,12 @@ import joblib
 
 import pandas as pd
 import numpy as np
-from pkg_resources import resource_filename
+
+try:
+    from importlib.resources import files
+except ImportError:
+    # Fallback for Python < 3.9
+    from pkg_resources import resource_filename
 from itertools import chain
 
 from tqdm import tqdm
@@ -18,6 +23,14 @@ from torch.utils.data import DataLoader
 
 from .dataset import EthniDataset
 from .models import LSTM
+
+# Model parameter constants
+MAX_NAME_FULLNAME = 47
+MAX_NAME_FLORIDA = 30
+MAX_NAME_CENSUS = 15
+HIDDEN_SIZE = 256
+BATCH_SIZE = 64
+NUM_LAYERS = 2
 
 
 class EthnicolrModelClass:
@@ -62,35 +75,43 @@ class EthnicolrModelClass:
         """
         predict based on the model and vocab
         """
-        MODEL = resource_filename(__name__, model_fn)
-        VOCAB = resource_filename(__name__, vocab_fn)
+        try:
+            # Use modern importlib.resources for Python >= 3.9
+            import ethnicolr2
+
+            MODEL = str(files(ethnicolr2).joinpath(model_fn))
+            VOCAB = str(files(ethnicolr2).joinpath(vocab_fn))
+        except (NameError, AttributeError):
+            # Fallback to pkg_resources for older Python versions
+            MODEL = resource_filename(__name__, model_fn)
+            VOCAB = resource_filename(__name__, vocab_fn)
 
         vectorizer = joblib.load(VOCAB)
         all_categories = ["asian", "hispanic", "nh_black", "nh_white", "other"]
         if "fullname" in model_fn:
-            max_name = 47
+            max_name = MAX_NAME_FULLNAME
         elif "census" in model_fn:
-            max_name = 15
+            max_name = MAX_NAME_CENSUS
             all_categories = ["nh_white", "nh_black", "hispanic", "asian", "other"]
         else:
-            max_name = 30
+            max_name = MAX_NAME_FLORIDA
         n_categories = len(all_categories)
         vocab = list(vectorizer.get_feature_names_out())
         all_letters = "".join(vocab)
         n_letters = len(vocab)
         oob = n_letters + 1
         vocab_size = oob + 1
-        batch_size = 64
-        n_hidden = 256
+        batch_size = BATCH_SIZE
+        n_hidden = HIDDEN_SIZE
 
         dataset = EthniDataset(
             df, all_letters, max_name, oob, transform=EthnicolrModelClass.lineToTensor
         )  # noqa
-        dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+        dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
 
         torch.manual_seed(42)
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        model = LSTM(vocab_size, n_hidden, n_categories, num_layers=2)
+        model = LSTM(vocab_size, n_hidden, n_categories, num_layers=NUM_LAYERS)
         model.load_state_dict(torch.load(MODEL, map_location=device))
         model.to(device)
 

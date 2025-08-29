@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ethnicolr2"
-version = "0.1.1"
+version = "0.1.2"
 description = "Predict Race/Ethnicity Based on Sequence of Characters in the Name"
 readme = "README.rst"
 authors = [

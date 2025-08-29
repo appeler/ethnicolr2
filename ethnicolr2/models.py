@@ -15,11 +15,14 @@ class LSTM(nn.Module):
 
     def forward(self, input):
         embedded = self.embedding(input.type(torch.IntTensor).to(input.device))
-        h0 = torch.zeros(self.num_layers, embedded.size(0), self.hidden_size).to(input.device)
-        c0 = torch.zeros(self.num_layers, embedded.size(0), self.hidden_size).to(input.device)
+        h0 = torch.zeros(self.num_layers, embedded.size(0), self.hidden_size).to(
+            input.device
+        )
+        c0 = torch.zeros(self.num_layers, embedded.size(0), self.hidden_size).to(
+            input.device
+        )
         out, _ = self.lstm(embedded, (h0, c0))
         out = out[:, -1, :]
         out = self.fc(out)
         out = self.softmax(out)
         return out
-    

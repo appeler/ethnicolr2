@@ -12,7 +12,13 @@ import unittest
 import pandas as pd
 from ethnicolr2 import pred_fl_last_name
 from ethnicolr2 import pred_fl_full_name
-from pkg_resources import resource_filename
+
+try:
+    from importlib.resources import files
+    import ethnicolr2
+except ImportError:
+    # Fallback for Python < 3.9
+    from pkg_resources import resource_filename
 
 from . import capture
 
