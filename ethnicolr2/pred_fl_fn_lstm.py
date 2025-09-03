@@ -66,8 +66,10 @@ class FullNameLstmModel(EthnicolrModelClass):
 pred_fl_full_name = FullNameLstmModel.pred_fl_full_name
 
 
-def main(argv=sys.argv[1:]) -> None:
+def main(argv: Optional[List[str]] = None) -> None:
     """Main method for the command line interface."""
+    if argv is None:
+        argv = sys.argv[1:]
     args = arg_parser(
         argv,
         title="Predict Race/ethnicity by full name using the Florida voter registration data model.",

@@ -41,7 +41,9 @@ class CensusLastNameLstmModel(EthnicolrModelClass):
 pred_census_last_name = CensusLastNameLstmModel.pred_census_last_name
 
 
-def main(argv=sys.argv[1:]) -> None:
+def main(argv: Optional[List[str]] = None) -> None:
+    if argv is None:
+        argv = sys.argv[1:]
     args = arg_parser(
         argv,
         title="Predict Race/ethnicity by last name using the Census data model.",

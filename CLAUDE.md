@@ -120,11 +120,12 @@ The models predict one of five race/ethnicity categories:
 
 ### Key Dependencies
 
-- **PyTorch 2.6.0**: Neural network framework (exact version required)
+- **PyTorch 2.7.0**: Neural network framework (exact version required)
 - **scikit-learn 1.5.1**: For vectorizers (exact version required for model compatibility)
-- **pandas**: Data manipulation
-- **joblib**: Model serialization
-- **tqdm**: Progress bars
+- **pandas>=1.3.0**: Data manipulation
+- **joblib==1.3.1**: Model serialization (exact version required)
+- **tqdm==4.66.3**: Progress bars (exact version required)
+- **numpy>=1.20.0,<2.0.0**: Numerical computing
 
 ## Testing Strategy
 
@@ -133,5 +134,29 @@ Tests are organized by functionality:
 - `test_020_pred_census_ln.py`: Census prediction model tests
 - `test_040_pred_fl.py`: Florida model tests
 - `test_060_pred.py`: General prediction tests
+- `test_cli.py`: Command-line interface tests
+- `test_validation.py`: Input validation tests
+- `test_bug_fixes.py`: Regression tests for bug fixes
 
 All tests use unittest framework and include data validation, prediction accuracy checks, and error handling verification.
+
+## Command Line Interface
+
+The package provides CLI scripts for each prediction model:
+
+```bash
+# Census last name prediction
+census_ln input.csv -l last_name -o output.csv
+
+# Florida last name prediction
+pred_fl_last_name input.csv -l last_name -o output.csv
+
+# Florida full name prediction (requires both first and last name)
+pred_fl_full_name input.csv -l last_name -f first_name -o output.csv
+
+# Census last name prediction with LSTM
+pred_census_last_name input.csv -l last_name -o output.csv
+
+# Download pre-trained models
+ethnicolr2_download_models
+```

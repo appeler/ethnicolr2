@@ -82,7 +82,9 @@ class CensusLnData:
 census_ln = CensusLnData.census_ln
 
 
-def main(argv=sys.argv[1:]) -> None:
+def main(argv: Optional[List[str]] = None) -> None:
+    if argv is None:
+        argv = sys.argv[1:]
     args = arg_parser(
         argv,
         title="Appends Census columns by last name",

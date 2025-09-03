@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.4] - 2025-09-03
+
+### Added
+- **Type Safety**: Comprehensive type hints added throughout entire codebase
+- **Enhanced Error Handling**: Specific exception types (ValueError, TypeError) replace generic Exception
+- **Improved Documentation**: Enhanced docstrings with Args/Returns/Raises sections
+- **Input Validation**: Robust type and value checking with helpful error messages
+
+### Improved
+- **Developer Experience**: Better IDE support with comprehensive type annotations
+- **Error Messages**: More specific and actionable error feedback for users
+- **Code Maintainability**: Self-documenting code with clear type expectations
+- **API Robustness**: Enhanced parameter validation across all functions
+
+### Technical Details
+- Added typing imports to all core modules (ethnicolr_class.py, models.py, dataset.py, utils.py)
+- Enhanced lineToTensor method with type checking and better error handling
+- Improved LSTM model with parameter validation and type safety
+- Updated EthniDataset with comprehensive input validation
+- Enhanced all prediction functions with type hints and error handling
+- Backward compatible - no breaking changes to existing API
+
 ## [0.1.3] - 2024-08-29
 
 ### Improved

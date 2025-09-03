@@ -3,6 +3,7 @@
 
 import os
 import joblib
+from typing import Dict, List, Optional, Tuple, Union
 
 import pandas as pd
 import numpy as np
@@ -34,46 +35,80 @@ NUM_LAYERS = 2
 
 
 class EthnicolrModelClass:
-    vocab = None
-    race = None
-    model = None
-    model_year = None
+    vocab: Optional[List[str]] = None
+    race: Optional[List[str]] = None
+    model: Optional[torch.nn.Module] = None
+    model_year: Optional[int] = None
 
     @staticmethod
     def test_and_norm_df(df: pd.DataFrame, col: str) -> pd.DataFrame:
-        """Handles cases like:
-        - column doesn't exist, nukes missing rows
-
+        """Validates and normalizes DataFrame for prediction.
+        
+        Args:
+            df: Input DataFrame
+            col: Column name to validate and process
+            
+        Returns:
+            Cleaned DataFrame with duplicates and NaN values removed
+            
+        Raises:
+            ValueError: If column doesn't exist or contains no valid data
         """
         if col and (col not in df.columns):
-            raise Exception(f"The column {col} doesn't exist in the dataframe.")
+            raise ValueError(f"Column '{col}' not found in DataFrame. Available columns: {list(df.columns)}")
 
         df.dropna(subset=[col], inplace=True)
         if df.shape[0] == 0:
-            raise Exception("The name column has no non-NaN values.")
+            raise ValueError(f"Column '{col}' contains no non-NaN values.")
 
         df.drop_duplicates(subset=[col], inplace=True)
 
         return df
 
     @staticmethod
-    def lineToTensor(line, all_letters, max_name, oob):
+    def lineToTensor(line: str, all_letters: str, max_name: int, oob: int) -> torch.Tensor:
+        """Convert a name string to a tensor of character indices.
+        
+        Args:
+            line: Input name string
+            all_letters: String containing all valid characters
+            max_name: Maximum name length (longer names are truncated)
+            oob: Out-of-bounds index for unknown characters
+            
+        Returns:
+            Tensor of character indices with shape (max_name,)
         """
-        Turn a line into a <max_name x 1 x n_letters>,
-        or an array of one-hot letter vectors
-        """
-        # if name is more than max_name
+        if not isinstance(line, str):
+            raise TypeError(f"Expected string input, got {type(line)}")
+        if max_name <= 0:
+            raise ValueError(f"max_name must be positive, got {max_name}")
+            
+        # Truncate if name is longer than max_name
         if len(line) > max_name:
             line = line[:max_name]
-        tensor = torch.ones(max_name) * oob
+            
+        tensor = torch.ones(max_name, dtype=torch.long) * oob
         for li, letter in enumerate(line):
-            tensor[li] = all_letters.find(letter)
+            char_idx = all_letters.find(letter)
+            tensor[li] = char_idx if char_idx != -1 else oob
         return tensor
 
     @classmethod
     def predict(cls, df: pd.DataFrame, vocab_fn: str, model_fn: str) -> pd.DataFrame:
-        """
-        predict based on the model and vocab
+        """Generate race/ethnicity predictions for names in DataFrame.
+        
+        Args:
+            df: DataFrame containing name data with '__name' column
+            vocab_fn: Path to vocabulary file (.joblib)
+            model_fn: Path to trained model file (.pt)
+            
+        Returns:
+            DataFrame with original data plus 'preds' and 'probs' columns
+            
+        Raises:
+            FileNotFoundError: If model or vocabulary files don't exist
+            ValueError: If DataFrame is empty or malformed
+            RuntimeError: If model loading or prediction fails
         """
         try:
             # Use modern importlib.resources for Python >= 3.9
