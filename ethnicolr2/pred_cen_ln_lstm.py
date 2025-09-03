@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import sys
+from typing import List, Optional
+
 import pandas as pd
 
 from .ethnicolr_class import EthnicolrModelClass
