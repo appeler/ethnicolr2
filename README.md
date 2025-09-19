@@ -4,6 +4,7 @@
 [![image](https://img.shields.io/pypi/v/ethnicolr2.svg)](https://pypi.python.org/pypi/ethnicolr2)
 [![Python version](https://img.shields.io/badge/dynamic/toml?url=https://raw.githubusercontent.com/appeler/ethnicolr2/main/pyproject.toml&query=$.project.requires-python&label=Python&color=green)](https://github.com/appeler/ethnicolr2)
 [![image](https://static.pepy.tech/badge/ethnicolr2)](https://pepy.tech/project/ethnicolr2)
+[![Documentation](https://img.shields.io/badge/docs-github.io-blue)](https://appeler.github.io/ethnicolr2/)
 
 A Pytorch implementation of
 [ethnicolr](https://github.com/appeler/ethnicolr) with new models that
