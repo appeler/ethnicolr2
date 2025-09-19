@@ -12,6 +12,8 @@ def arg_parser(
     first: bool = False,
     full_name: bool = False,
 ):
+    if not isinstance(argv, list):
+        raise TypeError(f"Expected list for argv, got {type(argv)}")
 
     parser = argparse.ArgumentParser(description=title)
     parser.add_argument("input", default=None, help="Input file")
