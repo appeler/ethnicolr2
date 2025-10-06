@@ -6,12 +6,9 @@ Tests for census_ln.py
 
 """
 
-import os
-import shutil
 import unittest
 import pandas as pd
 from ethnicolr2.census_ln import census_ln
-from . import capture
 
 
 class TestCensusLn(unittest.TestCase):
