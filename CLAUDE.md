@@ -120,7 +120,7 @@ The models predict one of five race/ethnicity categories:
 
 ### Key Dependencies
 
-- **PyTorch 2.7.0**: Neural network framework (exact version required)
+- **PyTorch 2.8.0**: Neural network framework (exact version required)
 - **scikit-learn 1.5.1**: For vectorizers (exact version required for model compatibility)
 - **pandas>=1.3.0**: Data manipulation
 - **joblib==1.3.1**: Model serialization (exact version required)
@@ -160,3 +160,30 @@ pred_census_last_name input.csv -l last_name -o output.csv
 # Download pre-trained models
 ethnicolr2_download_models
 ```
+
+## Documentation
+
+### GitHub Pages Documentation
+The project documentation is built with Sphinx and automatically deployed to GitHub Pages:
+- **Live Documentation**: https://appeler.github.io/ethnicolr2/
+- **Auto-deployment**: Triggered on pushes to main branch via `.github/workflows/docs.yml`
+- **Configuration**: `docs/source/conf.py` dynamically reads metadata from `pyproject.toml`
+- **Theme**: Read the Docs theme (`sphinx_rtd_theme`)
+
+### Building Documentation Locally
+```bash
+# Install documentation dependencies
+pip install -e ".[docs]"
+
+# Build documentation
+cd docs && make html
+
+# View locally
+open docs/build/html/index.html
+```
+
+### Documentation Features
+- **Dynamic version**: Automatically reads from `pyproject.toml`
+- **Dynamic authors**: Extracted from project metadata
+- **Auto-generated API docs**: Uses Sphinx autodoc
+- **GitHub Pages integration**: Automatic deployment with `.nojekyll` file
