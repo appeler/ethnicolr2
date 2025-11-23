@@ -1,4 +1,3 @@
-
 import torch
 import torch.nn as nn
 
@@ -13,7 +12,9 @@ class LSTM(nn.Module):
         num_layers: Number of LSTM layers
     """
 
-    def __init__(self, input_size: int, hidden_size: int, output_size: int, num_layers: int = 1):
+    def __init__(
+        self, input_size: int, hidden_size: int, output_size: int, num_layers: int = 1
+    ):
         if input_size <= 0:
             raise ValueError(f"input_size must be positive, got {input_size}")
         if hidden_size <= 0:
@@ -44,7 +45,9 @@ class LSTM(nn.Module):
         if not isinstance(input, torch.Tensor):
             raise TypeError(f"Expected torch.Tensor, got {type(input)}")
         if len(input.shape) != 2:
-            raise ValueError(f"Expected 2D tensor (batch_size, seq_len), got shape {input.shape}")
+            raise ValueError(
+                f"Expected 2D tensor (batch_size, seq_len), got shape {input.shape}"
+            )
 
         embedded = self.embedding(input.type(torch.IntTensor).to(input.device))
         h0 = torch.zeros(self.num_layers, embedded.size(0), self.hidden_size).to(

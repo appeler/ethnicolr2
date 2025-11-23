@@ -13,7 +13,6 @@ from ethnicolr2.census_ln import census_ln
 
 
 class TestCensusLn(unittest.TestCase):
-
     def setUp(self):
         names = [
             {"last": "smith", "true_race": "white"},

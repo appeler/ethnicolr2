@@ -114,7 +114,9 @@ class TestModelIntegration(unittest.TestCase):
         self.assertIn("preds", fl_ln_result.columns)
 
         # Test Florida full name model
-        fl_fn_result = pred_fl_full_name(self.df_integration, lname_col="last", fname_col="first")
+        fl_fn_result = pred_fl_full_name(
+            self.df_integration, lname_col="last", fname_col="first"
+        )
         self.assertEqual(len(fl_fn_result), 2)
         self.assertIn("preds", fl_fn_result.columns)
 
@@ -127,21 +129,29 @@ class TestModelIntegration(unittest.TestCase):
         """Test that models make expected predictions for known names."""
         # Test Florida last name model
         fl_ln_result = pred_fl_last_name(self.df_integration, lname_col="last")
-        hernandez_pred = fl_ln_result[fl_ln_result["last"] == "hernandez"]["preds"].values[0]
+        hernandez_pred = fl_ln_result[fl_ln_result["last"] == "hernandez"][
+            "preds"
+        ].values[0]
         zhang_pred = fl_ln_result[fl_ln_result["last"] == "zhang"]["preds"].values[0]
         self.assertEqual(hernandez_pred, "hispanic")
         self.assertEqual(zhang_pred, "asian")
 
         # Test Florida full name model
-        fl_fn_result = pred_fl_full_name(self.df_integration, lname_col="last", fname_col="first")
-        hernandez_pred = fl_fn_result[fl_fn_result["last"] == "hernandez"]["preds"].values[0]
+        fl_fn_result = pred_fl_full_name(
+            self.df_integration, lname_col="last", fname_col="first"
+        )
+        hernandez_pred = fl_fn_result[fl_fn_result["last"] == "hernandez"][
+            "preds"
+        ].values[0]
         zhang_pred = fl_fn_result[fl_fn_result["last"] == "zhang"]["preds"].values[0]
         self.assertEqual(hernandez_pred, "hispanic")
         self.assertEqual(zhang_pred, "asian")
 
         # Test Census model
         census_result = pred_census_last_name(self.df_integration, lname_col="last")
-        hernandez_pred = census_result[census_result["last"] == "hernandez"]["preds"].values[0]
+        hernandez_pred = census_result[census_result["last"] == "hernandez"][
+            "preds"
+        ].values[0]
         zhang_pred = census_result[census_result["last"] == "zhang"]["preds"].values[0]
         self.assertEqual(hernandez_pred, "hispanic")
         self.assertEqual(zhang_pred, "asian")
@@ -154,7 +164,10 @@ class TestModelIntegration(unittest.TestCase):
                 "Florida Full Name",
                 lambda df: pred_fl_full_name(df, lname_col="last", fname_col="first"),
             ),
-            ("Census Last Name", lambda df: pred_census_last_name(df, lname_col="last")),
+            (
+                "Census Last Name",
+                lambda df: pred_census_last_name(df, lname_col="last"),
+            ),
         ]
 
         for model_name, model_func in models_to_test:
@@ -162,17 +175,31 @@ class TestModelIntegration(unittest.TestCase):
                 result = model_func(self.df_integration)
 
                 # Check required columns exist
-                self.assertIn("preds", result.columns, f"{model_name} missing 'preds' column")
-                self.assertIn("probs", result.columns, f"{model_name} missing 'probs' column")
+                self.assertIn(
+                    "preds", result.columns, f"{model_name} missing 'preds' column"
+                )
+                self.assertIn(
+                    "probs", result.columns, f"{model_name} missing 'probs' column"
+                )
 
                 # Check output size
-                self.assertEqual(len(result), 2, f"{model_name} returned wrong number of rows")
+                self.assertEqual(
+                    len(result), 2, f"{model_name} returned wrong number of rows"
+                )
 
                 # Check all predictions are valid categories
-                valid_categories = {"nh_white", "nh_black", "hispanic", "asian", "other"}
+                valid_categories = {
+                    "nh_white",
+                    "nh_black",
+                    "hispanic",
+                    "asian",
+                    "other",
+                }
                 for pred in result["preds"]:
                     self.assertIn(
-                        pred, valid_categories, f"{model_name} returned invalid prediction: {pred}"
+                        pred,
+                        valid_categories,
+                        f"{model_name} returned invalid prediction: {pred}",
                     )
 
 

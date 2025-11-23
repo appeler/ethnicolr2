@@ -22,11 +22,11 @@ class EthniDataset(Dataset):
         all_letters: str,
         max_name: int,
         oob: int,
-        transform: Callable[[str, str, int, int], torch.Tensor] | None = None
+        transform: Callable[[str, str, int, int], torch.Tensor] | None = None,
     ):
         if not isinstance(data_df, pd.DataFrame):
             raise TypeError(f"Expected pandas DataFrame, got {type(data_df)}")
-        if '__name' not in data_df.columns:
+        if "__name" not in data_df.columns:
             raise ValueError("DataFrame must contain '__name' column")
         if not isinstance(all_letters, str):
             raise TypeError(f"Expected string for all_letters, got {type(all_letters)}")
@@ -55,7 +55,9 @@ class EthniDataset(Dataset):
         if torch.is_tensor(idx):
             idx = idx.tolist()
         if not isinstance(idx, int) or idx < 0 or idx >= len(self.df):
-            raise IndexError(f"Index {idx} out of range for dataset of size {len(self.df)}")
+            raise IndexError(
+                f"Index {idx} out of range for dataset of size {len(self.df)}"
+            )
 
         name = self.df.iloc[idx, self.df.columns.get_loc("__name")]
         if not isinstance(name, str):

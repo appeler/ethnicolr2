@@ -40,7 +40,15 @@ class TestCLI(unittest.TestCase):
         """Test Florida full name CLI with separate first/last columns"""
         output_file = os.path.join(self.temp_dir, "output.csv")
 
-        args = [self.input_file, "--output", output_file, "--last", "last", "--first", "first"]
+        args = [
+            self.input_file,
+            "--output",
+            output_file,
+            "--last",
+            "last",
+            "--first",
+            "first",
+        ]
 
         # Should not raise exception
         try:
@@ -81,7 +89,15 @@ class TestCLI(unittest.TestCase):
         """Test Census lookup CLI for year 2000"""
         output_file = os.path.join(self.temp_dir, "output.csv")
 
-        args = [self.input_file, "--output", output_file, "--last", "last", "--year", "2000"]
+        args = [
+            self.input_file,
+            "--output",
+            output_file,
+            "--last",
+            "last",
+            "--year",
+            "2000",
+        ]
 
         try:
             census_main(args)
@@ -94,7 +110,15 @@ class TestCLI(unittest.TestCase):
         """Test Census lookup CLI for year 2010"""
         output_file = os.path.join(self.temp_dir, "output.csv")
 
-        args = [self.input_file, "--output", output_file, "--last", "last", "--year", "2010"]
+        args = [
+            self.input_file,
+            "--output",
+            output_file,
+            "--last",
+            "last",
+            "--year",
+            "2010",
+        ]
 
         try:
             census_main(args)
@@ -108,7 +132,15 @@ class TestCLI(unittest.TestCase):
         """Test that arg_parser prints arguments (for coverage of utils.py)"""
         from ethnicolr2.utils import arg_parser
 
-        args = ["dummy_file.csv", "--output", "output.csv", "--last", "last_col", "--year", "2010"]
+        args = [
+            "dummy_file.csv",
+            "--output",
+            "output.csv",
+            "--last",
+            "last_col",
+            "--year",
+            "2010",
+        ]
 
         parsed_args = arg_parser(
             args,

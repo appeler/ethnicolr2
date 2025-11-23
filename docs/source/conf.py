@@ -23,6 +23,7 @@ from pathlib import Path
 sys.path.insert(0, os.path.abspath("../"))
 sys.path.insert(1, os.path.abspath("../../"))
 
+
 # Read project metadata from pyproject.toml
 def read_pyproject_metadata():
     """Read project metadata from pyproject.toml"""
@@ -34,6 +35,7 @@ def read_pyproject_metadata():
     except (FileNotFoundError, tomllib.TOMLDecodeError) as e:
         print(f"Warning: Could not read pyproject.toml: {e}")
         return {}
+
 
 # Load project metadata
 project_metadata = read_pyproject_metadata()
@@ -68,7 +70,9 @@ project = project_metadata.get("name", "ethnicolr2")
 # Extract authors from pyproject.toml
 authors_list = project_metadata.get("authors", [])
 if authors_list:
-    author_names = [author.get("name", "") for author in authors_list if author.get("name")]
+    author_names = [
+        author.get("name", "") for author in authors_list if author.get("name")
+    ]
     author = ", ".join(author_names)
 else:
     author = "Rajashekar Chintalapati, Suriyan Laohaprapanon, Gaurav Sood"

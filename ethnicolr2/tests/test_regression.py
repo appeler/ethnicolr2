@@ -96,7 +96,11 @@ class TestSpecificBugFixes(unittest.TestCase):
         This test verifies prediction order matches input order.
         """
         df = pd.DataFrame(
-            [{"last": "smith", "id": 1}, {"last": "zhang", "id": 2}, {"last": "garcia", "id": 3}]
+            [
+                {"last": "smith", "id": 1},
+                {"last": "zhang", "id": 2},
+                {"last": "garcia", "id": 3},
+            ]
         )
 
         # Test across all models
@@ -167,7 +171,9 @@ class TestSpecificBugFixes(unittest.TestCase):
         try:
             census_result = pred_census_last_name(df, "last")
             florida_ln_result = pred_fl_last_name(df, "last")
-            florida_fn_result = pred_fl_full_name(df, lname_col="last", fname_col="last")
+            florida_fn_result = pred_fl_full_name(
+                df, lname_col="last", fname_col="last"
+            )
 
             # Verify all models loaded and worked
             for result in [census_result, florida_ln_result, florida_fn_result]:
@@ -204,7 +210,9 @@ class TestRegressionPrevention(unittest.TestCase):
                 # All predictions should be valid categories
                 for pred in result["preds"]:
                     self.assertIn(
-                        pred, valid_categories, f"{model_name} returned invalid prediction: {pred}"
+                        pred,
+                        valid_categories,
+                        f"{model_name} returned invalid prediction: {pred}",
                     )
 
     def test_consistent_column_naming_across_models(self):
@@ -220,8 +228,12 @@ class TestRegressionPrevention(unittest.TestCase):
         for model_name, result in models:
             with self.subTest(model=model_name):
                 # All models should have consistent column names
-                self.assertIn("preds", result.columns, f"{model_name} missing 'preds' column")
-                self.assertIn("probs", result.columns, f"{model_name} missing 'probs' column")
+                self.assertIn(
+                    "preds", result.columns, f"{model_name} missing 'preds' column"
+                )
+                self.assertIn(
+                    "probs", result.columns, f"{model_name} missing 'probs' column"
+                )
 
                 # Verify probs column contains proper probability data
                 self.assertTrue(
@@ -236,7 +248,10 @@ class TestRegressionPrevention(unittest.TestCase):
         models_to_test = [
             ("Census", lambda: pred_census_last_name(df, "last")),
             ("Florida LN", lambda: pred_fl_last_name(df, "last")),
-            ("Florida FN", lambda: pred_fl_full_name(df, lname_col="last", fname_col="first")),
+            (
+                "Florida FN",
+                lambda: pred_fl_full_name(df, lname_col="last", fname_col="first"),
+            ),
         ]
 
         for model_name, model_func in models_to_test:
@@ -244,16 +259,22 @@ class TestRegressionPrevention(unittest.TestCase):
                 result = model_func()
 
                 # Verify basic structure requirements
-                self.assertIsInstance(result, pd.DataFrame, f"{model_name} should return DataFrame")
+                self.assertIsInstance(
+                    result, pd.DataFrame, f"{model_name} should return DataFrame"
+                )
                 self.assertEqual(
-                    len(result), 1, f"{model_name} should return same number of rows as input"
+                    len(result),
+                    1,
+                    f"{model_name} should return same number of rows as input",
                 )
 
                 # Verify required columns exist
                 required_columns = ["preds", "probs"]
                 for col in required_columns:
                     self.assertIn(
-                        col, result.columns, f"{model_name} missing required column: {col}"
+                        col,
+                        result.columns,
+                        f"{model_name} missing required column: {col}",
                     )
 
 

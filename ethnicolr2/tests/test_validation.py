@@ -98,7 +98,11 @@ class TestDataIntegrity(unittest.TestCase):
         """Test that prediction results maintain input order"""
         # Create a dataframe with real names to avoid model errors
         df = pd.DataFrame(
-            [{"last": "smith", "id": 1}, {"last": "zhang", "id": 2}, {"last": "garcia", "id": 3}]
+            [
+                {"last": "smith", "id": 1},
+                {"last": "zhang", "id": 2},
+                {"last": "garcia", "id": 3},
+            ]
         )
 
         # Test order preservation across all models
@@ -131,14 +135,26 @@ class TestDataIntegrity(unittest.TestCase):
         for model_name, result in models:
             with self.subTest(model=model_name):
                 # All should have required columns
-                self.assertIn("preds", result.columns, f"{model_name} missing 'preds' column")
-                self.assertIn("probs", result.columns, f"{model_name} missing 'probs' column")
+                self.assertIn(
+                    "preds", result.columns, f"{model_name} missing 'preds' column"
+                )
+                self.assertIn(
+                    "probs", result.columns, f"{model_name} missing 'probs' column"
+                )
 
                 # Check that predictions are valid
-                valid_categories = {"asian", "hispanic", "nh_black", "nh_white", "other"}
+                valid_categories = {
+                    "asian",
+                    "hispanic",
+                    "nh_black",
+                    "nh_white",
+                    "other",
+                }
                 for pred in result["preds"]:
                     self.assertIn(
-                        pred, valid_categories, f"{model_name} returned invalid prediction: {pred}"
+                        pred,
+                        valid_categories,
+                        f"{model_name} returned invalid prediction: {pred}",
                     )
 
     def test_model_differences(self):

@@ -49,7 +49,9 @@ class EthnicolrModelClass:
             ValueError: If column doesn't exist or contains no valid data
         """
         if col and (col not in df.columns):
-            raise ValueError(f"Column '{col}' not found in DataFrame. Available columns: {list(df.columns)}")
+            raise ValueError(
+                f"Column '{col}' not found in DataFrame. Available columns: {list(df.columns)}"
+            )
 
         df.dropna(subset=[col], inplace=True)
         if df.shape[0] == 0:
@@ -60,7 +62,9 @@ class EthnicolrModelClass:
         return df
 
     @staticmethod
-    def lineToTensor(line: str, all_letters: str, max_name: int, oob: int) -> torch.Tensor:
+    def lineToTensor(
+        line: str, all_letters: str, max_name: int, oob: int
+    ) -> torch.Tensor:
         """Convert a name string to a tensor of character indices.
 
         Args:
@@ -164,7 +168,10 @@ class EthnicolrModelClass:
                 probs = torch.softmax(outputs, dim=1)
                 # match with all_categories and store probs as json in softprobs
                 softprobs.extend(
-                    [dict(zip(all_categories, p, strict=False)) for p in probs.cpu().numpy()]
+                    [
+                        dict(zip(all_categories, p, strict=False))
+                        for p in probs.cpu().numpy()
+                    ]
                 )
                 outputs = torch.argmax(outputs, dim=1)
                 # Move the predictions to the CPU and convert to numpy arrays
