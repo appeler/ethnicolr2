@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Know Your IP documentation build configuration file, created by
 # sphinx-quickstart on Tue Jan 23 19:17:03 2018.

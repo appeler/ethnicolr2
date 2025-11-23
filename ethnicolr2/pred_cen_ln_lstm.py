@@ -1,8 +1,6 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 import sys
-from typing import List, Optional
 
 import pandas as pd
 
@@ -43,7 +41,7 @@ class CensusLastNameLstmModel(EthnicolrModelClass):
 pred_census_last_name = CensusLastNameLstmModel.pred_census_last_name
 
 
-def main(argv: Optional[List[str]] = None) -> None:
+def main(argv: list[str] | None = None) -> None:
     if argv is None:
         argv = sys.argv[1:]
     args = arg_parser(

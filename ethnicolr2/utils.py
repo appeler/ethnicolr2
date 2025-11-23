@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 import argparse
 
@@ -33,7 +32,7 @@ def arg_parser(
         "-l",
         "--last",
         "--lname_col",
-        dest="lname_col", 
+        dest="lname_col",
         required=not full_name,
         help="Column name for the column with the last name",
     )

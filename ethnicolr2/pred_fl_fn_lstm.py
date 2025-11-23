@@ -1,8 +1,6 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 import sys
-from typing import List, Optional
 
 import pandas as pd
 
@@ -68,7 +66,7 @@ class FullNameLstmModel(EthnicolrModelClass):
 pred_fl_full_name = FullNameLstmModel.pred_fl_full_name
 
 
-def main(argv: Optional[List[str]] = None) -> None:
+def main(argv: list[str] | None = None) -> None:
     """Main method for the command line interface."""
     if argv is None:
         argv = sys.argv[1:]

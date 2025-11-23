@@ -1,29 +1,23 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
-import os
+
 import joblib
-from typing import Dict, List, Optional, Tuple, Union
-
 import pandas as pd
-import numpy as np
+import torch
+from torch.utils.data import DataLoader
 
 try:
     from importlib.resources import files
 except ImportError:
     # Fallback for Python < 3.9
     from pkg_resources import resource_filename
-from itertools import chain
 
 from tqdm import tqdm
 
-tqdm.pandas()
-
-import torch
-from torch.utils.data import DataLoader
-
 from .dataset import EthniDataset
 from .models import LSTM
+
+tqdm.pandas()
 
 # Model parameter constants
 MAX_NAME_FULLNAME = 47
@@ -35,22 +29,22 @@ NUM_LAYERS = 2
 
 
 class EthnicolrModelClass:
-    vocab: Optional[List[str]] = None
-    race: Optional[List[str]] = None
-    model: Optional[torch.nn.Module] = None
-    model_year: Optional[int] = None
+    vocab: list[str] | None = None
+    race: list[str] | None = None
+    model: torch.nn.Module | None = None
+    model_year: int | None = None
 
     @staticmethod
     def test_and_norm_df(df: pd.DataFrame, col: str) -> pd.DataFrame:
         """Validates and normalizes DataFrame for prediction.
-        
+
         Args:
             df: Input DataFrame
             col: Column name to validate and process
-            
+
         Returns:
             Cleaned DataFrame with duplicates and NaN values removed
-            
+
         Raises:
             ValueError: If column doesn't exist or contains no valid data
         """
@@ -68,13 +62,13 @@ class EthnicolrModelClass:
     @staticmethod
     def lineToTensor(line: str, all_letters: str, max_name: int, oob: int) -> torch.Tensor:
         """Convert a name string to a tensor of character indices.
-        
+
         Args:
             line: Input name string
             all_letters: String containing all valid characters
             max_name: Maximum name length (longer names are truncated)
             oob: Out-of-bounds index for unknown characters
-            
+
         Returns:
             Tensor of character indices with shape (max_name,)
         """
@@ -82,11 +76,11 @@ class EthnicolrModelClass:
             raise TypeError(f"Expected string input, got {type(line)}")
         if max_name <= 0:
             raise ValueError(f"max_name must be positive, got {max_name}")
-            
+
         # Truncate if name is longer than max_name
         if len(line) > max_name:
             line = line[:max_name]
-            
+
         tensor = torch.ones(max_name, dtype=torch.long) * oob
         for li, letter in enumerate(line):
             char_idx = all_letters.find(letter)
@@ -96,15 +90,15 @@ class EthnicolrModelClass:
     @classmethod
     def predict(cls, df: pd.DataFrame, vocab_fn: str, model_fn: str) -> pd.DataFrame:
         """Generate race/ethnicity predictions for names in DataFrame.
-        
+
         Args:
             df: DataFrame containing name data with '__name' column
             vocab_fn: Path to vocabulary file (.joblib)
             model_fn: Path to trained model file (.pt)
-            
+
         Returns:
             DataFrame with original data plus 'preds' and 'probs' columns
-            
+
         Raises:
             FileNotFoundError: If model or vocabulary files don't exist
             ValueError: If DataFrame is empty or malformed
@@ -170,7 +164,7 @@ class EthnicolrModelClass:
                 probs = torch.softmax(outputs, dim=1)
                 # match with all_categories and store probs as json in softprobs
                 softprobs.extend(
-                    [dict(zip(all_categories, p)) for p in probs.cpu().numpy()]
+                    [dict(zip(all_categories, p, strict=False)) for p in probs.cpu().numpy()]
                 )
                 outputs = torch.argmax(outputs, dim=1)
                 # Move the predictions to the CPU and convert to numpy arrays

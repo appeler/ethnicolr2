@@ -1,13 +1,13 @@
-from typing import Any, Callable, Optional, Tuple, Union
+from collections.abc import Callable
 
+import pandas as pd
 import torch
 from torch.utils.data import Dataset
-import pandas as pd
 
 
 class EthniDataset(Dataset):
     """PyTorch Dataset for ethnicolr name data.
-    
+
     Args:
         data_df: DataFrame containing name data with '__name' column
         all_letters: String of all valid characters in vocabulary
@@ -17,12 +17,12 @@ class EthniDataset(Dataset):
     """
 
     def __init__(
-        self, 
-        data_df: pd.DataFrame, 
-        all_letters: str, 
-        max_name: int, 
-        oob: int, 
-        transform: Optional[Callable[[str, str, int, int], torch.Tensor]] = None
+        self,
+        data_df: pd.DataFrame,
+        all_letters: str,
+        max_name: int,
+        oob: int,
+        transform: Callable[[str, str, int, int], torch.Tensor] | None = None
     ):
         if not isinstance(data_df, pd.DataFrame):
             raise TypeError(f"Expected pandas DataFrame, got {type(data_df)}")
@@ -32,7 +32,7 @@ class EthniDataset(Dataset):
             raise TypeError(f"Expected string for all_letters, got {type(all_letters)}")
         if max_name <= 0:
             raise ValueError(f"max_name must be positive, got {max_name}")
-            
+
         self.df = data_df
         self.transform = transform
         self.all_letters = all_letters
@@ -43,12 +43,12 @@ class EthniDataset(Dataset):
         """Return the number of samples in the dataset."""
         return len(self.df)
 
-    def __getitem__(self, idx: int) -> Tuple[str, torch.Tensor]:
+    def __getitem__(self, idx: int) -> tuple[str, torch.Tensor]:
         """Get a sample from the dataset.
-        
+
         Args:
             idx: Index of the sample to retrieve
-            
+
         Returns:
             Tuple of (name_string, name_tensor)
         """
@@ -56,11 +56,11 @@ class EthniDataset(Dataset):
             idx = idx.tolist()
         if not isinstance(idx, int) or idx < 0 or idx >= len(self.df):
             raise IndexError(f"Index {idx} out of range for dataset of size {len(self.df)}")
-            
+
         name = self.df.iloc[idx, self.df.columns.get_loc("__name")]
         if not isinstance(name, str):
             raise ValueError(f"Expected string name, got {type(name)}: {name}")
-            
+
         if self.transform:
             name_ids = self.transform(name, self.all_letters, self.max_name, self.oob)
         else:

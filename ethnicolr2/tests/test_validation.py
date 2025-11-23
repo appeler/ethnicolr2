@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
 Tests for input validation and error handling.
@@ -8,8 +7,10 @@ Consolidated validation tests from test_validation.py and test_bug_fixes.py
 """
 
 import unittest
+
 import pandas as pd
-from ethnicolr2 import pred_fl_full_name, pred_fl_last_name, pred_census_last_name
+
+from ethnicolr2 import pred_census_last_name, pred_fl_full_name, pred_fl_last_name
 
 
 class TestInputValidation(unittest.TestCase):

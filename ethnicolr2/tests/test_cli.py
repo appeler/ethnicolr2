@@ -1,19 +1,19 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
 Tests for command-line interface functionality
 """
 
-import unittest
-import tempfile
-import os
 import csv
+import os
+import tempfile
+import unittest
 from unittest.mock import patch
+
+from ethnicolr2.census_ln import main as census_main
+from ethnicolr2.pred_cen_ln_lstm import main as cen_ln_main
 from ethnicolr2.pred_fl_fn_lstm import main as fl_fn_main
 from ethnicolr2.pred_fl_ln_lstm import main as fl_ln_main
-from ethnicolr2.pred_cen_ln_lstm import main as cen_ln_main
-from ethnicolr2.census_ln import main as census_main
 
 
 class TestCLI(unittest.TestCase):

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
 Tests for census_ln.py
@@ -7,7 +6,9 @@ Tests for census_ln.py
 """
 
 import unittest
+
 import pandas as pd
+
 from ethnicolr2.census_ln import census_ln
 
 

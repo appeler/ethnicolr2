@@ -14,55 +14,50 @@ ethnicolr2 is a PyTorch-based machine learning package that predicts race and et
 ### Installation and Setup
 ```bash
 # Install in development mode
-pip install -e .
+uv sync
 
 # Install with development dependencies
-pip install -e ".[dev]"
+uv sync --group dev
 
 # Install with testing dependencies
-pip install -e ".[test]"
+uv sync --group test
 
 # Install with documentation dependencies
-pip install -e ".[docs]"
+uv sync --group docs
 
 # Install all optional dependencies
-pip install -e ".[all]"
+uv sync --all-groups
 ```
 
 ### Testing
 ```bash
 # Run all tests
-pytest
+uv run pytest
 
 # Run tests with verbose output
-pytest --verbose
+uv run pytest --verbose
 
 # Run specific test file
-pytest ethnicolr2/tests/test_010_census_ln.py
+uv run pytest ethnicolr2/tests/test_010_census_ln.py
 
 # Run tests with coverage
-coverage run -m pytest && coverage report
+uv run coverage run -m pytest && uv run coverage report
 ```
 
 ### Code Quality
 ```bash
-# Format code with black
-black ethnicolr2/
-
-# Sort imports with isort
-isort ethnicolr2/
-
-# Check code style with flake8
-flake8 ethnicolr2/
+# Format and lint code with ruff
+uv run ruff check --fix .
+uv run ruff format .
 ```
 
 ### Documentation
 ```bash
 # Build documentation (from docs/ directory)
-cd docs && make html
+cd docs && uv run sphinx-build -b html source build
 
 # View documentation
-open docs/_build/html/index.html
+open docs/build/html/index.html
 ```
 
 ## Code Architecture
@@ -173,10 +168,10 @@ The project documentation is built with Sphinx and automatically deployed to Git
 ### Building Documentation Locally
 ```bash
 # Install documentation dependencies
-pip install -e ".[docs]"
+uv sync --group docs
 
 # Build documentation
-cd docs && make html
+cd docs && uv run sphinx-build -b html source build
 
 # View locally
 open docs/build/html/index.html

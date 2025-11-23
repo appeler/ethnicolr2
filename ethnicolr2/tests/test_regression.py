@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
 Regression tests to prevent specific bugs that were fixed in previous versions.
@@ -15,8 +14,10 @@ bug fix changes or new regression issues are discovered.
 """
 
 import unittest
+
 import pandas as pd
-from ethnicolr2 import pred_census_last_name, pred_fl_last_name, pred_fl_full_name
+
+from ethnicolr2 import pred_census_last_name, pred_fl_full_name, pred_fl_last_name
 from ethnicolr2.census_ln import CensusLnData
 
 
@@ -132,11 +133,11 @@ class TestSpecificBugFixes(unittest.TestCase):
         """
         try:
             from ethnicolr2.ethnicolr_class import (
-                MAX_NAME_FULLNAME,
-                MAX_NAME_FLORIDA,
-                MAX_NAME_CENSUS,
-                HIDDEN_SIZE,
                 BATCH_SIZE,
+                HIDDEN_SIZE,
+                MAX_NAME_CENSUS,
+                MAX_NAME_FLORIDA,
+                MAX_NAME_FULLNAME,
                 NUM_LAYERS,
             )
 

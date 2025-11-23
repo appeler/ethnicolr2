@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
 Tests for all machine learning prediction models.
@@ -13,8 +12,10 @@ Consolidated from test_020_pred_census_ln.py, test_040_pred_fl.py, and test_060_
 """
 
 import unittest
+
 import pandas as pd
-from ethnicolr2 import pred_fl_full_name, pred_fl_last_name, pred_census_last_name
+
+from ethnicolr2 import pred_census_last_name, pred_fl_full_name, pred_fl_last_name
 
 
 class TestFloridaModels(unittest.TestCase):

@@ -39,11 +39,11 @@ dependencies = [
 "Repository" = "https://github.com/appeler/ethnicolr2"
 "Bug Tracker" = "https://github.com/appeler/ethnicolr2/issues"
 
-[project.optional-dependencies]
-dev = ["check-manifest"]
+[dependency-groups]
+dev = ["check-manifest", "ruff>=0.7.0"]
 test = ["coverage", "pytest"]
 docs = ["sphinx", "sphinx_rtd_theme"]
-all = ["check-manifest", "coverage", "pytest", "sphinx", "sphinx_rtd_theme"]
+all = ["check-manifest", "ruff>=0.7.0", "coverage", "pytest", "sphinx", "sphinx_rtd_theme"]
 
 [project.scripts]
 census_ln = "ethnicolr2.census_ln:main"
@@ -81,16 +81,37 @@ python_files = "test_*.py"
 addopts = "--verbose"
 
 # Code quality and formatting tools
-[tool.black]
+
+[tool.ruff]
 line-length = 88
-target-version = ["py37", "py38", "py39", "py310", "py311"]
+target-version = "py311"
+exclude = [
+    ".git",
+    "__pycache__",
+    "build",
+    "dist",
+    ".venv",
+    "examples"
+]
 
-[tool.isort]
-profile = "black"
-line_length = 88
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+]
+ignore = [
+    "E501",  # line too long (handled by formatter)
+    "B008",  # do not perform function calls in argument defaults
+]
 
-[tool.flake8]
-max-line-length = 88
-extend-ignore = "E203"
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+"tests/*" = ["S101"]
+
 [tool.hatch.build.targets.wheel]
 packages = ["ethnicolr2"]

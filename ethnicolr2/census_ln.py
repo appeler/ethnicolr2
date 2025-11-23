@@ -1,8 +1,6 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 import sys
-from typing import List, Optional
 
 import pandas as pd
 
@@ -84,7 +82,7 @@ class CensusLnData:
 census_ln = CensusLnData.census_ln
 
 
-def main(argv: Optional[List[str]] = None) -> None:
+def main(argv: list[str] | None = None) -> None:
     if argv is None:
         argv = sys.argv[1:]
     args = arg_parser(
