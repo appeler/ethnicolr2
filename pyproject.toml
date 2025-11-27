@@ -42,8 +42,24 @@ dependencies = [
 [dependency-groups]
 dev = ["check-manifest", "ruff>=0.7.0"]
 test = ["coverage", "pytest"]
-docs = ["sphinx", "furo"]
-all = ["check-manifest", "ruff>=0.7.0", "coverage", "pytest", "sphinx", "furo"]
+docs = [
+    "sphinx",
+    "furo", 
+    "sphinx-autodoc-typehints",
+    "myst-parser",
+    "linkify-it-py",
+]
+all = [
+    "check-manifest", 
+    "ruff>=0.7.0", 
+    "coverage", 
+    "pytest", 
+    "sphinx", 
+    "furo", 
+    "sphinx-autodoc-typehints", 
+    "myst-parser",
+    "linkify-it-py",
+]
 
 [project.scripts]
 census_ln = "ethnicolr2.census_ln:main"

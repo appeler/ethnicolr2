@@ -163,7 +163,7 @@ The project documentation is built with Sphinx and automatically deployed to Git
 - **Live Documentation**: https://appeler.github.io/ethnicolr2/
 - **Auto-deployment**: Triggered on pushes to main branch via `.github/workflows/docs.yml`
 - **Configuration**: `docs/source/conf.py` dynamically reads metadata from `pyproject.toml`
-- **Theme**: Read the Docs theme (`sphinx_rtd_theme`)
+- **Theme**: Furo theme (`furo`) - modern, clean documentation theme
 
 ### Building Documentation Locally
 ```bash
