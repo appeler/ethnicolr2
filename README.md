@@ -1,6 +1,6 @@
 # ethnicolr2: Predict Race and Ethnicity From Name
 
-[![image](https://github.com/appeler/ethnicolr2/workflows/ci/badge.svg)](https://github.com/appeler/ethnicolr2/actions?query=workflow%3Aci)
+[![image](https://github.com/appeler/ethnicolr2/actions/workflows/ci.yml/badge.svg)](https://github.com/appeler/ethnicolr2/actions/workflows/ci.yml)
 [![image](https://img.shields.io/pypi/v/ethnicolr2.svg)](https://pypi.python.org/pypi/ethnicolr2)
 [![Python version](https://img.shields.io/badge/dynamic/toml?url=https://raw.githubusercontent.com/appeler/ethnicolr2/main/pyproject.toml&query=$.project.requires-python&label=Python&color=green)](https://github.com/appeler/ethnicolr2)
 [![image](https://static.pepy.tech/badge/ethnicolr2)](https://pepy.tech/project/ethnicolr2)
