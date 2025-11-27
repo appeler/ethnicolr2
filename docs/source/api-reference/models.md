@@ -8,20 +8,24 @@ This page documents all model-related functions and classes in ethnicolr2.
 
 ```{eval-rst}
 .. autofunction:: ethnicolr2.census_ln
+   :noindex:
 ```
 
 ```{eval-rst}
 .. autofunction:: ethnicolr2.pred_census_last_name
+   :noindex:
 ```
 
 ### Florida Models
 
 ```{eval-rst}
 .. autofunction:: ethnicolr2.pred_fl_last_name
+   :noindex:
 ```
 
 ```{eval-rst}
 .. autofunction:: ethnicolr2.pred_fl_full_name
+   :noindex:
 ```
 
 ## Neural Network Classes
@@ -33,6 +37,7 @@ This page documents all model-related functions and classes in ethnicolr2.
    :members:
    :undoc-members:
    :show-inheritance:
+   :noindex:
 ```
 
 ### Base Model Class
@@ -42,36 +47,19 @@ This page documents all model-related functions and classes in ethnicolr2.
    :members:
    :undoc-members:
    :show-inheritance:
+   :noindex:
 ```
 
-### Model Implementations
+### Model Implementation Notes
 
-#### Census Last Name LSTM
+The prediction functions above are implemented using internal model classes that handle:
 
-```{eval-rst}
-.. autoclass:: ethnicolr2.pred_cen_ln_lstm.CensusLstmModel
-   :members:
-   :undoc-members:
-   :show-inheritance:
-```
+- **Model Loading**: Automatic loading of pre-trained PyTorch models
+- **Text Processing**: Character-level encoding and sequence preparation  
+- **Batch Inference**: Efficient processing of multiple names
+- **Result Formatting**: Converting raw model outputs to readable predictions
 
-#### Florida Last Name LSTM
-
-```{eval-rst}
-.. autoclass:: ethnicolr2.pred_fl_ln_lstm.LastNameLstmModel
-   :members:
-   :undoc-members:
-   :show-inheritance:
-```
-
-#### Florida Full Name LSTM  
-
-```{eval-rst}
-.. autoclass:: ethnicolr2.pred_fl_fn_lstm.FullNameLstmModel
-   :members:
-   :undoc-members:
-   :show-inheritance:
-```
+For most use cases, use the high-level prediction functions rather than the internal model classes directly.
 
 ## Examples
 
@@ -112,22 +100,14 @@ output = model(input_tensor)
 print(f"Output shape: {output.shape}")  # [32, 5]
 ```
 
-### Model Constants
+### Model Configuration
 
-```{eval-rst}
-.. autodata:: ethnicolr2.pred_fl_ln_lstm.LastNameLstmModel.MAX_SEQUENCE_LENGTH
-.. autodata:: ethnicolr2.pred_fl_ln_lstm.LastNameLstmModel.VOCAB_FN  
-.. autodata:: ethnicolr2.pred_fl_ln_lstm.LastNameLstmModel.MODEL_FN
-```
+The prediction models use different configuration parameters:
 
-```{eval-rst}
-.. autodata:: ethnicolr2.pred_fl_fn_lstm.FullNameLstmModel.MAX_SEQUENCE_LENGTH
-.. autodata:: ethnicolr2.pred_fl_fn_lstm.FullNameLstmModel.VOCAB_FN
-.. autodata:: ethnicolr2.pred_fl_fn_lstm.FullNameLstmModel.MODEL_FN
-```
+| Model | Max Length | Character Set | Training Data |
+|-------|------------|---------------|---------------|
+| Census Last Name | 15 chars | ASCII + common punctuation | US Census 2000/2010 |
+| Florida Last Name | 30 chars | Extended character set | FL voter registration |
+| Florida Full Name | 47 chars | Extended character set | FL voter registration |
 
-```{eval-rst}
-.. autodata:: ethnicolr2.pred_cen_ln_lstm.CensusLstmModel.MAX_SEQUENCE_LENGTH
-.. autodata:: ethnicolr2.pred_cen_ln_lstm.CensusLstmModel.VOCAB_FN
-.. autodata:: ethnicolr2.pred_cen_ln_lstm.CensusLstmModel.MODEL_FN
-```
+All models use 2-layer LSTM networks with 256 hidden units and batch processing for efficiency.

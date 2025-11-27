@@ -26,54 +26,26 @@ from ethnicolr2.dataset import EthniDataset
 from ethnicolr2.ethnicolr_class import EthnicolrModelClass
 ```
 
-## Core Prediction Functions
+## Module Overview
 
-### Florida Models
+### Prediction Models
 
-```{eval-rst}
-.. autofunction:: ethnicolr2.pred_fl_last_name
-```
+For detailed documentation of prediction functions:
 
-```{eval-rst}
-.. autofunction:: ethnicolr2.pred_fl_full_name
-```
+- **{doc}`models`**: Complete model API including LSTM implementations and prediction functions
+- **{doc}`datasets`**: Data handling classes and utilities  
+- **{doc}`utilities`**: Command-line tools and helper functions
 
-### Census Models
+### Quick Function Reference
 
-```{eval-rst}
-.. autofunction:: ethnicolr2.pred_census_last_name
-```
+| Function | Purpose | Input |
+|----------|---------|-------|
+| `pred_fl_last_name` | Florida last name model | Last name column |
+| `pred_fl_full_name` | Florida full name model | First + last name columns |
+| `pred_census_last_name` | Census last name model | Last name column |
+| `census_ln` | Census data lookup | Last name column |
 
-```{eval-rst}
-.. autofunction:: ethnicolr2.census_ln
-```
-
-## Neural Network Models
-
-```{eval-rst}
-.. autoclass:: ethnicolr2.models.LSTM
-   :members:
-   :undoc-members:
-   :show-inheritance:
-```
-
-## Dataset Classes
-
-```{eval-rst}
-.. autoclass:: ethnicolr2.dataset.EthniDataset
-   :members:
-   :undoc-members:
-   :show-inheritance:
-```
-
-## Base Classes
-
-```{eval-rst}
-.. autoclass:: ethnicolr2.ethnicolr_class.EthnicolrModelClass
-   :members:
-   :undoc-members:
-   :show-inheritance:
-```
+See {doc}`models` for complete function signatures and examples.
 
 ## Usage Patterns
 
@@ -160,6 +132,6 @@ def process_large_dataset(df: pd.DataFrame, chunk_size: int = 1000) -> pd.DataFr
 :maxdepth: 2
 
 models
-datasets  
+datasets
 utilities
 ```

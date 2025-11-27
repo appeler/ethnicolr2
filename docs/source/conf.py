@@ -56,6 +56,7 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.intersphinx",
     "myst_parser",
+    "sphinx_design",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -63,7 +64,7 @@ templates_path = ["_templates"]
 
 # The suffix(es) of source filenames.
 # MyST parser will handle .md files
-source_suffix = ['.md']
+source_suffix = [".md"]
 
 # The master toctree document.
 master_doc = "index"
@@ -184,7 +185,6 @@ html_theme_options = {
     "source_repository": repository_url,
     "source_branch": "main",
     "source_directory": "docs/source/",
-    "edit_page_text": "Edit this page",
     "navigation_with_keys": True,
     "top_of_page_buttons": ["edit", "view"],
 }

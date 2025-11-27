@@ -50,7 +50,7 @@ pred_fl_full_name input.csv -l last_name -f first_name -o full_predictions.csv
 
 ### With Headers
 
-```csv
+```text
 first_name,last_name,employee_id
 John,Smith,12345
 Maria,Rodriguez,12346
@@ -64,7 +64,7 @@ pred_fl_full_name employees.csv -l last_name -f first_name -o results.csv
 
 ### Without Headers
 
-```csv
+```text
 John,Smith,12345
 Maria,Rodriguez,12346  
 Wei,Zhang,12347
@@ -241,17 +241,17 @@ predict_demographics = BashOperator(
 
 ### Make/Unix Pipelines
 
-```makefile
+```bash
 # Makefile for demographic analysis
 
 demographics.csv: raw_data.csv
-\tpred_fl_last_name $< -l last_name -o $@
+	pred_fl_last_name $< -l last_name -o $@
 
 analysis.html: demographics.csv
-\tpython generate_report.py $< > $@
+	python generate_report.py $< > $@
 
 clean:
-\trm -f demographics.csv analysis.html
+	rm -f demographics.csv analysis.html
 ```
 
 ### Docker Integration

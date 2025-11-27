@@ -105,7 +105,7 @@ result = pred_fl_last_name(df, lname_col='names')
 
 ### CSV Files
 
-```csv
+```text
 first_name,last_name,id
 John,Smith,1
 Wei,Zhang,2

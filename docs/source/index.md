@@ -136,9 +136,6 @@ user-guide/troubleshooting
 :hidden:
 
 api-reference/index
-api-reference/models
-api-reference/datasets
-api-reference/utilities
 ```
 
 ```{toctree}
