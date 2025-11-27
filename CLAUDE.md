@@ -38,7 +38,7 @@ uv run pytest
 uv run pytest --verbose
 
 # Run specific test file
-uv run pytest ethnicolr2/tests/test_010_census_ln.py
+uv run pytest tests/test_census_lookup.py
 
 # Run tests with coverage
 uv run coverage run -m pytest && uv run coverage report
@@ -124,16 +124,14 @@ The models predict one of five race/ethnicity categories:
 
 ## Testing Strategy
 
-Tests are organized by functionality:
-- `test_010_census_ln.py`: Census data lookup tests
-- `test_020_pred_census_ln.py`: Census prediction model tests
-- `test_040_pred_fl.py`: Florida model tests
-- `test_060_pred.py`: General prediction tests
+Tests are organized by functionality in the `tests/` directory:
+- `test_census_lookup.py`: Census data lookup tests
+- `test_models.py`: Model loading and prediction tests
 - `test_cli.py`: Command-line interface tests
 - `test_validation.py`: Input validation tests
-- `test_bug_fixes.py`: Regression tests for bug fixes
+- `test_regression.py`: Regression tests for bug fixes
 
-All tests use unittest framework and include data validation, prediction accuracy checks, and error handling verification.
+All tests use pytest framework and include data validation, prediction accuracy checks, and error handling verification.
 
 ## Command Line Interface
 

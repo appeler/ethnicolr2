@@ -51,7 +51,7 @@ project_metadata = read_pyproject_metadata()
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    "sphinx.ext.autodoc", 
+    "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
     "myst_parser",
 ]
@@ -71,7 +71,7 @@ myst_enable_extensions = [
     "colon_fence",
     "deflist",
     "dollarmath",
-    "html_admonition", 
+    "html_admonition",
     "html_image",
     "replacements",
     "smartquotes",

@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.0] - 2025-11-27
+
+### ⚠️ Breaking Changes
+- **NumPy 2.x Compatibility**: Updated minimum NumPy version from `>=1.20.0,<2.0.0` to `>=1.25.2` to support NumPy 2.x
+- **Python Version**: Constrained Python support to `>=3.11,<3.14` for better compatibility
+
+### Fixed
+- **Critical Dependency Issue**: Fixed PyPI package dependency resolution that was installing torch==2.7.0 instead of torch==2.8.0 ([#10](https://github.com/appeler/ethnicolr2/issues/10))
+- **NumPy Compatibility**: Resolved `ModuleNotFoundError: No module named 'numpy.exceptions'` by updating to NumPy 2.x
+- **Test Failures**: Fixed 29 failing tests caused by NumPy version incompatibility - all 35 tests now pass
+
+### Improved
+- **Modern Build System**: Fully migrated to uv-based dependency management
+- **Documentation Format**: Converted all documentation from reStructuredText to Markdown for better maintainability
+- **Project Structure**: Moved tests from `ethnicolr2/tests/` to root `tests/` directory following Python conventions
+- **Modern Dependency Management**: Fully embraced uv ecosystem, removed legacy pip compatibility files
+- **Workflows**: Removed duplicate PyPI publishing workflow, kept modern trusted-publishing approach
+- **Documentation Dependencies**: Enhanced with `sphinx-autodoc-typehints`, `myst-parser`, and `linkify-it-py`
+
+### Technical Details
+- **Environment Consistency**: Ensured all tools use consistent Python 3.13 environment
+- **Dependency Cleanup**: Removed ReadTheDocs configuration as project uses GitHub Pages
+- **Enhanced Sphinx Configuration**: Added MyST parser extensions for better Markdown support
+- **Modern Lock File**: Updated `uv.lock` with correct torch==2.8.0 and numpy==2.3.5 dependencies
+
+### Migration Notes
+- **For End Users**: PyPI package now includes correct torch==2.8.0 and numpy>=2.3.5 dependencies
+- **For Developers**: Project now uses `uv sync` for all dependency management
+- **Upgrading**: `pip install --upgrade ethnicolr2` or `uv add ethnicolr2` for latest version
+
 ## [0.1.4] - 2025-09-03
 
 ### Added
