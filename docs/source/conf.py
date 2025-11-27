@@ -53,6 +53,8 @@ project_metadata = read_pyproject_metadata()
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
+    "sphinx.ext.viewcode",
+    "sphinx.ext.intersphinx",
     "myst_parser",
 ]
 
@@ -61,7 +63,7 @@ templates_path = ["_templates"]
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
-source_suffix = ['.rst', '.md']
+source_suffix = {".md": "myst_parser"}
 
 # The master toctree document.
 master_doc = "index"
@@ -77,7 +79,42 @@ myst_enable_extensions = [
     "smartquotes",
     "substitution",
     "tasklist",
+    "attrs_inline",
+    "linkify",
 ]
+
+# Enable cross-referencing
+myst_heading_anchors = 3
+myst_all_links_external = False
+
+# Autodoc configuration
+autodoc_default_options = {
+    "members": True,
+    "undoc-members": True,
+    "show-inheritance": True,
+    "special-members": "__init__",
+}
+autodoc_typehints = "description"
+autodoc_typehints_description_target = "documented"
+
+# Autosummary configuration - disabled to avoid RST generation
+autosummary_generate = False
+autosummary_imported_members = False
+
+# Napoleon configuration (for Google/NumPy style docstrings)
+napoleon_google_docstring = True
+napoleon_numpy_docstring = True
+napoleon_include_init_with_doc = False
+napoleon_include_private_with_doc = False
+
+# Intersphinx configuration (links to other documentation)
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3", None),
+    "pandas": ("https://pandas.pydata.org/pandas-docs/stable", None),
+    "numpy": ("https://numpy.org/doc/stable", None),
+    "sklearn": ("https://scikit-learn.org/stable", None),
+    "torch": ("https://pytorch.org/docs/stable", None),
+}
 
 # General information about the project.
 project = project_metadata.get("name", "ethnicolr2")
@@ -127,6 +164,11 @@ todo_include_todos = False
 
 # -- Options for HTML output ----------------------------------------------
 
+# GitHub Pages configuration
+# Extract repository URL from pyproject.toml
+project_urls = project_metadata.get("urls", {})
+repository_url = project_urls.get("Repository", "https://github.com/appeler/ethnicolr2")
+
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
@@ -136,17 +178,21 @@ html_theme = "furo"
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+html_theme_options = {
+    "light_logo": "logo-light.png",
+    "dark_logo": "logo-dark.png",
+    "source_repository": repository_url,
+    "source_branch": "main",
+    "source_directory": "docs/source/",
+    "edit_page_text": "Edit this page",
+    "navigation_with_keys": True,
+    "top_of_page_buttons": ["edit", "view"],
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
-
-# GitHub Pages configuration
-# Extract repository URL from pyproject.toml
-project_urls = project_metadata.get("urls", {})
-repository_url = project_urls.get("Repository", "https://github.com/appeler/ethnicolr2")
 
 # Generate GitHub Pages URL from repository URL
 if "github.com" in repository_url:

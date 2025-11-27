@@ -15,15 +15,20 @@ authors = [
 license = { text = "MIT" }
 classifiers = [
     "Development Status :: 4 - Beta",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10", 
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Topic :: Software Development :: Libraries :: Python Modules",
-    "Topic :: Utilities",
+    "Topic :: Text Processing :: Linguistic",
+    "Operating System :: OS Independent",
 ]
-keywords = ["race", "ethnicity", "names"]
+keywords = ["race", "ethnicity", "names", "demographics", "machine-learning", "census", "pytorch", "lstm"]
 requires-python = ">=3.11,<3.14"
 dependencies = [
     "pandas>=1.3.0",
@@ -35,9 +40,11 @@ dependencies = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/appeler/ethnicolr2"
+"Homepage" = "https://appeler.github.io/ethnicolr2/"
+"Documentation" = "https://appeler.github.io/ethnicolr2/"
 "Repository" = "https://github.com/appeler/ethnicolr2"
 "Bug Tracker" = "https://github.com/appeler/ethnicolr2/issues"
+"Changelog" = "https://github.com/appeler/ethnicolr2/blob/main/CHANGELOG.md"
 
 [dependency-groups]
 dev = ["check-manifest", "ruff>=0.7.0"]

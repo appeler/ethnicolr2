@@ -15,7 +15,12 @@ All notable changes to this project will be documented in this file.
 
 ### Improved
 - **Modern Build System**: Fully migrated to uv-based dependency management
-- **Documentation Format**: Converted all documentation from reStructuredText to Markdown for better maintainability
+- **Documentation Complete Overhaul**: 
+  - Converted all documentation from reStructuredText to Markdown for better maintainability
+  - Restructured documentation with best-in-class organization following Python library standards
+  - Created modern landing page with feature grid and clear navigation
+  - Added comprehensive user guides, API reference, and development documentation
+  - Fixed broken links and improved navigation structure
 - **Project Structure**: Moved tests from `ethnicolr2/tests/` to root `tests/` directory following Python conventions
 - **Modern Dependency Management**: Fully embraced uv ecosystem, removed legacy pip compatibility files
 - **Workflows**: Removed duplicate PyPI publishing workflow, kept modern trusted-publishing approach
