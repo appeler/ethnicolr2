@@ -1,6 +1,6 @@
 [build-system]
-requires = ["hatchling>=1.21.1"]
-build-backend = "hatchling.build"
+requires = ["uv_build>=0.9.13,<0.10.0"]
+build-backend = "uv_build"
 
 [project]
 name = "ethnicolr2"
@@ -138,5 +138,6 @@ ignore = [
 "__init__.py" = ["F401"]
 "tests/*" = ["S101"]
 
-[tool.hatch.build.targets.wheel]
-packages = ["ethnicolr2"]
+[tool.uv.build-backend]
+module-name = "ethnicolr2"
+module-root = ""
