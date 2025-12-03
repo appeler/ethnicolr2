@@ -1,0 +1,49 @@
+# Pre-commit hooks configuration
+# See https://pre-commit.com for more information
+
+repos:
+  # Ruff linting and formatting (matches CI configuration)
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.4  # Use latest stable version
+    hooks:
+      # Ruff linter (equivalent to: uv run ruff check .)
+      - id: ruff
+        args: [--fix]  # Auto-fix issues when possible
+
+      # Ruff formatter (equivalent to: uv run ruff format .)
+      - id: ruff-format
+
+  # Additional helpful hooks for code quality
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      # Prevent large files from being committed
+      - id: check-added-large-files
+        args: ['--maxkb=1000']  # 1MB limit
+
+      # Check for files that parse as valid Python
+      - id: check-ast
+
+      # Check for case conflicts in filenames
+      - id: check-case-conflict
+
+      # Ensure files end with newline
+      - id: end-of-file-fixer
+        exclude: \.joblib$|\.pt$  # Exclude model files
+
+      # Remove trailing whitespace
+      - id: trailing-whitespace
+        exclude: \.joblib$|\.pt$  # Exclude model files
+
+      # Check YAML syntax
+      - id: check-yaml
+        exclude: \.github/workflows/.*\.yml$  # GitHub workflows can have special syntax
+
+      # Check for merge conflict markers
+      - id: check-merge-conflict
+
+      # Check for debugger imports
+      - id: debug-statements
+
+  # Note: MyPy is run in CI but not in pre-commit since it's optional
+  # You can run it manually with: uv run mypy ethnicolr2/

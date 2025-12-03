@@ -18,7 +18,7 @@ from ethnicolr2 import census_ln, pred_census_last_name
 # Census statistics (no ML prediction)
 stats = census_ln(df, 'last_name', year=2010)
 
-# Census-trained LSTM predictions  
+# Census-trained LSTM predictions
 predictions = pred_census_last_name(df, 'last_name', year=2010)
 ```
 
@@ -66,7 +66,7 @@ Names are processed character by character:
 | Model | Max Length | Hidden Size | Layers | Vocabulary |
 |-------|------------|-------------|--------|------------|
 | Census Last Name | 15 chars | 256 units | 2 | Census surnames |
-| Florida Last Name | 30 chars | 256 units | 2 | FL voter surnames |  
+| Florida Last Name | 30 chars | 256 units | 2 | FL voter surnames |
 | Florida Full Name | 47 chars | 256 units | 2 | FL voter full names |
 
 ## Prediction Categories
@@ -81,11 +81,11 @@ Used by census and some Florida models:
 - **asian**: Asian and Pacific Islander
 - **other**: Other races/ethnicities
 
-### 4-Category Florida System  
+### 4-Category Florida System
 
 Used by main Florida models:
 
-- **nh_white**: Non-Hispanic White  
+- **nh_white**: Non-Hispanic White
 - **nh_black**: Non-Hispanic Black
 - **hispanic**: Hispanic
 - **asian**: Asian
@@ -142,7 +142,7 @@ print(result.columns)
 ### Name Variations
 
 Models handle common variations but may struggle with:
-- **Spelling variations**: "Smith" vs "Smyth"  
+- **Spelling variations**: "Smith" vs "Smyth"
 - **Hyphenated names**: "Garcia-Rodriguez"
 - **Non-Western names**: Names from underrepresented populations
 - **Nicknames**: "Bob" vs "Robert"
@@ -171,7 +171,7 @@ Models handle common variations but may struggle with:
 ### Input Processing
 
 1. **Name normalization**: Convert to lowercase, remove special characters
-2. **Character encoding**: Convert to numerical sequences  
+2. **Character encoding**: Convert to numerical sequences
 3. **Padding**: Ensure uniform length for batch processing
 4. **Tensor conversion**: Convert to PyTorch tensors
 
@@ -185,13 +185,13 @@ Models handle common variations but may struggle with:
 ### Output Processing
 
 1. **Probability extraction**: Get scores for each category
-2. **Category assignment**: Select highest probability 
+2. **Category assignment**: Select highest probability
 3. **DataFrame integration**: Merge with original data
 4. **Result formatting**: Clean column names and types
 
 ## Next Steps
 
 - {doc}`../user-guide/census-data`: Detailed census model usage
-- {doc}`../user-guide/florida-models`: Florida model deep dive  
+- {doc}`../user-guide/florida-models`: Florida model deep dive
 - {doc}`../user-guide/examples`: Practical examples and case studies
 - {doc}`../api-reference/models`: Technical API documentation

@@ -14,7 +14,7 @@ census_ln input.csv -l last_name -o output.csv -y 2010
 
 **Options:**
 - `-l, --last`: Column name or index containing last names
-- `-o, --output`: Output CSV filename  
+- `-o, --output`: Output CSV filename
 - `-y, --year`: Census year (2000 or 2010, default: 2000)
 
 ### pred_census_last_name - Census LSTM Predictions
@@ -33,7 +33,7 @@ High-accuracy predictions using Florida voter data:
 pred_fl_last_name input.csv -l last_name -o fl_predictions.csv
 ```
 
-### pred_fl_full_name - Florida Full Name Model  
+### pred_fl_full_name - Florida Full Name Model
 
 Highest accuracy using both first and last names:
 
@@ -66,7 +66,7 @@ pred_fl_full_name employees.csv -l last_name -f first_name -o results.csv
 
 ```text
 John,Smith,12345
-Maria,Rodriguez,12346  
+Maria,Rodriguez,12346
 Wei,Zhang,12347
 ```
 
@@ -96,7 +96,7 @@ head employee_demographics.csv
 ### Academic Research Dataset
 
 ```bash
-# Input: research_authors.csv  
+# Input: research_authors.csv
 # Columns: paper_id,author_surname,institution,field
 
 # Use census model for academic validation
@@ -224,7 +224,7 @@ from airflow import DAG
 from airflow.operators.bash_operator import BashOperator
 from datetime import datetime
 
-dag = DAG('demographic_analysis', 
+dag = DAG('demographic_analysis',
           start_date=datetime(2023, 1, 1),
           schedule_interval='@daily')
 

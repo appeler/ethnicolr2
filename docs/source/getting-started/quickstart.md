@@ -22,7 +22,7 @@ print(results)
 ```
   last_name      race     asian   hispanic   nh_black   nh_white
 0     Smith  nh_white  0.001234   0.012345   0.234567   0.751854
-1     Zhang     asian  0.987654   0.001234   0.002345   0.008767  
+1     Zhang     asian  0.987654   0.001234   0.002345   0.008767
 2 Rodriguez  hispanic  0.001234   0.934567   0.012345   0.051854
 3   Johnson  nh_white  0.001234   0.023456   0.123456   0.851854
 4       Kim     asian  0.876543   0.012345   0.023456   0.087656
@@ -58,8 +58,8 @@ full_names_df = pd.DataFrame({
 
 # Predict using both names (most accurate)
 full_results = pred_fl_full_name(
-    full_names_df, 
-    lname_col='last_name', 
+    full_names_df,
+    lname_col='last_name',
     fname_col='first_name'
 )
 print(full_results)
@@ -73,7 +73,7 @@ ethnicolr2 also provides command-line tools:
 # Census lookup
 census_ln input.csv -l last_name -o output.csv
 
-# Florida last name prediction  
+# Florida last name prediction
 pred_fl_last_name input.csv -l last_name -o output.csv
 
 # Florida full name prediction
@@ -86,7 +86,7 @@ Each model returns probability scores for different racial/ethnic categories:
 
 - **race**: The predicted category (highest probability)
 - **asian**: Probability of Asian ethnicity
-- **hispanic**: Probability of Hispanic ethnicity  
+- **hispanic**: Probability of Hispanic ethnicity
 - **nh_black**: Probability of Non-Hispanic Black
 - **nh_white**: Probability of Non-Hispanic White
 - **other**: Probability of Other (in some models)

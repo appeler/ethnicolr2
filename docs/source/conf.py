@@ -180,7 +180,6 @@ html_theme = "furo"
 # documentation.
 #
 html_theme_options = {
-    "light_logo": "logo-light.png",
     "dark_logo": "logo-dark.png",
     "source_repository": repository_url,
     "source_branch": "main",

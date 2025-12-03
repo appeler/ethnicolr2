@@ -2,6 +2,7 @@
 
 import sys
 
+import click
 import pandas as pd
 
 try:
@@ -10,8 +11,13 @@ except ImportError:
     # Fallback for Python < 3.9
     from pkg_resources import resource_filename
 
+from .cli_utils import (
+    common_options,
+    name_column_options,
+    validate_input_file,
+    year_option,
+)
 from .ethnicolr_class import EthnicolrModelClass
-from .utils import arg_parser
 
 try:
     # Use modern importlib.resources for Python >= 3.9
@@ -82,24 +88,53 @@ class CensusLnData:
 census_ln = CensusLnData.census_ln
 
 
-def main(argv: list[str] | None = None) -> None:
-    if argv is None:
-        argv = sys.argv[1:]
-    args = arg_parser(
-        argv,
-        title="Appends Census columns by last name",
-        default_out="census-output.csv",
-        default_year=2010,
-        year_choices=[2000, 2010],
-    )
+@click.command()
+@click.argument("input_file", callback=validate_input_file, metavar="INPUT_FILE")
+@common_options
+@name_column_options
+@year_option(years=[2000, 2010], default_year=2010)
+def main(
+    input_file: str, output: str, verbose: bool, last_name_col: str, year: str
+) -> None:
+    """Append Census demographic data by last name.
 
-    df = pd.read_csv(args.input)
+    INPUT_FILE: Path to CSV file containing name data.
+    """
+    if output is None:
+        output = "census-output.csv"
 
-    rdf = census_ln(df, args.lname_col, args.year)
+    year_int = int(year)
 
-    print(f"Saving output to file: `{args.output}`")
-    rdf.to_csv(args.output, index=False)
+    if verbose:
+        click.echo(f"Loading data from: {input_file}")
+        click.echo(f"Using Census {year} data")
+        click.echo(f"Last name column: {last_name_col}")
+
+    try:
+        df = pd.read_csv(input_file)
+
+        if verbose:
+            click.echo(f"Loaded {len(df)} rows")
+
+        rdf = census_ln(df, last_name_col, year_int)
+
+        rdf.to_csv(output, index=False)
+
+        if verbose:
+            click.echo(f"Results saved to: {output}")
+        else:
+            click.echo(f"Saving output to file: `{output}`")
+
+    except FileNotFoundError:
+        click.echo(f"Error: File '{input_file}' not found.", err=True)
+        sys.exit(1)
+    except KeyError as e:
+        click.echo(f"Error: Column {e} not found in input file.", err=True)
+        sys.exit(1)
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

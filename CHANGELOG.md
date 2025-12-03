@@ -15,7 +15,7 @@ All notable changes to this project will be documented in this file.
 
 ### Improved
 - **Modern Build System**: Fully migrated to uv-based dependency management
-- **Documentation Complete Overhaul**: 
+- **Documentation Complete Overhaul**:
   - Converted all documentation from reStructuredText to Markdown for better maintainability
   - Restructured documentation with best-in-class organization following Python library standards
   - Created modern landing page with feature grid and clear navigation

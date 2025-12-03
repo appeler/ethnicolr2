@@ -11,8 +11,8 @@ from ethnicolr2 import (
     # Census models
     census_ln,
     pred_census_last_name,
-    
-    # Florida models  
+
+    # Florida models
     pred_fl_last_name,
     pred_fl_full_name
 )
@@ -33,7 +33,7 @@ from ethnicolr2.ethnicolr_class import EthnicolrModelClass
 For detailed documentation of prediction functions:
 
 - **{doc}`models`**: Complete model API including LSTM implementations and prediction functions
-- **{doc}`datasets`**: Data handling classes and utilities  
+- **{doc}`datasets`**: Data handling classes and utilities
 - **{doc}`utilities`**: Command-line tools and helper functions
 
 ### Quick Function Reference

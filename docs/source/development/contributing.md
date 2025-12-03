@@ -161,11 +161,11 @@ from .ethnicolr_class import EthnicolrModelClass
 
 class NewDatasetLstmModel(EthnicolrModelClass):
     \"\"\"LSTM model trained on new dataset.\"\"\"
-    
+
     MAX_SEQUENCE_LENGTH = 30
     VOCAB_FN = "new_vocab.joblib"
     MODEL_FN = "new_model.pt"
-    
+
     @classmethod
     def predict(cls, df, **kwargs):
         # Implementation
@@ -213,18 +213,18 @@ We use [Ruff](https://docs.astral.sh/ruff/) for code formatting and linting:
 ```python
 def example_function(name: str, threshold: float = 0.5) -> pd.DataFrame:
     \"\"\"Predict something from name.
-    
+
     Args:
         name: The input name to process.
         threshold: Confidence threshold for predictions.
-        
+
     Returns:
         DataFrame with predictions and confidence scores.
-        
+
     Raises:
         ValueError: If threshold is not between 0 and 1.
         KeyError: If required columns are missing.
-        
+
     Examples:
         >>> df = pd.DataFrame({'names': ['Smith', 'Zhang']})
         >>> result = example_function(df, threshold=0.8)
@@ -245,10 +245,10 @@ def test_prediction_function():
     \"\"\"Test basic prediction functionality.\"\"\"
     # Arrange
     df = pd.DataFrame({'last_name': ['Smith', 'Zhang']})
-    
+
     # Act
     result = pred_fl_last_name(df, lname_col='last_name')
-    
+
     # Assert
     assert len(result) == 2
     assert 'race' in result.columns

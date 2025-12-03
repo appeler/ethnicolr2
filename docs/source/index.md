@@ -1,6 +1,6 @@
 # ethnicolr2: Predict Race and Ethnicity From Names
 
-![test workflow](https://github.com/appeler/ethnicolr2/workflows/test/badge.svg)
+![CI](https://github.com/appeler/ethnicolr2/actions/workflows/ci.yml/badge.svg)
 ![PyPI Version](https://img.shields.io/pypi/v/ethnicolr2.svg)
 ![Python Version](https://img.shields.io/pypi/pyversions/ethnicolr2.svg)
 ![Downloads](https://pepy.tech/badge/ethnicolr2)
@@ -69,7 +69,7 @@ Both Python API and command-line interface for seamless integration into your wo
 Installation, quickstart guide, and core concepts to get you up and running quickly.
 :::
 
-:::{grid-item-card} 📚 User Guide  
+:::{grid-item-card} 📚 User Guide
 :link: user-guide/census-data
 :link-type: doc
 
@@ -96,7 +96,7 @@ Contributing guidelines, testing, and development setup information.
 
 The models predict one of five race/ethnicity categories:
 - `nh_white`: Non-Hispanic White
-- `nh_black`: Non-Hispanic Black  
+- `nh_black`: Non-Hispanic Black
 - `hispanic`: Hispanic
 - `asian`: Asian
 - `other`: Other
@@ -151,5 +151,5 @@ development/changelog
 ## Indices and Tables
 
 - {ref}`genindex`
-- {ref}`modindex` 
+- {ref}`modindex`
 - {ref}`search`

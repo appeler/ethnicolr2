@@ -15,27 +15,27 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Install uv
       uses: astral-sh/setup-uv@v7
       with:
         version: "latest"
-    
+
     - name: Set up Python ${{ matrix.python-version }}
       run: uv python install ${{ matrix.python-version }}
-    
+
     - name: Install dependencies
       run: uv sync --group dev --group test
-    
+
     - name: Run ruff linting
       run: uv run ruff check .
-    
+
     - name: Run ruff formatting check
       run: uv run ruff format --check .
-    
+
     - name: Run type checking
       run: uv run mypy ethnicolr2/ || true  # Allow mypy to fail for now
-    
+
     - name: Run tests
       run: uv run pytest --cov=ethnicolr2 --cov-report=xml --cov-report=term-missing || true
 
@@ -44,14 +44,14 @@ jobs:
     needs: test
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Install uv
       uses: astral-sh/setup-uv@v7
       with:
         version: "latest"
-    
+
     - name: Set up Python
       run: uv python install
-    
+
     - name: Build package
       run: uv build

@@ -35,7 +35,7 @@ uv run pytest tests/test_models.py::TestFloridaModels::test_florida_last_name_mo
 Tests are organized in the `tests/` directory:
 
 - `test_census_lookup.py`: Census data lookup tests
-- `test_models.py`: Model loading and prediction tests  
+- `test_models.py`: Model loading and prediction tests
 - `test_cli.py`: Command-line interface tests
 - `test_validation.py`: Input validation tests
 - `test_regression.py`: Regression tests for bug fixes
@@ -55,19 +55,19 @@ class TestPredictions(unittest.TestCase):
         self.test_df = pd.DataFrame({
             'last_name': ['Smith', 'Zhang', 'Rodriguez']
         })
-    
+
     def test_basic_prediction(self):
         \"\"\"Test basic prediction functionality.\"\"\"
         result = pred_fl_last_name(self.test_df, lname_col='last_name')
-        
+
         # Check output structure
         self.assertEqual(len(result), 3)
         self.assertIn('race', result.columns)
         self.assertIn('asian', result.columns)
-        
+
         # Check data types
         self.assertTrue(result['asian'].dtype == 'float64')
-        
+
         # Check value ranges
         self.assertTrue((result['asian'] >= 0).all())
         self.assertTrue((result['asian'] <= 1).all())
@@ -96,7 +96,7 @@ See `.github/workflows/ci.yml` for configuration.
 
 Tests use small, predictable datasets to ensure:
 - Fast execution
-- Deterministic results  
+- Deterministic results
 - Easy debugging
 
 For more details, see {doc}`contributing`.

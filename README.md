@@ -44,7 +44,7 @@ To predict race/ethnicity using the Florida Last Name Model to a [file
 with first and last names](ethnicolr2/data/input-with-header.csv)
 
     import pandas as pd
-    from ethnicolr2 import pred_fl_last_name, pred_fl_full_name 
+    from ethnicolr2 import pred_fl_last_name, pred_fl_full_name
     df = pd.read_csv("ethnicolr2/data/input-with-header.csv")
     pred_fl_last_name(df, lname_col = "last_name")
 

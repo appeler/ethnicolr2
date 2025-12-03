@@ -19,7 +19,7 @@ census_ln input.csv -l last_name -o output.csv
 # Florida last name model
 pred_fl_last_name input.csv -l last_name -o predictions.csv
 
-# Florida full name model  
+# Florida full name model
 pred_fl_full_name input.csv -l last_name -f first_name -o predictions.csv
 
 # Census last name model
@@ -56,8 +56,8 @@ df.to_csv('input.csv', index=False)
 
 # Run prediction via command line
 result = subprocess.run([
-    'pred_fl_last_name', 
-    'input.csv', 
+    'pred_fl_last_name',
+    'input.csv',
     '-l', 'surname',
     '-o', 'output.csv'
 ], capture_output=True, text=True)

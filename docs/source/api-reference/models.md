@@ -55,7 +55,7 @@ This page documents all model-related functions and classes in ethnicolr2.
 The prediction functions above are implemented using internal model classes that handle:
 
 - **Model Loading**: Automatic loading of pre-trained PyTorch models
-- **Text Processing**: Character-level encoding and sequence preparation  
+- **Text Processing**: Character-level encoding and sequence preparation
 - **Batch Inference**: Efficient processing of multiple names
 - **Result Formatting**: Converting raw model outputs to readable predictions
 

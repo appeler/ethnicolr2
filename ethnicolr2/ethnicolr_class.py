@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+import os
+import time
+from threading import Lock
+from typing import Any
 
 import joblib
 import pandas as pd
@@ -18,6 +22,148 @@ from .dataset import EthniDataset
 from .models import LSTM
 
 tqdm.pandas()
+
+# Module-level caching infrastructure
+_MODEL_CACHE: dict[str, tuple[torch.nn.Module, Any, dict[str, Any]]] = {}
+_CACHE_LOCK = Lock()
+_CACHE_STATS = {"hits": 0, "misses": 0, "loads": 0}
+
+# Cache configuration
+CACHE_ENABLED = os.getenv("ETHNICOLR_CACHE_ENABLED", "true").lower() == "true"
+MAX_CACHED_MODELS = int(os.getenv("ETHNICOLR_MAX_CACHED_MODELS", "3"))
+
+
+def _get_cache_key(model_fn: str, vocab_fn: str) -> str:
+    """Generate unique cache key for model files."""
+    try:
+        # Include file modification time to handle model updates
+        model_mtime = os.path.getmtime(model_fn) if os.path.exists(model_fn) else 0
+        vocab_mtime = os.path.getmtime(vocab_fn) if os.path.exists(vocab_fn) else 0
+        return f"{model_fn}#{vocab_fn}#{model_mtime}#{vocab_mtime}"
+    except OSError:
+        # Fallback for resource files
+        return f"{model_fn}#{vocab_fn}"
+
+
+def _load_and_cache_model(
+    model_fn: str, vocab_fn: str
+) -> tuple[torch.nn.Module, Any, dict[str, Any]]:
+    """Load model and cache with computed metadata."""
+
+    # Load vectorizer
+    vectorizer = joblib.load(vocab_fn)
+
+    # Determine model type and configuration
+    all_categories = ["asian", "hispanic", "nh_black", "nh_white", "other"]
+    if "fullname" in model_fn:
+        max_name = MAX_NAME_FULLNAME
+    elif "census" in model_fn:
+        max_name = MAX_NAME_CENSUS
+        all_categories = ["nh_white", "nh_black", "hispanic", "asian", "other"]
+    else:
+        max_name = MAX_NAME_FLORIDA
+
+    # Pre-compute expensive operations
+    vocab = list(vectorizer.get_feature_names_out())
+    all_letters = "".join(vocab)
+    n_letters = len(vocab)
+    oob = n_letters + 1
+    vocab_size = oob + 1
+    n_categories = len(all_categories)
+
+    # Load and configure model
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    model = LSTM(vocab_size, HIDDEN_SIZE, n_categories, num_layers=NUM_LAYERS)
+    model.load_state_dict(torch.load(model_fn, map_location=device))
+    model.to(device)
+    model.eval()  # Set to evaluation mode once
+
+    # Cache metadata to avoid recomputation
+    metadata = {
+        "categories": all_categories,
+        "max_name": max_name,
+        "vocab": vocab,
+        "all_letters": all_letters,
+        "n_letters": n_letters,
+        "oob": oob,
+        "vocab_size": vocab_size,
+        "device": device,
+        "loaded_at": time.time(),
+    }
+
+    return model, vectorizer, metadata
+
+
+def _evict_old_models():
+    """Remove oldest models if cache is full."""
+    if len(_MODEL_CACHE) > MAX_CACHED_MODELS:
+        # Find oldest model by load time
+        oldest_key = min(
+            _MODEL_CACHE.keys(), key=lambda k: _MODEL_CACHE[k][2]["loaded_at"]
+        )
+        del _MODEL_CACHE[oldest_key]
+
+
+def _get_cached_model(
+    model_fn: str, vocab_fn: str
+) -> tuple[torch.nn.Module, Any, dict[str, Any]]:
+    """Thread-safe model retrieval with lazy loading."""
+    global _MODEL_CACHE, _CACHE_LOCK, _CACHE_STATS
+
+    if not CACHE_ENABLED:
+        # If caching disabled, load directly
+        return _load_and_cache_model(model_fn, vocab_fn)
+
+    cache_key = _get_cache_key(model_fn, vocab_fn)
+
+    # Check cache first (read lock)
+    with _CACHE_LOCK:
+        if cache_key in _MODEL_CACHE:
+            _CACHE_STATS["hits"] += 1
+            return _MODEL_CACHE[cache_key]
+
+        _CACHE_STATS["misses"] += 1
+
+    # Load model outside lock to avoid blocking other threads
+    model, vectorizer, metadata = _load_and_cache_model(model_fn, vocab_fn)
+
+    # Store in cache (write lock)
+    with _CACHE_LOCK:
+        _evict_old_models()  # Make room if needed
+        _MODEL_CACHE[cache_key] = (model, vectorizer, metadata)
+        _CACHE_STATS["loads"] += 1
+
+    return model, vectorizer, metadata
+
+
+def clear_model_cache(model_pattern: str | None = None) -> int:
+    """Clear cached models matching pattern."""
+    global _MODEL_CACHE, _CACHE_LOCK
+
+    with _CACHE_LOCK:
+        if model_pattern is None:
+            count = len(_MODEL_CACHE)
+            _MODEL_CACHE.clear()
+            return count
+        else:
+            # Clear specific models matching pattern
+            keys_to_remove = [k for k in _MODEL_CACHE.keys() if model_pattern in k]
+            for key in keys_to_remove:
+                del _MODEL_CACHE[key]
+            return len(keys_to_remove)
+
+
+def get_cache_info() -> dict[str, Any]:
+    """Get detailed cache information."""
+    with _CACHE_LOCK:
+        return {
+            "cache_enabled": CACHE_ENABLED,
+            "cached_models": len(_MODEL_CACHE),
+            "max_cached_models": MAX_CACHED_MODELS,
+            "cache_stats": _CACHE_STATS.copy(),
+            "models": list(_MODEL_CACHE.keys()),
+        }
+
 
 # Model parameter constants
 MAX_NAME_FULLNAME = 47
@@ -108,6 +254,7 @@ class EthnicolrModelClass:
             ValueError: If DataFrame is empty or malformed
             RuntimeError: If model loading or prediction fails
         """
+        # Get file paths
         try:
             # Use modern importlib.resources for Python >= 3.9
             import ethnicolr2
@@ -119,37 +266,24 @@ class EthnicolrModelClass:
             MODEL = resource_filename(__name__, model_fn)
             VOCAB = resource_filename(__name__, vocab_fn)
 
-        vectorizer = joblib.load(VOCAB)
-        all_categories = ["asian", "hispanic", "nh_black", "nh_white", "other"]
-        if "fullname" in model_fn:
-            max_name = MAX_NAME_FULLNAME
-        elif "census" in model_fn:
-            max_name = MAX_NAME_CENSUS
-            all_categories = ["nh_white", "nh_black", "hispanic", "asian", "other"]
-        else:
-            max_name = MAX_NAME_FLORIDA
-        n_categories = len(all_categories)
-        vocab = list(vectorizer.get_feature_names_out())
-        all_letters = "".join(vocab)
-        n_letters = len(vocab)
-        oob = n_letters + 1
-        vocab_size = oob + 1
+        # Use cached model instead of loading every time
+        model, vectorizer, model_metadata = _get_cached_model(MODEL, VOCAB)
+
+        # Extract cached metadata to avoid recomputation
+        all_categories = model_metadata["categories"]
+        max_name = model_metadata["max_name"]
+        all_letters = model_metadata["all_letters"]
+        oob = model_metadata["oob"]
+        device = model_metadata["device"]
+
         batch_size = BATCH_SIZE
-        n_hidden = HIDDEN_SIZE
 
         dataset = EthniDataset(
             df, all_letters, max_name, oob, transform=EthnicolrModelClass.lineToTensor
         )  # noqa
         dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
 
-        torch.manual_seed(42)
-        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        model = LSTM(vocab_size, n_hidden, n_categories, num_layers=NUM_LAYERS)
-        model.load_state_dict(torch.load(MODEL, map_location=device))
-        model.to(device)
-
-        # Set the model to evaluation mode
-        model.eval()
+        # Model is already loaded, configured, and in eval mode
 
         # List to hold the predictions
         predictions = []

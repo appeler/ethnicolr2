@@ -23,7 +23,7 @@ from ethnicolr2.dataset import EthniDataset
 import torch
 
 # Create dataset from list of names
-names = ['Smith', 'Zhang', 'Rodriguez'] 
+names = ['Smith', 'Zhang', 'Rodriguez']
 dataset = EthniDataset(names, max_length=30)
 
 print(f"Dataset size: {len(dataset)}")
@@ -37,12 +37,12 @@ from ethnicolr2.dataset import EthniDataset
 import torch
 
 # Create dataset
-names = ['Smith', 'Zhang', 'Rodriguez'] 
+names = ['Smith', 'Zhang', 'Rodriguez']
 dataset = EthniDataset(names, max_length=30)
 
 # Create DataLoader for batch processing
 dataloader = torch.utils.data.DataLoader(
-    dataset, 
+    dataset,
     batch_size=32,
     shuffle=True,
     num_workers=0  # Set to 0 for simple character data

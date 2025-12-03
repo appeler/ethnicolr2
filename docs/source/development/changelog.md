@@ -10,7 +10,7 @@ Major modernization release:
 
 - **Fixed NumPy 2.x compatibility** - Resolved dependency version conflicts
 - **Migrated to uv** - Modern dependency management
-- **Documentation overhaul** - Converted from RST to Markdown  
+- **Documentation overhaul** - Converted from RST to Markdown
 - **Improved project structure** - Tests moved to root directory
 - **All tests now pass** - Fixed 29 failing tests
 

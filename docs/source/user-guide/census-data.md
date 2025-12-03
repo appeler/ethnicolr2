@@ -22,7 +22,7 @@ print(census_2010)
 
 **Output columns**:
 - `pctwhite`: Percentage Non-Hispanic White
-- `pctblack`: Percentage Non-Hispanic Black  
+- `pctblack`: Percentage Non-Hispanic Black
 - `pctapi`: Percentage Asian and Pacific Islander
 - `pctaian`: Percentage American Indian and Alaska Native
 - `pct2prace`: Percentage Two or More Races
@@ -44,7 +44,7 @@ print(ml_predictions)
 - `race`: Predicted category (highest probability)
 - `asian`: Probability Asian
 - `black`: Probability Non-Hispanic Black
-- `hispanic`: Probability Hispanic  
+- `hispanic`: Probability Hispanic
 - `white`: Probability Non-Hispanic White
 
 ## Census Years
@@ -70,7 +70,7 @@ import pandas as pd
 from ethnicolr2 import census_ln, pred_census_last_name
 
 # Load research dataset
-authors_df = pd.read_csv('academic_authors.csv')  
+authors_df = pd.read_csv('academic_authors.csv')
 # Columns: ['author_name', 'last_name', 'institution', 'field']
 
 # Get census statistics
@@ -81,8 +81,8 @@ ml_predictions = pred_census_last_name(authors_df, 'last_name', year=2010)
 
 # Merge results
 research_results = pd.merge(
-    authors_df, 
-    census_stats[['last_name', 'pctwhite', 'pctblack', 'pctapi', 'pcthispanic']], 
+    authors_df,
+    census_stats[['last_name', 'pctwhite', 'pctblack', 'pctapi', 'pcthispanic']],
     on='last_name'
 )
 research_results = pd.merge(
@@ -109,7 +109,7 @@ results_2010 = census_ln(df, 'last_name', year=2010)
 for name in names:
     row_2000 = results_2000[results_2000['last_name'] == name].iloc[0]
     row_2010 = results_2010[results_2010['last_name'] == name].iloc[0]
-    
+
     print(f"\\n{name}:")
     print(f"  Hispanic 2000: {row_2000['pcthispanic']:.1f}%")
     print(f"  Hispanic 2010: {row_2010['pcthispanic']:.1f}%")
@@ -124,11 +124,11 @@ def process_census_batch(df_chunk, year=2010):
     # Get both census stats and ML predictions
     census_stats = census_ln(df_chunk, 'last_name', year=year)
     ml_predictions = pred_census_last_name(df_chunk, 'last_name', year=year)
-    
+
     # Merge results
     result = pd.merge(df_chunk, census_stats, on='last_name')
     result = pd.merge(result, ml_predictions[['last_name', 'race']], on='last_name')
-    
+
     return result
 
 # Process large CSV in chunks
@@ -225,7 +225,7 @@ print(f"Census vs Florida agreement: {agreement:.2%}")
 # Census statistics lookup
 census_ln input.csv -l last_name -o census_output.csv -y 2010
 
-# Census LSTM predictions  
+# Census LSTM predictions
 pred_census_last_name input.csv -l last_name -o ml_output.csv -y 2010
 ```
 

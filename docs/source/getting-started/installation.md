@@ -73,7 +73,7 @@ uv sync --all-groups
 
 # Install specific groups
 uv sync --group test     # Testing tools
-uv sync --group dev      # Development tools  
+uv sync --group dev      # Development tools
 uv sync --group docs     # Documentation tools
 ```
 

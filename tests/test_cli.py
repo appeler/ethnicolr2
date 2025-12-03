@@ -44,9 +44,9 @@ class TestCLI(unittest.TestCase):
             self.input_file,
             "--output",
             output_file,
-            "--last",
+            "--last-name-col",
             "last",
-            "--first",
+            "--first-name-col",
             "first",
         ]
 
@@ -63,7 +63,7 @@ class TestCLI(unittest.TestCase):
         """Test Florida last name CLI"""
         output_file = os.path.join(self.temp_dir, "output.csv")
 
-        args = [self.input_file, "--output", output_file, "--last", "last"]
+        args = [self.input_file, "--output", output_file, "--last-name-col", "last"]
 
         try:
             fl_ln_main(args)
@@ -76,7 +76,7 @@ class TestCLI(unittest.TestCase):
         """Test Census last name CLI"""
         output_file = os.path.join(self.temp_dir, "output.csv")
 
-        args = [self.input_file, "--output", output_file, "--last", "last"]
+        args = [self.input_file, "--output", output_file, "--last-name-col", "last"]
 
         try:
             cen_ln_main(args)
@@ -93,7 +93,7 @@ class TestCLI(unittest.TestCase):
             self.input_file,
             "--output",
             output_file,
-            "--last",
+            "--last-name-col",
             "last",
             "--year",
             "2000",
@@ -114,7 +114,7 @@ class TestCLI(unittest.TestCase):
             self.input_file,
             "--output",
             output_file,
-            "--last",
+            "--last-name-col",
             "last",
             "--year",
             "2010",

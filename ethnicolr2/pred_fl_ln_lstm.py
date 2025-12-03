@@ -2,10 +2,11 @@
 
 import sys
 
+import click
 import pandas as pd
 
+from .cli_utils import common_options, name_column_options, validate_input_file
 from .ethnicolr_class import EthnicolrModelClass
-from .utils import arg_parser
 
 
 class LastNameLstmModel(EthnicolrModelClass):
@@ -49,19 +50,48 @@ class LastNameLstmModel(EthnicolrModelClass):
 pred_fl_last_name = LastNameLstmModel.pred_fl_last_name
 
 
-def main(argv: list[str] | None = None) -> None:
-    if argv is None:
-        argv = sys.argv[1:]
-    args = arg_parser(
-        argv,
-        title="Predict Race/ethnicity by last name using the Florida voter registration data model.",
-        default_out="pred_fl_reg_last_name.csv",
-    )
-    df = pd.read_csv(args.input, encoding="utf-8")
-    rdf = pred_fl_last_name(df=df, lname_col=args.lname_col)
-    print(f"Writing output to {args.output}")
-    rdf.to_csv(args.output, index=False)
+@click.command()
+@click.argument("input_file", callback=validate_input_file, metavar="INPUT_FILE")
+@common_options
+@name_column_options
+def main(input_file: str, output: str, verbose: bool, last_name_col: str) -> None:
+    """Predict race/ethnicity by last name using Florida voter registration model.
+
+    INPUT_FILE: Path to CSV file containing name data.
+    """
+    if output is None:
+        output = "pred_fl_reg_last_name.csv"
+
+    if verbose:
+        click.echo(f"Loading data from: {input_file}")
+        click.echo(f"Last name column: {last_name_col}")
+        click.echo("Using Florida voter registration LSTM model")
+
+    try:
+        df = pd.read_csv(input_file, encoding="utf-8")
+
+        if verbose:
+            click.echo(f"Loaded {len(df)} rows")
+
+        rdf = pred_fl_last_name(df=df, lname_col=last_name_col)
+
+        rdf.to_csv(output, index=False)
+
+        if verbose:
+            click.echo(f"Predictions saved to: {output}")
+        else:
+            click.echo(f"Writing output to {output}")
+
+    except FileNotFoundError:
+        click.echo(f"Error: File '{input_file}' not found.", err=True)
+        sys.exit(1)
+    except KeyError as e:
+        click.echo(f"Error: Column {e} not found in input file.", err=True)
+        sys.exit(1)
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()
