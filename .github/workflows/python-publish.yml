@@ -15,7 +15,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Update citation.cff
-      uses: gojiplus/citation-sync@v1
+      uses: recite/citation-sync@v.2
 
     - name: Install uv
       uses: astral-sh/setup-uv@v7
