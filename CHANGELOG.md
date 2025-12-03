@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.0] - 2025-12-03
+
+### 🚀 Major Features
+- **High-Performance Caching**: Implemented module-level model caching with 103x speedup for repeated predictions
+  - Thread-safe caching with locks and LRU eviction
+  - Environment-based configuration (`ETHNICOLR_CACHE_ENABLED`, `ETHNICOLR_MAX_CACHED_MODELS`)
+  - Cache management utilities (`clear_model_cache()`, `get_cache_info()`)
+
+### ✨ Enhancements
+- **Modernized CLI**: Migrated from argparse to Click for better user experience
+  - Improved error messages and validation
+  - Consistent parameter naming across all commands
+  - Better help text and argument handling
+
+### 🧪 Testing Excellence
+- **Comprehensive Test Suite**: Added 74 new tests improving coverage from 52% to 62%
+  - `test_failure_modes.py`: Model corruption and resource failure scenarios
+  - `test_input_edge_cases.py`: Data validation boundary conditions
+  - `test_cli_error_handling.py`: File system errors and invalid arguments
+  - Production scenario testing: concurrency, memory constraints, cache behavior
+
+### 🛠️ Developer Experience
+- **Pre-commit Hooks**: Added automated code quality checks with ruff linting and formatting
+- **Code Quality**: Fixed all linting issues and standardized formatting
+- **CI Integration**: Pre-commit hooks match CI pipeline exactly
+
+### 📈 Performance
+- **103x Performance Improvement**: Cached model loading (0.621s → 0.006s)
+- **Memory Efficiency**: Optimized model reuse and metadata caching
+- **Concurrent Safety**: Thread-safe operations under high load
+
 ## [0.2.0] - 2025-11-27
 
 ### ⚠️ Breaking Changes

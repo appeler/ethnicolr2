@@ -4,7 +4,7 @@ build-backend = "uv_build"
 
 [project]
 name = "ethnicolr2"
-version = "0.2.0"
+version = "0.3.0"
 description = "Predict Race/Ethnicity Based on Sequence of Characters in the Name"
 readme = "README.md"
 authors = [
