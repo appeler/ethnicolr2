@@ -5,6 +5,7 @@ on:
 
 permissions:
   id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
+  contents: write  # for citation-sync to commit changes
 
 jobs:
   build:
@@ -16,6 +17,8 @@ jobs:
 
     - name: Update citation.cff
       uses: recite/citation-sync@v.2
+      with:
+        commit: true
 
     - name: Install uv
       uses: astral-sh/setup-uv@v7
