@@ -2,16 +2,10 @@
 
 import urllib.error
 import urllib.request
+from importlib.resources import files
 from pathlib import Path
 
 import click
-
-try:
-    from importlib.resources import files
-except ImportError:
-    # Fallback for Python < 3.9
-    from pkg_resources import resource_filename
-
 
 # Model URLs - these would need to be updated with actual model URLs
 MODEL_URLS = {
@@ -26,16 +20,10 @@ MODEL_URLS = {
 
 def get_models_directory() -> Path:
     """Get the models directory path."""
-    try:
-        # Use modern importlib.resources for Python >= 3.9
-        import ethnicolr2
+    import ethnicolr2
 
-        models_dir = files(ethnicolr2).joinpath("models")
-        return Path(str(models_dir))
-    except (NameError, AttributeError):
-        # Fallback to pkg_resources for older Python versions
-        models_dir = resource_filename(__name__, "models")
-        return Path(models_dir)
+    models_dir = files(ethnicolr2).joinpath("models")
+    return Path(str(models_dir))
 
 
 def download_model(

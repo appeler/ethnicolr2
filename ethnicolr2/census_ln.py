@@ -1,15 +1,12 @@
 #!/usr/bin/env python
 
 import sys
+from importlib.resources import files
 
 import click
 import pandas as pd
 
-try:
-    from importlib.resources import files
-except ImportError:
-    # Fallback for Python < 3.9
-    from pkg_resources import resource_filename
+import ethnicolr2
 
 from .cli_utils import (
     common_options,
@@ -19,16 +16,8 @@ from .cli_utils import (
 )
 from .ethnicolr_class import EthnicolrModelClass
 
-try:
-    # Use modern importlib.resources for Python >= 3.9
-    import ethnicolr2
-
-    CENSUS2000 = str(files(ethnicolr2).joinpath("data/census/census_2000.csv"))
-    CENSUS2010 = str(files(ethnicolr2).joinpath("data/census/census_2010.csv"))
-except (NameError, AttributeError):
-    # Fallback to pkg_resources for older Python versions
-    CENSUS2000 = resource_filename(__name__, "data/census/census_2000.csv")
-    CENSUS2010 = resource_filename(__name__, "data/census/census_2010.csv")
+CENSUS2000 = str(files(ethnicolr2).joinpath("data/census/census_2000.csv"))
+CENSUS2010 = str(files(ethnicolr2).joinpath("data/census/census_2010.csv"))
 
 CENSUS_COLS = ["pctwhite", "pctblack", "pctapi", "pctaian", "pct2prace", "pcthispanic"]
 
@@ -65,10 +54,19 @@ class CensusLnData:
         df["__last_name"] = df[lname_col].str.strip().str.upper()
 
         if cls.census_df is None or cls.census_year != year:
-            if year == 2000:
-                cls.census_df = pd.read_csv(CENSUS2000, usecols=["name"] + CENSUS_COLS)
-            elif year == 2010:
-                cls.census_df = pd.read_csv(CENSUS2010, usecols=["name"] + CENSUS_COLS)
+            match year:
+                case 2000:
+                    cls.census_df = pd.read_csv(
+                        CENSUS2000, usecols=["name"] + CENSUS_COLS
+                    )
+                case 2010:
+                    cls.census_df = pd.read_csv(
+                        CENSUS2010, usecols=["name"] + CENSUS_COLS
+                    )
+                case _:
+                    raise ValueError(
+                        f"Unsupported census year: {year}. Only 2000 and 2010 are supported."
+                    )
 
             cls.census_df.drop(
                 cls.census_df[cls.census_df.name.isnull()].index, inplace=True

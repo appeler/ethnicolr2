@@ -11,11 +11,11 @@ This module tests scenarios where things go wrong in production:
 - Resource loading failures
 """
 
-import os
 import shutil
 import tempfile
 import threading
 import unittest
+from pathlib import Path
 from unittest.mock import Mock, patch
 
 import joblib
@@ -34,7 +34,7 @@ class TestModelFileCorruption(unittest.TestCase):
     """Test handling of corrupted or malformed model files."""
 
     def setUp(self):
-        self.temp_dir = tempfile.mkdtemp()
+        self.temp_dir = Path(tempfile.mkdtemp())
         self.test_df = pd.DataFrame({"last": ["smith", "zhang"]})
         clear_model_cache()
 
@@ -45,12 +45,12 @@ class TestModelFileCorruption(unittest.TestCase):
     def test_corrupted_model_file(self):
         """Test behavior when .pt model file is corrupted."""
         # Create a corrupted model file
-        corrupted_model = os.path.join(self.temp_dir, "corrupted.pt")
+        corrupted_model = self.temp_dir / "corrupted.pt"
         with open(corrupted_model, "wb") as f:
             f.write(b"This is not a valid PyTorch model file")
 
         # Create a valid vocab file (empty dict)
-        vocab_file = os.path.join(self.temp_dir, "vocab.joblib")
+        vocab_file = self.temp_dir / "vocab.joblib"
         joblib.dump({}, vocab_file)
 
         # Should raise an error when trying to load
@@ -69,7 +69,7 @@ class TestModelFileCorruption(unittest.TestCase):
         """Test behavior when vocabulary file is corrupted."""
         # Create a simple valid model (we can't easily create a valid PyTorch model)
         # but we can test vocab corruption
-        vocab_file = os.path.join(self.temp_dir, "corrupted_vocab.joblib")
+        vocab_file = self.temp_dir / "corrupted_vocab.joblib"
         with open(vocab_file, "wb") as f:
             f.write(b"This is not a valid joblib file")
 
@@ -80,11 +80,11 @@ class TestModelFileCorruption(unittest.TestCase):
     def test_partial_model_files(self):
         """Test behavior with incomplete/truncated files."""
         # Truncated model file
-        partial_model = os.path.join(self.temp_dir, "partial.pt")
+        partial_model = self.temp_dir / "partial.pt"
         with open(partial_model, "wb") as f:
             f.write(b"PK")  # ZIP file header but truncated
 
-        vocab_file = os.path.join(self.temp_dir, "vocab.joblib")
+        vocab_file = self.temp_dir / "vocab.joblib"
         joblib.dump({}, vocab_file)
 
         with self.assertRaises((RuntimeError, OSError, EOFError, Exception)):
@@ -99,21 +99,6 @@ class TestResourceLoadingFailures(unittest.TestCase):
 
     def tearDown(self):
         clear_model_cache()
-
-    def test_importlib_resources_fallback(self):
-        """Test fallback to pkg_resources when importlib.resources fails."""
-        # Mock importlib.resources to fail
-        with patch("ethnicolr2.ethnicolr_class.files") as mock_files:
-            mock_files.side_effect = (NameError, AttributeError)
-
-            # Should still work using pkg_resources fallback
-            # This mainly tests that the fallback code path is exercised
-            try:
-                # Test that fallback import works
-                import pkg_resources  # noqa: F401
-            except ImportError:
-                # If pkg_resources is also not available, that's expected in some environments
-                pass
 
     def test_resource_path_permissions(self):
         """Test handling of permission errors when accessing resources."""

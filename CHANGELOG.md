@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.1] - 2025-12-12
+
+### 🔧 Python 3.11+ Modernizations
+- **Pathlib Migration**: Replaced all `os.path` usage with modern `pathlib.Path` throughout codebase
+  - Updated file operations, permission handling, and path construction
+  - Improved cross-platform compatibility and code readability
+- **Pattern Matching**: Implemented Python 3.11+ `match/case` statements for census year selection
+  - Better error messages for unsupported years (2000 and 2010 only)
+  - More maintainable conditional logic
+- **Built-in Generics**: Removed unnecessary `typing` imports for `dict`, `list`, `tuple`
+  - Uses Python 3.11+ built-in generic types (`dict[str, Any]` vs `typing.Dict`)
+  - Cleaner import statements and better performance
+
+### 🛠️ Dependency Management
+- **Deptry Integration**: Fixed all dependency analysis issues
+  - Moved `numpy` to test dependencies (only used in tests)
+  - Proper exclusion configuration for examples and development files
+  - Package name mapping for tools with different import names
+
+### 📚 Documentation
+- **Examples Documentation**: Added `examples/README.md` with setup instructions
+  - Clear documentation of external dependencies (`clean_names`, `ethnicolr`)
+  - Usage examples and installation guidance
+
+### 🧹 Code Quality
+- **Import Cleanup**: Modernized import statements throughout codebase
+- **Linting**: Fixed all ruff linting issues with complete pathlib migration
+- **Error Handling**: Enhanced error messages with pattern matching improvements
+
 ## [0.3.0] - 2025-12-03
 
 ### 🚀 Major Features

@@ -2,6 +2,8 @@
 
 import os
 import time
+from importlib.resources import files
+from pathlib import Path
 from threading import Lock
 from typing import Any
 
@@ -9,13 +11,6 @@ import joblib
 import pandas as pd
 import torch
 from torch.utils.data import DataLoader
-
-try:
-    from importlib.resources import files
-except ImportError:
-    # Fallback for Python < 3.9
-    from pkg_resources import resource_filename
-
 from tqdm import tqdm
 
 from .dataset import EthniDataset
@@ -37,8 +32,10 @@ def _get_cache_key(model_fn: str, vocab_fn: str) -> str:
     """Generate unique cache key for model files."""
     try:
         # Include file modification time to handle model updates
-        model_mtime = os.path.getmtime(model_fn) if os.path.exists(model_fn) else 0
-        vocab_mtime = os.path.getmtime(vocab_fn) if os.path.exists(vocab_fn) else 0
+        model_path = Path(model_fn)
+        vocab_path = Path(vocab_fn)
+        model_mtime = model_path.stat().st_mtime if model_path.exists() else 0
+        vocab_mtime = vocab_path.stat().st_mtime if vocab_path.exists() else 0
         return f"{model_fn}#{vocab_fn}#{model_mtime}#{vocab_mtime}"
     except OSError:
         # Fallback for resource files
@@ -255,16 +252,10 @@ class EthnicolrModelClass:
             RuntimeError: If model loading or prediction fails
         """
         # Get file paths
-        try:
-            # Use modern importlib.resources for Python >= 3.9
-            import ethnicolr2
+        import ethnicolr2
 
-            MODEL = str(files(ethnicolr2).joinpath(model_fn))
-            VOCAB = str(files(ethnicolr2).joinpath(vocab_fn))
-        except (NameError, AttributeError):
-            # Fallback to pkg_resources for older Python versions
-            MODEL = resource_filename(__name__, model_fn)
-            VOCAB = resource_filename(__name__, vocab_fn)
+        MODEL = str(files(ethnicolr2).joinpath(model_fn))
+        VOCAB = str(files(ethnicolr2).joinpath(vocab_fn))
 
         # Use cached model instead of loading every time
         model, vectorizer, model_metadata = _get_cached_model(MODEL, VOCAB)

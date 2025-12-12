@@ -5,9 +5,9 @@ Tests for command-line interface functionality
 """
 
 import csv
-import os
 import tempfile
 import unittest
+from pathlib import Path
 from unittest.mock import patch
 
 from ethnicolr2.census_ln import main as census_main
@@ -19,8 +19,8 @@ from ethnicolr2.pred_fl_ln_lstm import main as fl_ln_main
 class TestCLI(unittest.TestCase):
     def setUp(self):
         # Create temporary test file
-        self.temp_dir = tempfile.mkdtemp()
-        self.input_file = os.path.join(self.temp_dir, "test_input.csv")
+        self.temp_dir = Path(tempfile.mkdtemp())
+        self.input_file = self.temp_dir / "test_input.csv"
 
         # Write test data
         with open(self.input_file, "w", newline="") as f:
@@ -33,17 +33,17 @@ class TestCLI(unittest.TestCase):
         # Clean up temp files
         import shutil
 
-        if os.path.exists(self.temp_dir):
+        if self.temp_dir.exists():
             shutil.rmtree(self.temp_dir)
 
     def test_fl_full_name_cli_with_separate_columns(self):
         """Test Florida full name CLI with separate first/last columns"""
-        output_file = os.path.join(self.temp_dir, "output.csv")
+        output_file = self.temp_dir / "output.csv"
 
         args = [
-            self.input_file,
+            str(self.input_file),
             "--output",
-            output_file,
+            str(output_file),
             "--last-name-col",
             "last",
             "--first-name-col",
@@ -57,42 +57,54 @@ class TestCLI(unittest.TestCase):
             pass  # main() calls sys.exit(), which is expected
 
         # Check output file was created
-        self.assertTrue(os.path.exists(output_file))
+        self.assertTrue(output_file.exists())
 
     def test_fl_last_name_cli(self):
         """Test Florida last name CLI"""
-        output_file = os.path.join(self.temp_dir, "output.csv")
+        output_file = self.temp_dir / "output.csv"
 
-        args = [self.input_file, "--output", output_file, "--last-name-col", "last"]
+        args = [
+            str(self.input_file),
+            "--output",
+            str(output_file),
+            "--last-name-col",
+            "last",
+        ]
 
         try:
             fl_ln_main(args)
         except SystemExit:
             pass  # main() calls sys.exit(), which is expected
 
-        self.assertTrue(os.path.exists(output_file))
+        self.assertTrue(output_file.exists())
 
     def test_census_last_name_cli(self):
         """Test Census last name CLI"""
-        output_file = os.path.join(self.temp_dir, "output.csv")
+        output_file = self.temp_dir / "output.csv"
 
-        args = [self.input_file, "--output", output_file, "--last-name-col", "last"]
+        args = [
+            str(self.input_file),
+            "--output",
+            str(output_file),
+            "--last-name-col",
+            "last",
+        ]
 
         try:
             cen_ln_main(args)
         except SystemExit:
             pass  # main() calls sys.exit(), which is expected
 
-        self.assertTrue(os.path.exists(output_file))
+        self.assertTrue(output_file.exists())
 
     def test_census_lookup_cli_2000(self):
         """Test Census lookup CLI for year 2000"""
-        output_file = os.path.join(self.temp_dir, "output.csv")
+        output_file = self.temp_dir / "output.csv"
 
         args = [
-            self.input_file,
+            str(self.input_file),
             "--output",
-            output_file,
+            str(output_file),
             "--last-name-col",
             "last",
             "--year",
@@ -104,16 +116,16 @@ class TestCLI(unittest.TestCase):
         except SystemExit:
             pass  # main() calls sys.exit(), which is expected
 
-        self.assertTrue(os.path.exists(output_file))
+        self.assertTrue(output_file.exists())
 
     def test_census_lookup_cli_2010(self):
         """Test Census lookup CLI for year 2010"""
-        output_file = os.path.join(self.temp_dir, "output.csv")
+        output_file = self.temp_dir / "output.csv"
 
         args = [
-            self.input_file,
+            str(self.input_file),
             "--output",
-            output_file,
+            str(output_file),
             "--last-name-col",
             "last",
             "--year",
@@ -125,7 +137,7 @@ class TestCLI(unittest.TestCase):
         except SystemExit:
             pass  # main() calls sys.exit(), which is expected
 
-        self.assertTrue(os.path.exists(output_file))
+        self.assertTrue(output_file.exists())
 
     @patch("builtins.print")
     def test_arg_parser_prints_args(self, mock_print):

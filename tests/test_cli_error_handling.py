@@ -12,7 +12,6 @@ This module tests various CLI failure scenarios:
 """
 
 import csv
-import os
 import shutil
 import tempfile
 import unittest
@@ -32,10 +31,10 @@ class TestCLIFileSystemErrors(unittest.TestCase):
 
     def setUp(self):
         self.runner = CliRunner()
-        self.temp_dir = tempfile.mkdtemp()
+        self.temp_dir = Path(tempfile.mkdtemp())
 
         # Create valid test input file
-        self.input_file = os.path.join(self.temp_dir, "test_input.csv")
+        self.input_file = self.temp_dir / "test_input.csv"
         with open(self.input_file, "w", newline="") as f:
             writer = csv.writer(f)
             writer.writerow(["first", "last"])
@@ -48,7 +47,7 @@ class TestCLIFileSystemErrors(unittest.TestCase):
     def test_nonexistent_input_file(self):
         """Test behavior with non-existent input file."""
         nonexistent_file = "/path/that/does/not/exist.csv"
-        output_file = os.path.join(self.temp_dir, "output.csv")
+        output_file = self.temp_dir / "output.csv"
 
         # Test Florida last name CLI
         result = self.runner.invoke(
@@ -63,19 +62,19 @@ class TestCLIFileSystemErrors(unittest.TestCase):
     def test_permission_denied_input_file(self):
         """Test behavior when input file permissions are denied."""
         # Create file and remove read permissions
-        restricted_file = os.path.join(self.temp_dir, "restricted.csv")
+        restricted_file = self.temp_dir / "restricted.csv"
         Path(restricted_file).write_text("last,first\nsmith,john")
 
         # Remove read permissions (on Unix systems)
         try:
-            os.chmod(restricted_file, 0o000)
+            restricted_file.chmod(0o000)
 
             result = self.runner.invoke(
                 fl_ln_main,
                 [
                     restricted_file,
                     "--output",
-                    os.path.join(self.temp_dir, "output.csv"),
+                    self.temp_dir / "output.csv",
                     "--last-name-col",
                     "last",
                 ],
@@ -90,20 +89,20 @@ class TestCLIFileSystemErrors(unittest.TestCase):
         finally:
             # Restore permissions for cleanup
             try:
-                os.chmod(restricted_file, 0o644)
+                restricted_file.chmod(0o644)
             except OSError:
                 pass
 
     def test_permission_denied_output_directory(self):
         """Test behavior when output directory permissions are denied."""
         # Create directory and remove write permissions
-        restricted_dir = os.path.join(self.temp_dir, "restricted_dir")
-        os.makedirs(restricted_dir)
+        restricted_dir = self.temp_dir / "restricted_dir"
+        restricted_dir.mkdir(parents=True, exist_ok=True)
 
         try:
-            os.chmod(restricted_dir, 0o444)  # Read-only
+            restricted_dir.chmod(0o444)  # Read-only
 
-            output_file = os.path.join(restricted_dir, "output.csv")
+            output_file = restricted_dir / "output.csv"
 
             result = self.runner.invoke(
                 fl_ln_main,
@@ -117,14 +116,14 @@ class TestCLIFileSystemErrors(unittest.TestCase):
             self.skipTest("Cannot test permission denied on this system")
         finally:
             try:
-                os.chmod(restricted_dir, 0o755)
+                restricted_dir.chmod(0o755)
             except OSError:
                 pass
 
     def test_output_to_directory_instead_of_file(self):
         """Test specifying a directory as output instead of file."""
-        output_dir = os.path.join(self.temp_dir, "output_dir")
-        os.makedirs(output_dir)
+        output_dir = self.temp_dir / "output_dir"
+        output_dir.mkdir(parents=True, exist_ok=True)
 
         result = self.runner.invoke(
             fl_ln_main,
@@ -145,7 +144,7 @@ class TestCLIFileSystemErrors(unittest.TestCase):
     def test_nonexistent_output_directory(self):
         """Test output path with non-existent parent directory."""
         nonexistent_dir = "/path/that/does/not/exist"
-        output_file = os.path.join(nonexistent_dir, "output.csv")
+        output_file = Path(nonexistent_dir) / "output.csv"
 
         result = self.runner.invoke(
             fl_ln_main,
@@ -162,10 +161,10 @@ class TestCLIInvalidArguments(unittest.TestCase):
 
     def setUp(self):
         self.runner = CliRunner()
-        self.temp_dir = tempfile.mkdtemp()
+        self.temp_dir = Path(tempfile.mkdtemp())
 
         # Create valid test input file
-        self.input_file = os.path.join(self.temp_dir, "test_input.csv")
+        self.input_file = self.temp_dir / "test_input.csv"
         with open(self.input_file, "w", newline="") as f:
             writer = csv.writer(f)
             writer.writerow(["first", "last"])
@@ -176,7 +175,7 @@ class TestCLIInvalidArguments(unittest.TestCase):
 
     def test_missing_required_column_argument(self):
         """Test missing required column arguments."""
-        output_file = os.path.join(self.temp_dir, "output.csv")
+        output_file = self.temp_dir / "output.csv"
 
         # Missing last-name-col argument
         result = self.runner.invoke(
@@ -194,7 +193,7 @@ class TestCLIInvalidArguments(unittest.TestCase):
 
     def test_invalid_column_name(self):
         """Test specifying column name that doesn't exist."""
-        output_file = os.path.join(self.temp_dir, "output.csv")
+        output_file = self.temp_dir / "output.csv"
 
         result = self.runner.invoke(
             fl_ln_main,
@@ -213,7 +212,7 @@ class TestCLIInvalidArguments(unittest.TestCase):
 
     def test_invalid_year_argument(self):
         """Test invalid year argument for census functions."""
-        output_file = os.path.join(self.temp_dir, "output.csv")
+        output_file = self.temp_dir / "output.csv"
 
         # Test invalid year
         result = self.runner.invoke(
@@ -236,7 +235,7 @@ class TestCLIInvalidArguments(unittest.TestCase):
     def test_conflicting_arguments_full_name(self):
         """Test conflicting arguments for full name functions."""
         # This tests the validation logic in full name functions
-        output_file = os.path.join(self.temp_dir, "output.csv")
+        output_file = self.temp_dir / "output.csv"
 
         # Neither full name col nor separate first/last cols provided
         result = self.runner.invoke(
@@ -273,10 +272,10 @@ class TestCLIMalformedDataHandling(unittest.TestCase):
 
     def test_empty_csv_file(self):
         """Test completely empty CSV file."""
-        empty_file = os.path.join(self.temp_dir, "empty.csv")
+        empty_file = self.temp_dir / "empty.csv"
         Path(empty_file).write_text("")
 
-        output_file = os.path.join(self.temp_dir, "output.csv")
+        output_file = self.temp_dir / "output.csv"
 
         result = self.runner.invoke(
             fl_ln_main, [empty_file, "--output", output_file, "--last-name-col", "last"]
@@ -287,10 +286,10 @@ class TestCLIMalformedDataHandling(unittest.TestCase):
 
     def test_csv_with_only_header(self):
         """Test CSV with header but no data."""
-        header_only_file = os.path.join(self.temp_dir, "header_only.csv")
+        header_only_file = self.temp_dir / "header_only.csv"
         Path(header_only_file).write_text("last,first\n")
 
-        output_file = os.path.join(self.temp_dir, "output.csv")
+        output_file = self.temp_dir / "output.csv"
 
         result = self.runner.invoke(
             fl_ln_main,
@@ -300,12 +299,12 @@ class TestCLIMalformedDataHandling(unittest.TestCase):
         # Should handle gracefully (might succeed with empty output)
         if result.exit_code == 0:
             # If it succeeds, output file should exist (even if empty)
-            self.assertTrue(os.path.exists(output_file))
+            self.assertTrue(output_file.exists())
 
     def test_csv_with_malformed_encoding(self):
         """Test CSV with encoding issues."""
         # Create file with mixed encoding
-        malformed_file = os.path.join(self.temp_dir, "malformed.csv")
+        malformed_file = self.temp_dir / "malformed.csv"
         with open(malformed_file, "wb") as f:
             # Write header in UTF-8
             f.write(b"last,first\n")
@@ -313,7 +312,7 @@ class TestCLIMalformedDataHandling(unittest.TestCase):
             f.write("García,José\n".encode())
             f.write("Müller,Hans\n".encode("latin-1"))  # Different encoding
 
-        output_file = os.path.join(self.temp_dir, "output.csv")
+        output_file = self.temp_dir / "output.csv"
 
         result = self.runner.invoke(
             fl_ln_main,
@@ -327,14 +326,14 @@ class TestCLIMalformedDataHandling(unittest.TestCase):
 
     def test_csv_with_inconsistent_columns(self):
         """Test CSV with rows having different number of columns."""
-        inconsistent_file = os.path.join(self.temp_dir, "inconsistent.csv")
+        inconsistent_file = self.temp_dir / "inconsistent.csv"
         with open(inconsistent_file, "w") as f:
             f.write("last,first\n")
             f.write("Smith,John\n")
             f.write("Garcia,Maria,Extra\n")  # Extra column
             f.write("Johnson\n")  # Missing column
 
-        output_file = os.path.join(self.temp_dir, "output.csv")
+        output_file = self.temp_dir / "output.csv"
 
         result = self.runner.invoke(
             fl_ln_main,
@@ -343,7 +342,7 @@ class TestCLIMalformedDataHandling(unittest.TestCase):
 
         # pandas usually handles this, so it might succeed
         if result.exit_code == 0:
-            self.assertTrue(os.path.exists(output_file))
+            self.assertTrue(output_file.exists())
 
 
 class TestCLIResourceConstraints(unittest.TestCase):
@@ -359,7 +358,7 @@ class TestCLIResourceConstraints(unittest.TestCase):
     def test_extremely_large_input_file(self):
         """Test handling of very large input files."""
         # Create a moderately large CSV file
-        large_file = os.path.join(self.temp_dir, "large.csv")
+        large_file = self.temp_dir / "large.csv"
         with open(large_file, "w", newline="") as f:
             writer = csv.writer(f)
             writer.writerow(["last", "first"])
@@ -367,7 +366,7 @@ class TestCLIResourceConstraints(unittest.TestCase):
             for i in range(5000):
                 writer.writerow([f"LastName{i}", f"FirstName{i}"])
 
-        output_file = os.path.join(self.temp_dir, "output.csv")
+        output_file = self.temp_dir / "output.csv"
 
         # Should handle large files (might take time but shouldn't crash)
         result = self.runner.invoke(
@@ -378,7 +377,7 @@ class TestCLIResourceConstraints(unittest.TestCase):
 
         # Either succeeds or fails gracefully with memory error
         if result.exit_code == 0:
-            self.assertTrue(os.path.exists(output_file))
+            self.assertTrue(output_file.exists())
             # Output should have same number of rows plus header
             with open(output_file) as f:
                 lines = sum(1 for line in f)
@@ -390,10 +389,10 @@ class TestCLIResourceConstraints(unittest.TestCase):
         # Mock to_csv to raise OSError (disk full)
         mock_to_csv.side_effect = OSError("No space left on device")
 
-        input_file = os.path.join(self.temp_dir, "test.csv")
+        input_file = self.temp_dir / "test.csv"
         Path(input_file).write_text("last,first\nSmith,John")
 
-        output_file = os.path.join(self.temp_dir, "output.csv")
+        output_file = self.temp_dir / "output.csv"
 
         result = self.runner.invoke(
             fl_ln_main, [input_file, "--output", output_file, "--last-name-col", "last"]
@@ -408,10 +407,10 @@ class TestCLIResourceConstraints(unittest.TestCase):
         # This is difficult to test reliably, but we can test
         # that error handling exists for KeyboardInterrupt
 
-        input_file = os.path.join(self.temp_dir, "test.csv")
+        input_file = self.temp_dir / "test.csv"
         Path(input_file).write_text("last,first\nSmith,John")
 
-        output_file = os.path.join(self.temp_dir, "output.csv")
+        output_file = self.temp_dir / "output.csv"
 
         # Mock to simulate KeyboardInterrupt
         with patch("ethnicolr2.pred_fl_last_name") as mock_pred:
@@ -434,7 +433,7 @@ class TestCLIVerboseAndQuietModes(unittest.TestCase):
         self.temp_dir = tempfile.mkdtemp()
 
         # Create test input file
-        self.input_file = os.path.join(self.temp_dir, "test.csv")
+        self.input_file = self.temp_dir / "test.csv"
         with open(self.input_file, "w", newline="") as f:
             writer = csv.writer(f)
             writer.writerow(["last", "first"])
@@ -445,7 +444,7 @@ class TestCLIVerboseAndQuietModes(unittest.TestCase):
 
     def test_verbose_mode(self):
         """Test verbose output mode."""
-        output_file = os.path.join(self.temp_dir, "output.csv")
+        output_file = self.temp_dir / "output.csv"
 
         result = self.runner.invoke(
             fl_ln_main,
@@ -466,7 +465,7 @@ class TestCLIVerboseAndQuietModes(unittest.TestCase):
 
     def test_normal_mode_output(self):
         """Test normal (non-verbose) output mode."""
-        output_file = os.path.join(self.temp_dir, "output.csv")
+        output_file = self.temp_dir / "output.csv"
 
         result = self.runner.invoke(
             fl_ln_main,
@@ -481,7 +480,7 @@ class TestCLIVerboseAndQuietModes(unittest.TestCase):
 
     def test_output_file_creation(self):
         """Test that output files are created correctly."""
-        output_file = os.path.join(self.temp_dir, "output.csv")
+        output_file = self.temp_dir / "output.csv"
 
         result = self.runner.invoke(
             fl_ln_main,
@@ -489,7 +488,7 @@ class TestCLIVerboseAndQuietModes(unittest.TestCase):
         )
 
         self.assertEqual(result.exit_code, 0)
-        self.assertTrue(os.path.exists(output_file))
+        self.assertTrue(output_file.exists())
 
         # Check output file content
         with open(output_file) as f:
