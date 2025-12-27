@@ -181,9 +181,9 @@ exclude = ["docs/source/examples/", ".venv/", "venv/", "tests/test_input_edge_ca
 "check-manifest" = ["check_manifest"]
 "linkify-it-py" = ["linkify_it_py"]
 
-# Known external dependencies for examples (not part of the main package)
+# Known external dependencies for documentation examples (not part of the main package)
 [tool.deptry.per_rule_ignores]
-DEP001 = ["examples/"]  # Allow missing dependencies in examples
+DEP001 = ["docs/source/examples/"]  # Allow missing dependencies in documentation examples
 DEP002 = ["scikit-learn"]  # scikit-learn is needed for model compatibility (joblib files)
-DEP003 = ["examples/"]  # Allow transitive dependencies in examples
+DEP003 = ["docs/source/examples/"]  # Allow transitive dependencies in documentation examples
 DEP004 = ["tests/test_input_edge_cases.py", "tests/test_validation.py"]  # Allow test dependencies in test files
