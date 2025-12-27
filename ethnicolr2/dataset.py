@@ -5,7 +5,7 @@ import torch
 from torch.utils.data import Dataset
 
 
-class EthniDataset(Dataset):
+class EthniDataset(Dataset[tuple[str, torch.Tensor]]):
     """PyTorch Dataset for ethnicolr name data.
 
     Args:
@@ -24,12 +24,8 @@ class EthniDataset(Dataset):
         oob: int,
         transform: Callable[[str, str, int, int], torch.Tensor] | None = None,
     ):
-        if not isinstance(data_df, pd.DataFrame):
-            raise TypeError(f"Expected pandas DataFrame, got {type(data_df)}")
         if "__name" not in data_df.columns:
             raise ValueError("DataFrame must contain '__name' column")
-        if not isinstance(all_letters, str):
-            raise TypeError(f"Expected string for all_letters, got {type(all_letters)}")
         if max_name <= 0:
             raise ValueError(f"max_name must be positive, got {max_name}")
 
@@ -53,13 +49,16 @@ class EthniDataset(Dataset):
             Tuple of (name_string, name_tensor)
         """
         if torch.is_tensor(idx):
-            idx = idx.tolist()
-        if not isinstance(idx, int) or idx < 0 or idx >= len(self.df):
+            idx_val = int(idx.item())  # Convert tensor to int safely
+        else:
+            idx_val = idx
+
+        if idx_val < 0 or idx_val >= len(self.df):
             raise IndexError(
-                f"Index {idx} out of range for dataset of size {len(self.df)}"
+                f"Index {idx_val} out of range for dataset of size {len(self.df)}"
             )
 
-        name = self.df.iloc[idx, self.df.columns.get_loc("__name")]
+        name = self.df.iloc[idx_val, self.df.columns.get_loc("__name")]
         if not isinstance(name, str):
             raise ValueError(f"Expected string name, got {type(name)}: {name}")
 

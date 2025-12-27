@@ -19,17 +19,31 @@ MODEL_URLS = {
 
 
 def get_models_directory() -> Path:
-    """Get the models directory path."""
+    """Get the models directory path.
+
+    Returns:
+        Path: Path to the models directory
+    """
     import ethnicolr2
 
-    models_dir = files(ethnicolr2).joinpath("models")
-    return Path(str(models_dir))
+    models_resource = files(ethnicolr2) / "models"
+    return Path(str(models_resource))
 
 
 def download_model(
     model_name: str, url: str, models_dir: Path, verbose: bool = False
 ) -> bool:
-    """Download a single model file."""
+    """Download a single model file.
+
+    Args:
+        model_name: Name of the model file to download
+        models_dir: Directory to save the model
+        url: URL to download the model from
+        verbose: Enable verbose output
+
+    Returns:
+        bool: True if download successful, False otherwise
+    """
     model_path = models_dir / model_name
 
     # Check if model already exists
@@ -68,6 +82,10 @@ def download_model(
 def download_cli(verbose: bool = False, force: bool = False) -> None:
     """Download pre-trained models for ethnicolr2.
 
+    Args:
+        verbose: Enable verbose output
+        force: Force re-download even if files exist
+
     This command downloads the LSTM models and vectorizers needed for
     ethnicity prediction. Models are downloaded to the package models directory.
     """
@@ -103,13 +121,6 @@ def download_cli(verbose: bool = False, force: bool = False) -> None:
         )
         if success_count < total_models:
             exit(1)
-
-
-def register_commands(dist) -> None:
-    """Register setuptools commands (modern replacement for setup.py commands)."""
-    # This is a placeholder for any setup-time customizations
-    # Currently not needed but kept for future extensibility
-    pass
 
 
 if __name__ == "__main__":

@@ -52,7 +52,7 @@ class TestCLIFileSystemErrors(unittest.TestCase):
         # Test Florida last name CLI
         result = self.runner.invoke(
             fl_ln_main,
-            [nonexistent_file, "--output", output_file, "--last-name-col", "last"],
+            [nonexistent_file, "--output", str(output_file), "--last-name-col", "last"],
         )
 
         # Should fail gracefully
@@ -72,9 +72,9 @@ class TestCLIFileSystemErrors(unittest.TestCase):
             result = self.runner.invoke(
                 fl_ln_main,
                 [
-                    restricted_file,
+                    str(restricted_file),
                     "--output",
-                    self.temp_dir / "output.csv",
+                    str(self.temp_dir / "output.csv"),
                     "--last-name-col",
                     "last",
                 ],
@@ -106,7 +106,13 @@ class TestCLIFileSystemErrors(unittest.TestCase):
 
             result = self.runner.invoke(
                 fl_ln_main,
-                [self.input_file, "--output", output_file, "--last-name-col", "last"],
+                [
+                    str(self.input_file),
+                    "--output",
+                    str(output_file),
+                    "--last-name-col",
+                    "last",
+                ],
             )
 
             # Should fail gracefully
@@ -128,9 +134,9 @@ class TestCLIFileSystemErrors(unittest.TestCase):
         result = self.runner.invoke(
             fl_ln_main,
             [
-                self.input_file,
+                str(self.input_file),
                 "--output",
-                output_dir,  # Directory, not file
+                str(output_dir),  # Directory, not file
                 "--last-name-col",
                 "last",
             ],
@@ -148,7 +154,13 @@ class TestCLIFileSystemErrors(unittest.TestCase):
 
         result = self.runner.invoke(
             fl_ln_main,
-            [self.input_file, "--output", output_file, "--last-name-col", "last"],
+            [
+                str(self.input_file),
+                "--output",
+                str(output_file),
+                "--last-name-col",
+                "last",
+            ],
         )
 
         # Should fail gracefully
@@ -181,9 +193,9 @@ class TestCLIInvalidArguments(unittest.TestCase):
         result = self.runner.invoke(
             fl_ln_main,
             [
-                self.input_file,
+                str(self.input_file),
                 "--output",
-                output_file,
+                str(output_file),
                 # Missing --last-name-col
             ],
         )
@@ -198,9 +210,9 @@ class TestCLIInvalidArguments(unittest.TestCase):
         result = self.runner.invoke(
             fl_ln_main,
             [
-                self.input_file,
+                str(self.input_file),
                 "--output",
-                output_file,
+                str(output_file),
                 "--last-name-col",
                 "nonexistent_column",
             ],
@@ -218,9 +230,9 @@ class TestCLIInvalidArguments(unittest.TestCase):
         result = self.runner.invoke(
             census_main,
             [
-                self.input_file,
+                str(self.input_file),
                 "--output",
-                output_file,
+                str(output_file),
                 "--last-name-col",
                 "last",
                 "--year",
@@ -241,9 +253,9 @@ class TestCLIInvalidArguments(unittest.TestCase):
         result = self.runner.invoke(
             fl_fn_main,
             [
-                self.input_file,
+                str(self.input_file),
                 "--output",
-                output_file,
+                str(output_file),
                 # No column specifications
             ],
         )
@@ -265,7 +277,7 @@ class TestCLIMalformedDataHandling(unittest.TestCase):
 
     def setUp(self):
         self.runner = CliRunner()
-        self.temp_dir = tempfile.mkdtemp()
+        self.temp_dir = Path(tempfile.mkdtemp())
 
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
@@ -278,7 +290,8 @@ class TestCLIMalformedDataHandling(unittest.TestCase):
         output_file = self.temp_dir / "output.csv"
 
         result = self.runner.invoke(
-            fl_ln_main, [empty_file, "--output", output_file, "--last-name-col", "last"]
+            fl_ln_main,
+            [str(empty_file), "--output", str(output_file), "--last-name-col", "last"],
         )
 
         # Should handle empty file gracefully
@@ -293,7 +306,13 @@ class TestCLIMalformedDataHandling(unittest.TestCase):
 
         result = self.runner.invoke(
             fl_ln_main,
-            [header_only_file, "--output", output_file, "--last-name-col", "last"],
+            [
+                str(header_only_file),
+                "--output",
+                str(output_file),
+                "--last-name-col",
+                "last",
+            ],
         )
 
         # Should handle gracefully (might succeed with empty output)
@@ -316,7 +335,13 @@ class TestCLIMalformedDataHandling(unittest.TestCase):
 
         result = self.runner.invoke(
             fl_ln_main,
-            [malformed_file, "--output", output_file, "--last-name-col", "last"],
+            [
+                str(malformed_file),
+                "--output",
+                str(output_file),
+                "--last-name-col",
+                "last",
+            ],
         )
 
         # May succeed or fail depending on pandas handling
@@ -337,7 +362,13 @@ class TestCLIMalformedDataHandling(unittest.TestCase):
 
         result = self.runner.invoke(
             fl_ln_main,
-            [inconsistent_file, "--output", output_file, "--last-name-col", "last"],
+            [
+                str(inconsistent_file),
+                "--output",
+                str(output_file),
+                "--last-name-col",
+                "last",
+            ],
         )
 
         # pandas usually handles this, so it might succeed
@@ -350,7 +381,7 @@ class TestCLIResourceConstraints(unittest.TestCase):
 
     def setUp(self):
         self.runner = CliRunner()
-        self.temp_dir = tempfile.mkdtemp()
+        self.temp_dir = Path(tempfile.mkdtemp())
 
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
@@ -371,7 +402,7 @@ class TestCLIResourceConstraints(unittest.TestCase):
         # Should handle large files (might take time but shouldn't crash)
         result = self.runner.invoke(
             fl_ln_main,
-            [large_file, "--output", output_file, "--last-name-col", "last"],
+            [str(large_file), "--output", str(output_file), "--last-name-col", "last"],
             catch_exceptions=True,
         )
 
@@ -395,7 +426,8 @@ class TestCLIResourceConstraints(unittest.TestCase):
         output_file = self.temp_dir / "output.csv"
 
         result = self.runner.invoke(
-            fl_ln_main, [input_file, "--output", output_file, "--last-name-col", "last"]
+            fl_ln_main,
+            [str(input_file), "--output", str(output_file), "--last-name-col", "last"],
         )
 
         # Should fail gracefully
@@ -413,12 +445,18 @@ class TestCLIResourceConstraints(unittest.TestCase):
         output_file = self.temp_dir / "output.csv"
 
         # Mock to simulate KeyboardInterrupt
-        with patch("ethnicolr2.pred_fl_last_name") as mock_pred:
+        with patch("ethnicolr2.pred_fl_ln_lstm.pred_fl_last_name") as mock_pred:
             mock_pred.side_effect = KeyboardInterrupt("User interrupted")
 
             result = self.runner.invoke(
                 fl_ln_main,
-                [input_file, "--output", output_file, "--last-name-col", "last"],
+                [
+                    str(input_file),
+                    "--output",
+                    str(output_file),
+                    "--last-name-col",
+                    "last",
+                ],
             )
 
             # Should handle interruption gracefully
@@ -430,7 +468,7 @@ class TestCLIVerboseAndQuietModes(unittest.TestCase):
 
     def setUp(self):
         self.runner = CliRunner()
-        self.temp_dir = tempfile.mkdtemp()
+        self.temp_dir = Path(tempfile.mkdtemp())
 
         # Create test input file
         self.input_file = self.temp_dir / "test.csv"
@@ -449,9 +487,9 @@ class TestCLIVerboseAndQuietModes(unittest.TestCase):
         result = self.runner.invoke(
             fl_ln_main,
             [
-                self.input_file,
+                str(self.input_file),
                 "--output",
-                output_file,
+                str(output_file),
                 "--last-name-col",
                 "last",
                 "--verbose",
@@ -469,7 +507,13 @@ class TestCLIVerboseAndQuietModes(unittest.TestCase):
 
         result = self.runner.invoke(
             fl_ln_main,
-            [self.input_file, "--output", output_file, "--last-name-col", "last"],
+            [
+                str(self.input_file),
+                "--output",
+                str(output_file),
+                "--last-name-col",
+                "last",
+            ],
         )
 
         # Should succeed with minimal output
@@ -484,7 +528,13 @@ class TestCLIVerboseAndQuietModes(unittest.TestCase):
 
         result = self.runner.invoke(
             fl_ln_main,
-            [self.input_file, "--output", output_file, "--last-name-col", "last"],
+            [
+                str(self.input_file),
+                "--output",
+                str(output_file),
+                "--last-name-col",
+                "last",
+            ],
         )
 
         self.assertEqual(result.exit_code, 0)

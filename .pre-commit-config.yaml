@@ -45,5 +45,5 @@ repos:
       # Check for debugger imports
       - id: debug-statements
 
-  # Note: MyPy is run in CI but not in pre-commit since it's optional
-  # You can run it manually with: uv run mypy ethnicolr2/
+  # Note: Pyright is run in CI for type checking
+  # You can run it manually with: uv run pyright ethnicolr2/

@@ -269,7 +269,7 @@ class TestInputValidationFailures(unittest.TestCase):
         """Test lineToTensor with problematic inputs."""
         # Test with non-string input
         with self.assertRaises(TypeError):
-            EthnicolrModelClass.lineToTensor(123, "abc", 10, 99)
+            EthnicolrModelClass.lineToTensor(123, "abc", 10, 99)  # type: ignore[arg-type]
 
         # Test with zero max_name
         with self.assertRaises(ValueError):
@@ -292,7 +292,7 @@ class TestInputValidationFailures(unittest.TestCase):
         # The current implementation checks if col is truthy
         # so None should be handled
         try:
-            EthnicolrModelClass.test_and_norm_df(df, None)
+            EthnicolrModelClass.test_and_norm_df(df, None)  # type: ignore[arg-type]
             # If it doesn't raise, that's fine too
         except (TypeError, ValueError):
             # Expected behavior for None input

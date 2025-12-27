@@ -1,10 +1,17 @@
 #!/usr/bin/env python
 
+from __future__ import annotations
+
 import sys
 from importlib.resources import files
+from typing import TYPE_CHECKING
 
 import click
-import pandas as pd
+
+if TYPE_CHECKING:
+    import pandas as pd
+else:
+    import pandas as pd
 
 import ethnicolr2
 
@@ -16,15 +23,15 @@ from .cli_utils import (
 )
 from .ethnicolr_class import EthnicolrModelClass
 
-CENSUS2000 = str(files(ethnicolr2).joinpath("data/census/census_2000.csv"))
-CENSUS2010 = str(files(ethnicolr2).joinpath("data/census/census_2010.csv"))
+CENSUS2000 = files(ethnicolr2) / "data/census/census_2000.csv"
+CENSUS2010 = files(ethnicolr2) / "data/census/census_2010.csv"
 
 CENSUS_COLS = ["pctwhite", "pctblack", "pctapi", "pctaian", "pct2prace", "pcthispanic"]
 
 
 class CensusLnData:
-    census_df = None
-    census_year = None
+    census_df: pd.DataFrame | None = None
+    census_year: int | None = None
 
     @classmethod
     def census_ln(
@@ -37,15 +44,16 @@ class CensusLnData:
         outputs data from that row.
 
         Args:
-            df (:obj:`DataFrame`): Pandas DataFrame containing the first and last name
-                columns.
-            lname_col (str): Column name for the last name.
-            year (int): The year of Census data to be used. (2000 or 2010)
-                (default is 2000)
+            df: Pandas DataFrame containing the first and last name columns
+            lname_col: Column name for the last name
+            year: The year of Census data to be used (2000 or 2010), default is 2000
 
         Returns:
-            DataFrame: Pandas DataFrame with additional columns 'pctwhite',
+            pd.DataFrame: Pandas DataFrame with additional columns 'pctwhite',
                 'pctblack', 'pctapi', 'pctaian', 'pct2prace', 'pcthispanic'
+
+        Raises:
+            ValueError: If column doesn't exist or DataFrame is invalid
 
         """
 
@@ -54,15 +62,13 @@ class CensusLnData:
         df["__last_name"] = df[lname_col].str.strip().str.upper()
 
         if cls.census_df is None or cls.census_year != year:
+            # Explicitly type the columns list for pandas
+            cols: list[str] = ["name"] + CENSUS_COLS
             match year:
                 case 2000:
-                    cls.census_df = pd.read_csv(
-                        CENSUS2000, usecols=["name"] + CENSUS_COLS
-                    )
+                    cls.census_df = pd.read_csv(CENSUS2000, usecols=cols)  # type: ignore[misc]
                 case 2010:
-                    cls.census_df = pd.read_csv(
-                        CENSUS2010, usecols=["name"] + CENSUS_COLS
-                    )
+                    cls.census_df = pd.read_csv(CENSUS2010, usecols=cols)  # type: ignore[misc]
                 case _:
                     raise ValueError(
                         f"Unsupported census year: {year}. Only 2000 and 2010 are supported."
@@ -77,13 +83,24 @@ class CensusLnData:
 
         rdf = pd.merge(df, cls.census_df, how="left", on="__last_name")
 
-        del df["__last_name"]
-        del rdf["__last_name"]
+        df.drop(columns=["__last_name"], inplace=True)
+        rdf.drop(columns=["__last_name"], inplace=True)
 
         return rdf
 
 
-census_ln = CensusLnData.census_ln
+def census_ln(df: pd.DataFrame, lname_col: str, year: int = 2000) -> pd.DataFrame:
+    """Append Census demographic data by last name.
+
+    Args:
+        df: Pandas DataFrame containing the last name column
+        lname_col: Column name for the last name
+        year: Census data year (2000 or 2010)
+
+    Returns:
+        pd.DataFrame: DataFrame with original data plus Census demographic columns
+    """
+    return CensusLnData.census_ln(df, lname_col, year)
 
 
 @click.command()
@@ -92,9 +109,16 @@ census_ln = CensusLnData.census_ln
 @name_column_options
 @year_option(years=[2000, 2010], default_year=2010)
 def main(
-    input_file: str, output: str, verbose: bool, last_name_col: str, year: str
+    input_file: str, output: str | None, verbose: bool, last_name_col: str, year: str
 ) -> None:
     """Append Census demographic data by last name.
+
+    Args:
+        input_file: Path to CSV file containing name data
+        output: Output file path (optional)
+        verbose: Enable verbose output
+        last_name_col: Column name containing last names
+        year: Census year to use (2000 or 2010)
 
     INPUT_FILE: Path to CSV file containing name data.
     """
@@ -109,7 +133,7 @@ def main(
         click.echo(f"Last name column: {last_name_col}")
 
     try:
-        df = pd.read_csv(input_file)
+        df = pd.read_csv(input_file)  # type: ignore[misc]
 
         if verbose:
             click.echo(f"Loaded {len(df)} rows")

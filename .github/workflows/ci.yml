@@ -34,7 +34,7 @@ jobs:
       run: uv run ruff format --check .
 
     - name: Run type checking
-      run: uv run mypy ethnicolr2/ || true  # Allow mypy to fail for now
+      run: uv run pyright ethnicolr2/
 
     - name: Run tests
       run: uv run pytest --cov=ethnicolr2 --cov-report=xml --cov-report=term-missing || true

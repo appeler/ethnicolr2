@@ -1,12 +1,30 @@
 """Click-based CLI utilities for ethnicolr2."""
 
+from __future__ import annotations
+
+from collections.abc import Callable
 from pathlib import Path
+from typing import Any
 
 import click
 
 
-def validate_input_file(ctx, param, value):
-    """Validate that the input file exists."""
+def validate_input_file(
+    ctx: click.Context, param: click.Parameter, value: str | None
+) -> str | None:
+    """Validate that the input file exists.
+
+    Args:
+        ctx: Click context object
+        param: Click parameter object
+        value: File path to validate
+
+    Returns:
+        str | None: Validated file path or None
+
+    Raises:
+        click.BadParameter: If file doesn't exist or is not a file
+    """
     if value is None:
         return value
 
@@ -18,7 +36,9 @@ def validate_input_file(ctx, param, value):
     return str(path)
 
 
-def validate_output_file(ctx, param, value):
+def validate_output_file(
+    ctx: click.Context, param: click.Parameter, value: str | None
+) -> str | None:
     """Validate the output file path."""
     if value is None:
         return value
@@ -30,7 +50,7 @@ def validate_output_file(ctx, param, value):
     return str(path)
 
 
-def common_options(func):
+def common_options(func: Callable[..., Any]) -> Callable[..., Any]:
     """Decorator to add common CLI options to all commands."""
     func = click.option(
         "--output",
@@ -45,7 +65,7 @@ def common_options(func):
     return func
 
 
-def name_column_options(func):
+def name_column_options(func: Callable[..., Any]) -> Callable[..., Any]:
     """Decorator to add name column options."""
     func = click.option(
         "--last-name-col",
@@ -57,7 +77,7 @@ def name_column_options(func):
     return func
 
 
-def full_name_options(func):
+def full_name_options(func: Callable[..., Any]) -> Callable[..., Any]:
     """Decorator to add full name options."""
     func = click.option(
         "--full-name-col",
@@ -79,7 +99,7 @@ def full_name_options(func):
     return func
 
 
-def prediction_options(func):
+def prediction_options(func: Callable[..., Any]) -> Callable[..., Any]:
     """Decorator to add prediction-related options."""
     func = click.option(
         "--iterations",
@@ -100,10 +120,12 @@ def prediction_options(func):
     return func
 
 
-def year_option(years: list, default_year: int):
+def year_option(
+    years: list[int], default_year: int
+) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
     """Factory function to create year option with specific choices."""
 
-    def decorator(func):
+    def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
         return click.option(
             "--year",
             "-y",

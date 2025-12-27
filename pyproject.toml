@@ -47,7 +47,7 @@ dependencies = [
 "Changelog" = "https://github.com/appeler/ethnicolr2/blob/main/CHANGELOG.md"
 
 [dependency-groups]
-dev = ["check-manifest", "ruff>=0.7.0", "pre-commit>=3.0.0"]
+dev = ["check-manifest", "ruff>=0.7.0", "pre-commit>=3.0.0", "pydoclint", "pyright", "pandas-stubs", "types-tqdm"]
 test = ["coverage", "pytest", "numpy>=1.25.2"]
 docs = [
     "sphinx",
@@ -56,11 +56,18 @@ docs = [
     "myst-parser",
     "linkify-it-py",
     "sphinx-design",
+    "nbsphinx",
+    "jupyter",
+    "ipykernel",
 ]
 all = [
     "check-manifest",
     "ruff>=0.7.0",
     "pre-commit>=3.0.0",
+    "pydoclint",
+    "pyright",
+    "pandas-stubs",
+    "types-tqdm",
     "coverage",
     "pytest",
     "numpy>=1.25.2",
@@ -70,6 +77,9 @@ all = [
     "myst-parser",
     "linkify-it-py",
     "sphinx-design",
+    "nbsphinx",
+    "jupyter",
+    "ipykernel",
 ]
 
 [project.scripts]
@@ -79,9 +89,6 @@ pred_fl_last_name = "ethnicolr2.pred_fl_ln_lstm:main"
 pred_census_last_name = "ethnicolr2.pred_cen_ln_lstm:main"
 ethnicolr2_download_models = "ethnicolr2._setup_hooks:download_cli"
 
-# Modern setuptools hooks (replaces setup.py custom commands)
-[project.entry-points."setuptools.finalize_distribution_options"]
-post-setup = "ethnicolr2._setup_hooks:register_commands"
 
 [tool.setuptools]
 packages = ["ethnicolr2"]
@@ -98,7 +105,6 @@ ethnicolr2 = [
     "models/*.pt",
     "models/census/lstm/*.csv",
     "data/input*.csv",
-    "examples/*.ipynb",
 ]
 
 # Testing configuration
@@ -118,7 +124,7 @@ exclude = [
     "build",
     "dist",
     ".venv",
-    "examples"
+    "docs/source/examples/"
 ]
 
 [tool.ruff.lint]
@@ -144,10 +150,31 @@ ignore = [
 module-name = "ethnicolr2"
 module-root = ""
 
+# Type checking configuration
+[tool.pyright]
+include = ["ethnicolr2"]
+exclude = ["**/node_modules", "**/__pycache__", ".venv", "venv", "build", "dist"]
+strict = ["ethnicolr2"]
+reportMissingTypeStubs = false
+reportUnknownMemberType = false  # For external libraries without stubs
+reportUnknownVariableType = false  # For pandas/torch operations
+reportUnknownParameterType = false  # For external library parameters
+reportUnknownArgumentType = false  # For external library arguments
+pythonVersion = "3.11"
+pythonPlatform = "All"
+
+# Docstring linting configuration
+[tool.pydoclint]
+style = "google"
+exclude = ["tests/", ".venv/", "venv/", "docs/source/examples/"]
+arg-type-hints-in-signature = true
+arg-type-hints-in-docstring = false
+skip-checking-short-docstrings = false
+
 # Dependency analysis configuration
 [tool.deptry]
-# Exclude example notebooks, virtual environment, and test files that use numpy
-exclude = ["examples/", ".venv/", "venv/", "tests/test_input_edge_cases.py", "tests/test_validation.py"]
+# Exclude documentation examples, virtual environment, and test files that use numpy
+exclude = ["docs/source/examples/", ".venv/", "venv/", "tests/test_input_edge_cases.py", "tests/test_validation.py"]
 
 # Package name mappings for packages with different import vs install names
 [tool.deptry.package_module_name_map]

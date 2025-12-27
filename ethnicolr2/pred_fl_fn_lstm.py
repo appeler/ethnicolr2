@@ -1,16 +1,28 @@
 #!/usr/bin/env python
 
+from __future__ import annotations
+
 import sys
+from typing import TYPE_CHECKING
 
 import click
-import pandas as pd
+
+if TYPE_CHECKING:
+    import pandas as pd
+else:
+    import pandas as pd
 
 from .cli_utils import common_options, full_name_options, validate_input_file
 from .ethnicolr_class import EthnicolrModelClass
 
 
 class FullNameLstmModel(EthnicolrModelClass):
-    """Predict ethnicity based on fullname"""
+    """Predict ethnicity based on fullname.
+
+    Attributes:
+        MODEL_FN: Path to the LSTM model file
+        VOCAB_FN: Path to the vocabulary vectorizer file
+    """
 
     MODEL_FN = "models/lstm_fullname.pt"
     VOCAB_FN = "models/pt_vec_fullname.joblib"
@@ -19,52 +31,72 @@ class FullNameLstmModel(EthnicolrModelClass):
     def pred_fl_full_name(
         cls,
         df: pd.DataFrame,
-        full_name_col: str = None,
-        lname_col: str = None,
-        fname_col: str = None,
+        full_name_col: str | None = None,
+        lname_col: str | None = None,
+        fname_col: str | None = None,
     ) -> pd.DataFrame:
         """
         Predict the race/ethnicity by the full name using the Florida voter
         registration data model.
 
         Args:
-            df (:obj:`DataFrame`): Pandas DataFrame containing the first and last name
-                columns.
-            ful_name_col (str): Column name for the full name.
-            lname_col (str): Column name for the last name.
-            fname_col (str or int): Column name for the first name.
+            df: Pandas DataFrame containing name columns
+            full_name_col: Column name for the full name (optional)
+            lname_col: Column name for the last name (optional)
+            fname_col: Column name for the first name (optional)
 
         Returns:
-            DataFrame: Pandas DataFrame with additional columns:
-                - `race` the prediction result
-                - Additional columns for the probability of each of the classes.
+            pd.DataFrame: Pandas DataFrame with additional columns:
+                - `preds` the prediction result
+                - `probs` probability dictionary for each category
+
+        Raises:
+            ValueError: If column arguments are invalid or missing
 
         """
 
-        if lname_col and fname_col:
-            if lname_col not in df.columns:
-                raise ValueError(f"Column '{lname_col}' not found in DataFrame")
-            if fname_col not in df.columns:
-                raise ValueError(f"Column '{fname_col}' not found in DataFrame")
-            df["__name"] = (
-                df[lname_col].str.strip() + " " + df[fname_col].str.strip()
-            ).str.title()
-        elif full_name_col:
-            if full_name_col not in df.columns:
-                raise ValueError(f"Column '{full_name_col}' not found in DataFrame")
-            df["__name"] = df[full_name_col].str.title()
-        else:
-            raise ValueError(
-                "Must provide either full_name_col or both lname_col and fname_col"
-            )
+        match (bool(lname_col and fname_col), bool(full_name_col)):
+            case (True, _):
+                if lname_col not in df.columns:
+                    raise ValueError(f"Column '{lname_col}' not found in DataFrame")
+                if fname_col not in df.columns:
+                    raise ValueError(f"Column '{fname_col}' not found in DataFrame")
+                df["__name"] = (
+                    df[lname_col].str.strip() + " " + df[fname_col].str.strip()
+                ).str.title()
+            case (False, True):
+                if full_name_col not in df.columns:
+                    raise ValueError(f"Column '{full_name_col}' not found in DataFrame")
+                df["__name"] = df[full_name_col].str.title()
+            case _:
+                raise ValueError(
+                    "Must provide either full_name_col or both lname_col and fname_col"
+                )
 
         rdf = cls.predict(df, cls.VOCAB_FN, cls.MODEL_FN)
 
-        del rdf["__name"]
+        rdf = rdf.drop(columns=["__name"])
         return rdf
 
 
-pred_fl_full_name = FullNameLstmModel.pred_fl_full_name
+def pred_fl_full_name(
+    df: pd.DataFrame,
+    full_name_col: str | None = None,
+    lname_col: str | None = None,
+    fname_col: str | None = None,
+) -> pd.DataFrame:
+    """Predict race/ethnicity by full name using Florida voter registration model.
+
+    Args:
+        df: Pandas DataFrame containing name columns
+        full_name_col: Column name for full name (optional)
+        lname_col: Column name for last name (optional)
+        fname_col: Column name for first name (optional)
+
+    Returns:
+        pd.DataFrame: DataFrame with predictions and probabilities
+    """
+    return FullNameLstmModel.pred_fl_full_name(df, full_name_col, lname_col, fname_col)
 
 
 @click.command()
@@ -73,13 +105,21 @@ pred_fl_full_name = FullNameLstmModel.pred_fl_full_name
 @full_name_options
 def main(
     input_file: str,
-    output: str,
+    output: str | None,
     verbose: bool,
     full_name_col: str,
     first_name_col: str,
     last_name_col: str,
 ) -> None:
     """Predict race/ethnicity by full name using Florida voter registration model.
+
+    Args:
+        input_file: Path to CSV file containing name data
+        output: Output file path
+        verbose: Enable verbose output
+        full_name_col: Column name containing full names (optional)
+        first_name_col: Column name containing first names (optional)
+        last_name_col: Column name containing last names (optional)
 
     INPUT_FILE: Path to CSV file containing name data.
 
@@ -108,7 +148,7 @@ def main(
         click.echo("Using Florida voter registration full name LSTM model")
 
     try:
-        df = pd.read_csv(input_file, encoding="utf-8")
+        df = pd.read_csv(input_file, encoding="utf-8")  # type: ignore[misc]
 
         if verbose:
             click.echo(f"Loaded {len(df)} rows")

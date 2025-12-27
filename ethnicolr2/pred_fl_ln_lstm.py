@@ -1,9 +1,16 @@
 #!/usr/bin/env python
 
+from __future__ import annotations
+
 import sys
+from typing import TYPE_CHECKING
 
 import click
-import pandas as pd
+
+if TYPE_CHECKING:
+    import pandas as pd
+else:
+    import pandas as pd
 
 from .cli_utils import common_options, name_column_options, validate_input_file
 from .ethnicolr_class import EthnicolrModelClass
@@ -24,18 +31,16 @@ class LastNameLstmModel(EthnicolrModelClass):
             lname_col: Column name for the last name
 
         Returns:
-            DataFrame with original data plus:
+            pd.DataFrame: DataFrame with original data plus:
                 - 'preds': Predicted race/ethnicity category
                 - 'probs': Dictionary of probabilities for each category
 
         Raises:
             ValueError: If lname_col doesn't exist or DataFrame is invalid
-            RuntimeError: If model prediction fails
+            TypeError: If inputs are not correct types
         """
-        if not isinstance(df, pd.DataFrame):
+        if not hasattr(df, "columns") or not hasattr(df, "empty"):
             raise TypeError(f"Expected pandas DataFrame, got {type(df)}")
-        if not isinstance(lname_col, str):
-            raise TypeError(f"Expected string for lname_col, got {type(lname_col)}")
         if df.empty:
             raise ValueError("DataFrame cannot be empty")
 
@@ -43,19 +48,37 @@ class LastNameLstmModel(EthnicolrModelClass):
 
         rdf = cls.predict(df=df, vocab_fn=cls.VOCAB_FN, model_fn=cls.MODEL_FN)
 
-        del rdf["__name"]
+        rdf = rdf.drop(columns=["__name"])
         return rdf
 
 
-pred_fl_last_name = LastNameLstmModel.pred_fl_last_name
+def pred_fl_last_name(df: pd.DataFrame, lname_col: str) -> pd.DataFrame:
+    """Predict race/ethnicity by last name using Florida voter registration model.
+
+    Args:
+        df: Pandas DataFrame containing the last name column
+        lname_col: Column name for the last name
+
+    Returns:
+        pd.DataFrame: DataFrame with predictions and probabilities
+    """
+    return LastNameLstmModel.pred_fl_last_name(df, lname_col)
 
 
 @click.command()
 @click.argument("input_file", callback=validate_input_file, metavar="INPUT_FILE")
 @common_options
 @name_column_options
-def main(input_file: str, output: str, verbose: bool, last_name_col: str) -> None:
+def main(
+    input_file: str, output: str | None, verbose: bool, last_name_col: str
+) -> None:
     """Predict race/ethnicity by last name using Florida voter registration model.
+
+    Args:
+        input_file: Path to CSV file containing name data
+        output: Output file path
+        verbose: Enable verbose output
+        last_name_col: Column name containing last names
 
     INPUT_FILE: Path to CSV file containing name data.
     """
@@ -68,7 +91,7 @@ def main(input_file: str, output: str, verbose: bool, last_name_col: str) -> Non
         click.echo("Using Florida voter registration LSTM model")
 
     try:
-        df = pd.read_csv(input_file, encoding="utf-8")
+        df = pd.read_csv(input_file, encoding="utf-8")  # type: ignore[misc]
 
         if verbose:
             click.echo(f"Loaded {len(df)} rows")

@@ -59,7 +59,7 @@ Both Python API and command-line interface for seamless integration into your wo
 
 ## Documentation Sections
 
-::::{grid} 1 2 2 2
+::::{grid} 1 2 2 3
 :gutter: 3
 
 :::{grid-item-card} 🚀 Getting Started
@@ -69,11 +69,18 @@ Both Python API and command-line interface for seamless integration into your wo
 Installation, quickstart guide, and core concepts to get you up and running quickly.
 :::
 
+:::{grid-item-card} 📓 Examples
+:link: examples/index
+:link-type: doc
+
+Interactive Jupyter notebooks demonstrating real-world applications and best practices.
+:::
+
 :::{grid-item-card} 📚 User Guide
 :link: user-guide/census-data
 :link-type: doc
 
-Detailed tutorials, examples, and best practices for different use cases.
+Detailed tutorials and best practices for different use cases.
 :::
 
 :::{grid-item-card} 📖 API Reference
@@ -119,6 +126,14 @@ getting-started/concepts
 ```
 
 ```{toctree}
+:caption: Examples
+:maxdepth: 2
+:hidden:
+
+examples/index
+```
+
+```{toctree}
 :caption: User Guide
 :maxdepth: 2
 :hidden:
@@ -126,8 +141,6 @@ getting-started/concepts
 user-guide/census-data
 user-guide/florida-models
 user-guide/cli-usage
-user-guide/examples
-user-guide/troubleshooting
 ```
 
 ```{toctree}

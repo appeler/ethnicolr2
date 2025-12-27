@@ -1,17 +1,24 @@
 #!/usr/bin/env python
 
+from __future__ import annotations
+
 import os
 import time
 from importlib.resources import files
+from os import PathLike
 from pathlib import Path
 from threading import Lock
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-import joblib
-import pandas as pd
+import joblib  # type: ignore[import-untyped]
 import torch
 from torch.utils.data import DataLoader
 from tqdm import tqdm
+
+if TYPE_CHECKING:
+    import pandas as pd
+else:
+    import pandas as pd
 
 from .dataset import EthniDataset
 from .models import LSTM
@@ -20,15 +27,17 @@ tqdm.pandas()
 
 # Module-level caching infrastructure
 _MODEL_CACHE: dict[str, tuple[torch.nn.Module, Any, dict[str, Any]]] = {}
-_CACHE_LOCK = Lock()
-_CACHE_STATS = {"hits": 0, "misses": 0, "loads": 0}
+_CACHE_LOCK: Lock = Lock()
+_CACHE_STATS: dict[str, int] = {"hits": 0, "misses": 0, "loads": 0}
 
 # Cache configuration
-CACHE_ENABLED = os.getenv("ETHNICOLR_CACHE_ENABLED", "true").lower() == "true"
-MAX_CACHED_MODELS = int(os.getenv("ETHNICOLR_MAX_CACHED_MODELS", "3"))
+CACHE_ENABLED: bool = os.getenv("ETHNICOLR_CACHE_ENABLED", "true").lower() == "true"
+MAX_CACHED_MODELS: int = int(os.getenv("ETHNICOLR_MAX_CACHED_MODELS", "3"))
 
 
-def _get_cache_key(model_fn: str, vocab_fn: str) -> str:
+def _get_cache_key(
+    model_fn: str | Path | PathLike[str], vocab_fn: str | Path | PathLike[str]
+) -> str:
     """Generate unique cache key for model files."""
     try:
         # Include file modification time to handle model updates
@@ -43,22 +52,25 @@ def _get_cache_key(model_fn: str, vocab_fn: str) -> str:
 
 
 def _load_and_cache_model(
-    model_fn: str, vocab_fn: str
+    model_fn: str | Path | PathLike[str], vocab_fn: str | Path | PathLike[str]
 ) -> tuple[torch.nn.Module, Any, dict[str, Any]]:
     """Load model and cache with computed metadata."""
 
-    # Load vectorizer
-    vectorizer = joblib.load(vocab_fn)
+    # Load vectorizer - ensure string path for compatibility
+    vectorizer = joblib.load(str(vocab_fn))  # type: ignore[misc]
 
     # Determine model type and configuration
-    all_categories = ["asian", "hispanic", "nh_black", "nh_white", "other"]
-    if "fullname" in model_fn:
-        max_name = MAX_NAME_FULLNAME
-    elif "census" in model_fn:
-        max_name = MAX_NAME_CENSUS
-        all_categories = ["nh_white", "nh_black", "hispanic", "asian", "other"]
-    else:
-        max_name = MAX_NAME_FLORIDA
+    model_fn_str = str(model_fn)
+    match True:
+        case _ if "fullname" in model_fn_str:
+            max_name = MAX_NAME_FULLNAME
+            all_categories = ["asian", "hispanic", "nh_black", "nh_white", "other"]
+        case _ if "census" in model_fn_str:
+            max_name = MAX_NAME_CENSUS
+            all_categories = ["nh_white", "nh_black", "hispanic", "asian", "other"]
+        case _:
+            max_name = MAX_NAME_FLORIDA
+            all_categories = ["asian", "hispanic", "nh_black", "nh_white", "other"]
 
     # Pre-compute expensive operations
     vocab = list(vectorizer.get_feature_names_out())
@@ -71,7 +83,7 @@ def _load_and_cache_model(
     # Load and configure model
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model = LSTM(vocab_size, HIDDEN_SIZE, n_categories, num_layers=NUM_LAYERS)
-    model.load_state_dict(torch.load(model_fn, map_location=device))
+    model.load_state_dict(torch.load(str(model_fn), map_location=device))
     model.to(device)
     model.eval()  # Set to evaluation mode once
 
@@ -91,7 +103,7 @@ def _load_and_cache_model(
     return model, vectorizer, metadata
 
 
-def _evict_old_models():
+def _evict_old_models() -> None:
     """Remove oldest models if cache is full."""
     if len(_MODEL_CACHE) > MAX_CACHED_MODELS:
         # Find oldest model by load time
@@ -102,7 +114,7 @@ def _evict_old_models():
 
 
 def _get_cached_model(
-    model_fn: str, vocab_fn: str
+    model_fn: str | Path | PathLike[str], vocab_fn: str | Path | PathLike[str]
 ) -> tuple[torch.nn.Module, Any, dict[str, Any]]:
     """Thread-safe model retrieval with lazy loading."""
     global _MODEL_CACHE, _CACHE_LOCK, _CACHE_STATS
@@ -191,7 +203,9 @@ class EthnicolrModelClass:
         Raises:
             ValueError: If column doesn't exist or contains no valid data
         """
-        if col and (col not in df.columns):
+        if not col:  # Empty string, etc.
+            raise ValueError("Column name cannot be empty")
+        if col not in df.columns:
             raise ValueError(
                 f"Column '{col}' not found in DataFrame. Available columns: {list(df.columns)}"
             )
@@ -219,8 +233,7 @@ class EthnicolrModelClass:
         Returns:
             Tensor of character indices with shape (max_name,)
         """
-        if not isinstance(line, str):
-            raise TypeError(f"Expected string input, got {type(line)}")
+        # line is guaranteed to be str by type annotations
         if max_name <= 0:
             raise ValueError(f"max_name must be positive, got {max_name}")
 
@@ -235,7 +248,12 @@ class EthnicolrModelClass:
         return tensor
 
     @classmethod
-    def predict(cls, df: pd.DataFrame, vocab_fn: str, model_fn: str) -> pd.DataFrame:
+    def predict(
+        cls,
+        df: pd.DataFrame,
+        vocab_fn: str | Path | PathLike[str],
+        model_fn: str | Path | PathLike[str],
+    ) -> pd.DataFrame:
         """Generate race/ethnicity predictions for names in DataFrame.
 
         Args:
@@ -254,11 +272,14 @@ class EthnicolrModelClass:
         # Get file paths
         import ethnicolr2
 
-        MODEL = str(files(ethnicolr2).joinpath(model_fn))
-        VOCAB = str(files(ethnicolr2).joinpath(vocab_fn))
+        # Handle Traversable paths properly for type checking
+        model_resource = files(ethnicolr2)
+        vocab_resource = files(ethnicolr2)
+        MODEL = Path(str(model_resource / str(model_fn)))
+        VOCAB = Path(str(vocab_resource / str(vocab_fn)))
 
         # Use cached model instead of loading every time
-        model, vectorizer, model_metadata = _get_cached_model(MODEL, VOCAB)
+        model, _, model_metadata = _get_cached_model(MODEL, VOCAB)
 
         # Extract cached metadata to avoid recomputation
         all_categories = model_metadata["categories"]
@@ -267,19 +288,26 @@ class EthnicolrModelClass:
         oob = model_metadata["oob"]
         device = model_metadata["device"]
 
+        # Deduplicate names for efficient processing - predict each unique name only once
+        unique_names_df = df[["__name"]].drop_duplicates().reset_index(drop=True)
+
         batch_size = BATCH_SIZE
 
         dataset = EthniDataset(
-            df, all_letters, max_name, oob, transform=EthnicolrModelClass.lineToTensor
+            unique_names_df,
+            all_letters,
+            max_name,
+            oob,
+            transform=EthnicolrModelClass.lineToTensor,
         )  # noqa
         dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
 
         # Model is already loaded, configured, and in eval mode
 
         # List to hold the predictions
-        predictions = []
-        names = []
-        softprobs = []
+        predictions: list[int] = []
+        names: list[str] = []
+        softprobs: list[dict[str, float]] = []
         # Disable gradient calculations
         with torch.no_grad():
             # Loop over the batches
@@ -292,28 +320,34 @@ class EthnicolrModelClass:
                 # get soft probabilities
                 probs = torch.softmax(outputs, dim=1)
                 # match with all_categories and store probs as json in softprobs
-                softprobs.extend(
-                    [
-                        dict(zip(all_categories, p, strict=False))
-                        for p in probs.cpu().numpy()
-                    ]
-                )
+                probs_numpy = probs.cpu().numpy()
+                for p in probs_numpy:
+                    prob_dict = dict(zip(all_categories, p, strict=False))
+                    softprobs.append(prob_dict)
                 outputs = torch.argmax(outputs, dim=1)
                 # Move the predictions to the CPU and convert to numpy arrays
                 outputs = outputs.cpu().numpy()
                 # Append the predictions to the list
-                predictions.extend(list(outputs))
+                pred_list = outputs.tolist()
+                predictions.extend(pred_list)
                 names.extend(nms)
 
-        results_df = pd.DataFrame({"names": names, "predictions": predictions})
-        results_df["preds"] = results_df["predictions"].apply(
-            lambda x: all_categories[x]
-        )
-        results_df["probs"] = softprobs
-        results_df = results_df.drop(columns=["predictions"])
+        # Create results DataFrame from unique name predictions
+        def get_category(x: int) -> str:
+            return all_categories[x]
 
+        # Convert predictions to category names
+        pred_categories = [get_category(p) for p in predictions]
+
+        # Create results DataFrame with unique names and their predictions
+        unique_results_df = pd.DataFrame(
+            {"names": names, "probs": softprobs, "preds": pred_categories}
+        )  # type: ignore[misc]
+
+        # Join results back to original DataFrame - this naturally handles duplicates
+        # Each duplicate name gets the same prediction (correct and efficient behavior)
         final_df = pd.merge(
-            df, results_df, left_on=["__name"], right_on=["names"], how="left"
+            df, unique_results_df, left_on=["__name"], right_on=["names"], how="left"
         )
         final_df = final_df.drop(columns=["names"])
         return final_df

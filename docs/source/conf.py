@@ -57,14 +57,19 @@ extensions = [
     "sphinx.ext.intersphinx",
     "myst_parser",
     "sphinx_design",
+    "nbsphinx",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
 # The suffix(es) of source filenames.
-# MyST parser will handle .md files
-source_suffix = [".md"]
+# MyST parser will handle .md files, nbsphinx will handle .ipynb files automatically
+source_suffix = {
+    ".md": None,  # Let MyST parser handle .md files
+    ".rst": None,  # Default restructuredtext
+}
+# Note: .ipynb files are handled automatically by nbsphinx extension
 
 # The master toctree document.
 master_doc = "index"
@@ -87,6 +92,16 @@ myst_enable_extensions = [
 # Enable cross-referencing
 myst_heading_anchors = 3
 myst_all_links_external = False
+
+# nbsphinx configuration
+nbsphinx_execute = "always"  # Force execution of notebooks
+nbsphinx_allow_errors = True  # Allow errors during execution for debugging
+nbsphinx_kernel_name = "python3"
+nbsphinx_timeout = 600  # 10 minute timeout for notebook execution
+nbsphinx_execute_arguments = [
+    "--InlineBackend.figure_formats={'svg', 'pdf'}",
+    "--InlineBackend.rc={'figure.dpi': 96}",
+]
 
 # Autodoc configuration
 autodoc_default_options = {

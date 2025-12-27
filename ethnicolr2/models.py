@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import torch
 import torch.nn as nn
 
@@ -14,7 +16,7 @@ class LSTM(nn.Module):
 
     def __init__(
         self, input_size: int, hidden_size: int, output_size: int, num_layers: int = 1
-    ):
+    ) -> None:
         if input_size <= 0:
             raise ValueError(f"input_size must be positive, got {input_size}")
         if hidden_size <= 0:
@@ -24,14 +26,16 @@ class LSTM(nn.Module):
         if num_layers <= 0:
             raise ValueError(f"num_layers must be positive, got {num_layers}")
 
-        super().__init__()
-        self.hidden_size = hidden_size
-        self.num_layers = num_layers
+        super().__init__()  # type: ignore[misc]
+        self.hidden_size: int = hidden_size
+        self.num_layers: int = num_layers
 
-        self.embedding = nn.Embedding(input_size, hidden_size)
-        self.lstm = nn.LSTM(hidden_size, hidden_size, num_layers, batch_first=True)
-        self.fc = nn.Linear(hidden_size, output_size)
-        self.softmax = nn.LogSoftmax(dim=1)
+        self.embedding: nn.Embedding = nn.Embedding(input_size, hidden_size)
+        self.lstm: nn.LSTM = nn.LSTM(
+            hidden_size, hidden_size, num_layers, batch_first=True
+        )
+        self.fc: nn.Linear = nn.Linear(hidden_size, output_size)
+        self.softmax: nn.LogSoftmax = nn.LogSoftmax(dim=1)
 
     def forward(self, input: torch.Tensor) -> torch.Tensor:
         """Forward pass through the LSTM model.
@@ -42,14 +46,14 @@ class LSTM(nn.Module):
         Returns:
             Log-softmax probabilities for each category with shape (batch_size, output_size)
         """
-        if not isinstance(input, torch.Tensor):
+        if not isinstance(input, torch.Tensor):  # type: ignore[arg-type]
             raise TypeError(f"Expected torch.Tensor, got {type(input)}")
         if len(input.shape) != 2:
             raise ValueError(
                 f"Expected 2D tensor (batch_size, seq_len), got shape {input.shape}"
             )
 
-        embedded = self.embedding(input.type(torch.IntTensor).to(input.device))
+        embedded = self.embedding(input.to(torch.int32))
         h0 = torch.zeros(self.num_layers, embedded.size(0), self.hidden_size).to(
             input.device
         )
