@@ -124,7 +124,7 @@ exclude = [
     "build",
     "dist",
     ".venv",
-    "docs/source/examples/"
+    "docs/source/examples"
 ]
 
 [tool.ruff.lint]
