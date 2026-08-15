@@ -210,7 +210,7 @@ html_static_path = ["_static"]
 
 # Generate GitHub Pages URL from repository URL
 if "github.com" in repository_url:
-    # Convert https://github.com/user/repo to https://user.github.io/repo/
+    # Convert github.com/<owner>/<name> to <owner>.github.io/<name>/
     repo_parts = repository_url.replace("https://github.com/", "").split("/")
     if len(repo_parts) >= 2:
         html_baseurl = f"https://{repo_parts[0]}.github.io/{repo_parts[1]}/"
