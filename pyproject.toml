@@ -12,12 +12,12 @@ authors = [
   { name = "Suriyan", email = "suriyant@gmail.com" },
   { name = "Gaurav Sood", email = "gsood07@gmail.com" }
 ]
-license = { text = "MIT" }
+license = "MIT"
+license-files = ["LICENSE"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -187,3 +187,10 @@ DEP001 = ["docs/source/examples/"]  # Allow missing dependencies in documentatio
 DEP002 = ["scikit-learn"]  # scikit-learn is needed for model compatibility (joblib files)
 DEP003 = ["docs/source/examples/"]  # Allow transitive dependencies in documentation examples
 DEP004 = ["tests/test_input_edge_cases.py", "tests/test_validation.py"]  # Allow test dependencies in test files
+
+[tool.codespell]
+# The census tables are surnames, not prose. codespell reported 1,800 findings
+# here, essentially all of them real names it mistook for misspellings, which
+# drowned the handful of genuine typos in the source. Auto-"correcting" a name
+# would also silently corrupt the data these models are trained on.
+skip = "*.csv,*.parquet,*.joblib,./ethnicolr2/data,./docs/build,./.venv,uv.lock"
