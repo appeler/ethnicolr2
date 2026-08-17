@@ -37,6 +37,7 @@ dependencies = [
     "joblib==1.5.3",
     "tqdm==4.69.0",
     "scikit-learn==1.9.0",   # Use exact version that trained the models
+    "huggingface-hub>=0.23",
 ]
 
 [project.urls]
@@ -45,6 +46,7 @@ dependencies = [
 "Repository" = "https://github.com/appeler/ethnicolr2"
 "Bug Tracker" = "https://github.com/appeler/ethnicolr2/issues"
 "Changelog" = "https://github.com/appeler/ethnicolr2/blob/main/CHANGELOG.md"
+"Model" = "https://huggingface.co/gojiberries/ethnicolr2"
 
 [dependency-groups]
 dev = ["check-manifest", "ruff>=0.7.0", "pre-commit>=3.0.0", "pydoclint", "pyright", "pandas-stubs", "types-tqdm"]
@@ -90,28 +92,12 @@ pred_census_last_name = "ethnicolr2.pred_cen_ln_lstm:main"
 ethnicolr2_download_models = "ethnicolr2._setup_hooks:download_cli"
 
 
-[tool.setuptools]
-packages = ["ethnicolr2"]
-include-package-data = true
-
-[tool.setuptools.package-data]
-ethnicolr2 = [
-    "data/census/census_2000.csv",
-    "data/census/census_2010.csv",
-    "data/census/readme.md",
-    "data/census/*.pdf",
-    "data/census/*.R",
-    "models/*.joblib",
-    "models/*.pt",
-    "models/census/lstm/*.csv",
-    "data/input*.csv",
-]
-
 # Testing configuration
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = "test_*.py"
 addopts = "--verbose"
+markers = ["live: reaches the Hugging Face Hub"]
 
 # Code quality and formatting tools
 
