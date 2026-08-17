@@ -86,7 +86,7 @@ open docs/build/html/index.html
 
 ### Model Files and Data
 
-- **Pre-trained Models** (in `models/`):
+- **Pre-trained Models** (pinned on `gojiberries/ethnicolr2` on Hugging Face):
   - `lstm_lastname_gen.pt`: Florida last name LSTM model
   - `lstm_fullname.pt`: Florida full name LSTM model
   - `census_lstm_lastname.pt`: Census last name LSTM model
@@ -115,12 +115,10 @@ The models predict one of five race/ethnicity categories:
 
 ### Key Dependencies
 
-- **PyTorch 2.8.0**: Neural network framework (exact version required)
-- **scikit-learn 1.5.1**: For vectorizers (exact version required for model compatibility)
-- **pandas>=1.3.0**: Data manipulation
-- **joblib==1.3.1**: Model serialization (exact version required)
-- **tqdm==4.66.3**: Progress bars (exact version required)
-- **numpy>=1.20.0,<2.0.0**: Numerical computing
+The authoritative dependency versions are declared in `pyproject.toml` and locked in
+`uv.lock`. PyTorch provides model inference, scikit-learn and joblib load the published
+vectorizers, pandas handles tabular data, and huggingface-hub resolves immutable model
+assets.
 
 ## Testing Strategy
 

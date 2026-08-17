@@ -193,5 +193,5 @@ Models handle common variations but may struggle with:
 
 - {doc}`../user-guide/census-data`: Detailed census model usage
 - {doc}`../user-guide/florida-models`: Florida model deep dive
-- {doc}`../user-guide/examples`: Practical examples and case studies
+- {doc}`../examples/index`: Practical examples and case studies
 - {doc}`../api-reference/models`: Technical API documentation

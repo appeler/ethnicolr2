@@ -1,0 +1,12 @@
+# Managed by Copier. Records the py-canon template for future updates.
+_commit: v1
+_src_path: gh:gojiplus/py-canon
+author_email: gsood07@gmail.com
+author_name: Gaurav Sood
+coverage_floor: 0
+default_branch: main
+description: Predict race and ethnicity from names with PyTorch models
+needs_cli: true
+org: appeler
+package_name: ethnicolr2
+project_name: ethnicolr2

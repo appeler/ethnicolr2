@@ -387,28 +387,26 @@ class TestProductionScenarios(unittest.TestCase):
         for result in results[1:]:
             pd.testing.assert_frame_equal(first_result, result)
 
-    def test_cache_performance_degradation(self):
-        """Test that cache performance doesn't degrade over time."""
+    def test_cache_remains_stable_over_repeated_calls(self):
+        """Test that repeated predictions reuse one cached model."""
         test_df = pd.DataFrame({"last": ["smith"]})
 
-        # Perform initial prediction (cache miss)
-        start_time = time.time()
         ethnicolr2.pred_fl_last_name(test_df, "last")
-        first_time = time.time() - start_time
+        initial_info = get_cache_info()
 
-        # Perform many cached predictions
-        times = []
         for _ in range(20):
-            start_time = time.time()
             ethnicolr2.pred_fl_last_name(test_df, "last")
-            times.append(time.time() - start_time)
 
-        # Cached predictions should remain fast
-        avg_cached_time = sum(times) / len(times)
-        max_cached_time = max(times)
-
-        self.assertLess(avg_cached_time, first_time / 2)
-        self.assertLess(max_cached_time, first_time)
+        final_info = get_cache_info()
+        self.assertEqual(final_info["cached_models"], initial_info["cached_models"])
+        self.assertEqual(
+            final_info["cache_stats"]["hits"],
+            initial_info["cache_stats"]["hits"] + 20,
+        )
+        self.assertEqual(
+            final_info["cache_stats"]["loads"],
+            initial_info["cache_stats"]["loads"],
+        )
 
     def test_cache_with_different_data_sizes(self):
         """Test cache performance with different data sizes."""

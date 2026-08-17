@@ -63,18 +63,14 @@ For most use cases, use the high-level prediction functions rather than the inte
 
 ## Examples
 
-### Loading Models Manually
+### Florida Last Name Predictions
 
 ```python
-from ethnicolr2.pred_fl_ln_lstm import LastNameLstmModel
-
-# Load Florida last name model
-model = LastNameLstmModel()
-
-# Make predictions
 import pandas as pd
+from ethnicolr2 import pred_fl_last_name
+
 df = pd.DataFrame({'last_name': ['Smith', 'Zhang']})
-result = model.predict(df, vocab_fn=model.VOCAB_FN, model_fn=model.MODEL_FN)
+result = pred_fl_last_name(df, 'last_name')
 print(result)
 ```
 

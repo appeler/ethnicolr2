@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import sys
-from importlib.resources import files
+from importlib.resources import as_file, files
 from typing import TYPE_CHECKING
 
 import click
@@ -13,8 +13,6 @@ if TYPE_CHECKING:
 else:
     import pandas as pd
 
-import ethnicolr2
-
 from .cli_utils import (
     common_options,
     name_column_options,
@@ -23,8 +21,8 @@ from .cli_utils import (
 )
 from .ethnicolr_class import EthnicolrModelClass
 
-CENSUS2000 = files(ethnicolr2) / "data/census/census_2000.csv"
-CENSUS2010 = files(ethnicolr2) / "data/census/census_2010.csv"
+CENSUS2000 = files("ethnicolr2") / "data/census/census_2000.parquet"
+CENSUS2010 = files("ethnicolr2") / "data/census/census_2010.parquet"
 
 CENSUS_COLS = ["pctwhite", "pctblack", "pctapi", "pctaian", "pct2prace", "pcthispanic"]
 
@@ -59,34 +57,33 @@ class CensusLnData:
 
         df = EthnicolrModelClass.test_and_norm_df(df, lname_col)
 
-        df["__last_name"] = df[lname_col].str.strip().str.upper()
+        normalized_names = df[lname_col].str.strip().str.upper()
 
         if cls.census_df is None or cls.census_year != year:
-            # Explicitly type the columns list for pandas
-            cols: list[str] = ["name"] + CENSUS_COLS
             match year:
                 case 2000:
-                    cls.census_df = pd.read_csv(CENSUS2000, usecols=cols)  # type: ignore[misc]
+                    resource = CENSUS2000
                 case 2010:
-                    cls.census_df = pd.read_csv(CENSUS2010, usecols=cols)  # type: ignore[misc]
+                    resource = CENSUS2010
                 case _:
                     raise ValueError(
                         f"Unsupported census year: {year}. Only 2000 and 2010 are supported."
                     )
 
+            with as_file(resource) as path:
+                cls.census_df = pd.read_parquet(path)
+
             cls.census_df.drop(
                 cls.census_df[cls.census_df.name.isnull()].index, inplace=True
             )
 
-            cls.census_df.columns = ["__last_name"] + CENSUS_COLS
+            cls.census_df.columns = ["name"] + CENSUS_COLS
+            cls.census_df.set_index("name", inplace=True)
             cls.census_year = year
 
-        rdf = pd.merge(df, cls.census_df, how="left", on="__last_name")
-
-        df.drop(columns=["__last_name"], inplace=True)
-        rdf.drop(columns=["__last_name"], inplace=True)
-
-        return rdf
+        for column in CENSUS_COLS:
+            df[column] = normalized_names.map(cls.census_df[column])
+        return df
 
 
 def census_ln(df: pd.DataFrame, lname_col: str, year: int = 2000) -> pd.DataFrame:

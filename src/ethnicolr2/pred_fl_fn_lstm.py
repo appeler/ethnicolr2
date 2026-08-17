@@ -55,25 +55,28 @@ class FullNameLstmModel(EthnicolrModelClass):
 
         """
 
+        work_df = df.copy()
         match (bool(lname_col and fname_col), bool(full_name_col)):
             case (True, _):
                 if lname_col not in df.columns:
                     raise ValueError(f"Column '{lname_col}' not found in DataFrame")
                 if fname_col not in df.columns:
                     raise ValueError(f"Column '{fname_col}' not found in DataFrame")
-                df["__name"] = (
-                    df[lname_col].str.strip() + " " + df[fname_col].str.strip()
+                work_df["__name"] = (
+                    work_df[lname_col].str.strip()
+                    + " "
+                    + work_df[fname_col].str.strip()
                 ).str.title()
             case (False, True):
                 if full_name_col not in df.columns:
                     raise ValueError(f"Column '{full_name_col}' not found in DataFrame")
-                df["__name"] = df[full_name_col].str.title()
+                work_df["__name"] = work_df[full_name_col].str.title()
             case _:
                 raise ValueError(
                     "Must provide either full_name_col or both lname_col and fname_col"
                 )
 
-        rdf = cls.predict(df, cls.VOCAB_FN, cls.MODEL_FN)
+        rdf = cls.predict(work_df, cls.VOCAB_FN, cls.MODEL_FN)
 
         rdf = rdf.drop(columns=["__name"])
         return rdf

@@ -311,6 +311,6 @@ python -c "import ethnicolr2; print(ethnicolr2.__version__)"
 
 ## Next Steps
 
-- {doc}`examples`: See complete workflow examples
+- {doc}`../examples/index`: See complete workflow examples
 - {doc}`../api-reference/utilities`: Python API for more control
-- {doc}`troubleshooting`: Common issues and solutions
+- {doc}`../getting-started/installation`: Installation and setup

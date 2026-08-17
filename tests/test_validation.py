@@ -173,6 +173,33 @@ class TestDataIntegrity(unittest.TestCase):
         self.assertEqual(len(census_result), 1)
         self.assertEqual(len(florida_result), 1)
 
+    def test_prediction_outputs_preserve_index_without_mutating_input(self):
+        df = pd.DataFrame(
+            {
+                "last": ["smith", "zhang"],
+                "first": ["mary", "wei"],
+                "preds": ["old", "old"],
+                "probs": ["old", "old"],
+            },
+            index=[11, 4],
+        )
+        original = df.copy(deep=True)
+        models = [
+            lambda: pred_fl_last_name(df, "last"),
+            lambda: pred_census_last_name(df, "last"),
+            lambda: pred_fl_full_name(df, lname_col="last", fname_col="first"),
+        ]
+
+        for model in models:
+            result = model()
+            self.assertEqual(result.index.tolist(), [11, 4])
+            self.assertIn("preds", result.columns)
+            self.assertIn("probs", result.columns)
+            self.assertNotIn("preds_x", result.columns)
+            self.assertNotIn("probs_x", result.columns)
+
+        pd.testing.assert_frame_equal(df, original)
+
 
 class TestProductionValidation(unittest.TestCase):
     """Test validation scenarios common in production deployments."""
