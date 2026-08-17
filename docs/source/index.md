@@ -5,17 +5,28 @@
 ![Python Version](https://img.shields.io/pypi/pyversions/ethnicolr2.svg)
 ![Downloads](https://pepy.tech/badge/ethnicolr2)
 
-**ethnicolr2** is a modern PyTorch-based machine learning package that predicts race and ethnicity from names using LSTM neural networks. It's trained on US Census data and Florida voter registration data to provide accurate predictions based on:
+## Project status
+
+`ethnicolr2` is in maintenance mode. Existing users can keep using it, and we
+will continue to fix serious bugs, security issues, and compatibility breaks.
+New projects should use [ethnicolr](https://github.com/appeler/ethnicolr), the
+canonical package. New models and features will be developed there.
+
+`ethnicolr2` preserves three PyTorch LSTM models trained on US Census and
+Florida voter registration data. The models use:
 
 - **Last name only** (census model or Florida model)
 - **First and last name combined** (Florida full name model)
 
-## Quick Start
+## Quick start for existing projects
 
 ```bash
-# Install ethnicolr2
 uv add ethnicolr2
-# or
+```
+
+or
+
+```bash
 pip install ethnicolr2
 ```
 

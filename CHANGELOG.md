@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+
+- Put `ethnicolr2` in maintenance mode and direct new models and features to
+  `ethnicolr`.
+
 ## [0.3.3] - 2026-08-17
 
 ### Changed

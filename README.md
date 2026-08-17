@@ -6,35 +6,29 @@
 [![image](https://static.pepy.tech/badge/ethnicolr2)](https://pepy.tech/project/ethnicolr2)
 [![Documentation](https://img.shields.io/badge/docs-github.io-blue)](https://appeler.github.io/ethnicolr2/)
 
-A Pytorch implementation of
-[ethnicolr](https://github.com/appeler/ethnicolr) with new models that
-make different assumptions (for instance, this package has models
-trained on unique names) than ethnicolr. The package uses the US census
-data and the Florida voting registration data to build models to predict
-the race and ethnicity (non-Hispanic whites, non-Hispanic Blacks,
-Asians, Hispanics, and Other) based on first and last name or just the
-last name. For notebooks underlying the package, see
-[here](https://github.com/appeler/ethnicolr_v2).
+## Project status
+
+`ethnicolr2` is in maintenance mode. Existing users can keep using it, and we
+will continue to fix serious bugs, security issues, and compatibility breaks.
+New projects should use [ethnicolr](https://github.com/appeler/ethnicolr), the
+canonical package. New models and features will be developed there.
+
+`ethnicolr2` preserves three PyTorch LSTM models trained on US Census and
+Florida voter registration data. The models predict five race and ethnicity
+categories from a last name or from a first and last name.
 
 # Caveats and Notes
 
-If you picked a random person with the last name \'Smith\' in the US in
-2010 and asked us to guess this person\'s race (as measured by the
-census), the best guess is the modal race of the person named Smith
-(which you can get from the census popular last name data file). It is
-the Bayes Optimal Solution. So what good are predictive models? A few
-things\-\--if you want to impute race and ethnicity for last names that
-are not in the census file, which can be because of errors, infer the
-race and ethnicity in different years than when the census was conducted
-(if some assumptions hold), infer the race of people in different
-countries (if some assumptions hold), etc. The biggest benefit comes in
-cases where both the first and last name are known.
+For a random person named Smith in the 2010 US Census population, the modal
+race among people named Smith is the Bayes-optimal point prediction. A model is
+most useful when a name is missing from the Census table or when both first and
+last names are available. Predictions outside the model's training population
+require assumptions that may not hold.
 
 # Install
 
-We strongly recommend installing [ethnicolor2]{.title-ref} inside a
-Python virtual environment (see [venv
-documentation](https://docs.python.org/3/library/venv.html#creating-virtual-environments))
+Install `ethnicolr2` inside a Python virtual environment (see the [venv
+documentation](https://docs.python.org/3/library/venv.html#creating-virtual-environments)).
 
     pip install ethnicolr2
 
@@ -66,17 +60,6 @@ Rajashekar Chintalapati, Suriyan Laohaprapanon, and Gaurav Sood
 
 # Contributor Code of Conduct
 
-The project welcomes contributions from everyone! In fact, it depends on
-it. To maintain this welcoming atmosphere and to collaborate in a fun
-and productive way, we expect contributors to the project to abide by
-the [Contributor Code of
+The project welcomes contributions from everyone. To maintain a welcoming
+atmosphere, contributors must abide by the [Contributor Code of
 Conduct](http://contributor-covenant.org/version/1/0/0/).
-
-
-## 🔗 Adjacent Repositories
-
-- [appeler/ethnicolr](https://github.com/appeler/ethnicolr) — Predict Race and Ethnicity Based on the Sequence of Characters in a Name
-- [appeler/ethnicolor](https://github.com/appeler/ethnicolor) — Race and Ethnicity based on name using data from census, voter reg. files, etc.
-- [appeler/parsernaam](https://github.com/appeler/parsernaam) — AI name parsing. Predict first or last name using a DL model.
-- [appeler/instate](https://github.com/appeler/instate) — instate: predict the state of residence from last name using the indian electoral rolls
-- [appeler/naamkaran](https://github.com/appeler/naamkaran) — generative model for names
