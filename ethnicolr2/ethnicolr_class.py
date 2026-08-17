@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import os
 import time
-from importlib.resources import files
 from os import PathLike
 from pathlib import Path
 from threading import Lock
@@ -20,6 +19,7 @@ if TYPE_CHECKING:
 else:
     import pandas as pd
 
+from ._resources import resolve_model
 from .dataset import EthniDataset
 from .models import LSTM
 
@@ -270,13 +270,8 @@ class EthnicolrModelClass:
             RuntimeError: If model loading or prediction fails
         """
         # Get file paths
-        import ethnicolr2
-
-        # Handle Traversable paths properly for type checking
-        model_resource = files(ethnicolr2)
-        vocab_resource = files(ethnicolr2)
-        MODEL = Path(str(model_resource / str(model_fn)))
-        VOCAB = Path(str(vocab_resource / str(vocab_fn)))
+        MODEL = Path(resolve_model(str(model_fn)))
+        VOCAB = Path(resolve_model(str(vocab_fn)))
 
         # Use cached model instead of loading every time
         model, _, model_metadata = _get_cached_model(MODEL, VOCAB)
@@ -288,8 +283,11 @@ class EthnicolrModelClass:
         oob = model_metadata["oob"]
         device = model_metadata["device"]
 
-        # Deduplicate names for efficient processing - predict each unique name only once
-        unique_names_df = df[["__name"]].drop_duplicates().reset_index(drop=True)
+        # Keep rows with missing names in the output, but do not send them to
+        # the tensor dataset, which requires actual strings.
+        input_df = df.copy()
+        valid_df = df[df["__name"].notna()]
+        unique_names_df = valid_df[["__name"]].drop_duplicates().reset_index(drop=True)
 
         batch_size = BATCH_SIZE
 
@@ -347,7 +345,11 @@ class EthnicolrModelClass:
         # Join results back to original DataFrame - this naturally handles duplicates
         # Each duplicate name gets the same prediction (correct and efficient behavior)
         final_df = pd.merge(
-            df, unique_results_df, left_on=["__name"], right_on=["names"], how="left"
+            input_df,
+            unique_results_df,
+            left_on=["__name"],
+            right_on=["names"],
+            how="left",
         )
         final_df = final_df.drop(columns=["names"])
         return final_df
