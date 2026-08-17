@@ -57,10 +57,10 @@ print(result)
 
 ethnicolr2 automatically installs these key dependencies:
 
-- **PyTorch 2.8.0**: Neural network framework
+- **PyTorch**: Neural network framework
 - **pandas**: Data manipulation and analysis
-- **NumPy 2.x**: Numerical computing
-- **scikit-learn 1.5.1**: Machine learning utilities
+- **NumPy**: Numerical computing
+- **scikit-learn**: Machine learning utilities
 - **joblib**: Model serialization
 
 ## Development Dependencies
@@ -101,10 +101,9 @@ print(torch.cuda.is_available())
 ### Getting Help
 
 - [GitHub Issues](https://github.com/appeler/ethnicolr2/issues)
-- [GitHub Discussions](https://github.com/appeler/ethnicolr2/discussions)
 
 ## What's Next?
 
 - {doc}`quickstart`: Learn the basics in 5 minutes
 - {doc}`concepts`: Understand the key concepts
-- {doc}`../user-guide/examples`: See practical examples
+- {doc}`../examples/index`: See practical examples

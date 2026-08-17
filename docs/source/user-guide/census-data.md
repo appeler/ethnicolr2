@@ -232,5 +232,5 @@ pred_census_last_name input.csv -l last_name -o ml_output.csv -y 2010
 ## Next Steps
 
 - {doc}`florida-models`: Explore higher-accuracy Florida models
-- {doc}`examples`: See more practical examples
+- {doc}`../examples/index`: See more practical examples
 - {doc}`../api-reference/models`: Technical API documentation

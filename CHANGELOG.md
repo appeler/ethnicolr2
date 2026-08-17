@@ -2,12 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
 ## [0.3.3] - 2026-08-17
 
 ### Changed
 
 - Load model weights and vectorizers from the pinned `gojiberries/ethnicolr2`
   Hugging Face revision instead of bundling them in the wheel.
+- Serialize the published vectorizers with the package's required scikit-learn
+  version so model loading is warning-free and reproducible.
+- Store the runtime Census lookup tables as typed Parquet and exclude raw
+  research artifacts from the distribution.
 - Preserve input rows with missing names while leaving their predictions null.
 
 ## [0.3.1] - 2025-12-12

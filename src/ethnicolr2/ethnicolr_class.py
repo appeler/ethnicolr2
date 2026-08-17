@@ -125,24 +125,17 @@ def _get_cached_model(
 
     cache_key = _get_cache_key(model_fn, vocab_fn)
 
-    # Check cache first (read lock)
     with _CACHE_LOCK:
         if cache_key in _MODEL_CACHE:
             _CACHE_STATS["hits"] += 1
             return _MODEL_CACHE[cache_key]
 
         _CACHE_STATS["misses"] += 1
-
-    # Load model outside lock to avoid blocking other threads
-    model, vectorizer, metadata = _load_and_cache_model(model_fn, vocab_fn)
-
-    # Store in cache (write lock)
-    with _CACHE_LOCK:
-        _evict_old_models()  # Make room if needed
+        model, vectorizer, metadata = _load_and_cache_model(model_fn, vocab_fn)
         _MODEL_CACHE[cache_key] = (model, vectorizer, metadata)
+        _evict_old_models()
         _CACHE_STATS["loads"] += 1
-
-    return model, vectorizer, metadata
+        return model, vectorizer, metadata
 
 
 def clear_model_cache(model_pattern: str | None = None) -> int:
@@ -198,7 +191,7 @@ class EthnicolrModelClass:
             col: Column name to validate and process
 
         Returns:
-            Cleaned DataFrame with duplicates and NaN values removed
+            A validated copy of the input DataFrame
 
         Raises:
             ValueError: If column doesn't exist or contains no valid data
@@ -210,13 +203,9 @@ class EthnicolrModelClass:
                 f"Column '{col}' not found in DataFrame. Available columns: {list(df.columns)}"
             )
 
-        df.dropna(subset=[col], inplace=True)
-        if df.shape[0] == 0:
+        if not df[col].notna().any():
             raise ValueError(f"Column '{col}' contains no non-NaN values.")
-
-        df.drop_duplicates(subset=[col], inplace=True)
-
-        return df
+        return df.copy()
 
     @staticmethod
     def lineToTensor(
@@ -330,26 +319,12 @@ class EthnicolrModelClass:
                 predictions.extend(pred_list)
                 names.extend(nms)
 
-        # Create results DataFrame from unique name predictions
         def get_category(x: int) -> str:
             return all_categories[x]
 
-        # Convert predictions to category names
         pred_categories = [get_category(p) for p in predictions]
-
-        # Create results DataFrame with unique names and their predictions
-        unique_results_df = pd.DataFrame(
-            {"names": names, "probs": softprobs, "preds": pred_categories}
-        )  # type: ignore[misc]
-
-        # Join results back to original DataFrame - this naturally handles duplicates
-        # Each duplicate name gets the same prediction (correct and efficient behavior)
-        final_df = pd.merge(
-            input_df,
-            unique_results_df,
-            left_on=["__name"],
-            right_on=["names"],
-            how="left",
-        )
-        final_df = final_df.drop(columns=["names"])
-        return final_df
+        probabilities_by_name = dict(zip(names, softprobs, strict=True))
+        predictions_by_name = dict(zip(names, pred_categories, strict=True))
+        input_df["probs"] = input_df["__name"].map(probabilities_by_name)
+        input_df["preds"] = input_df["__name"].map(predictions_by_name)
+        return input_df

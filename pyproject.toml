@@ -22,6 +22,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Scientific/Engineering :: Information Analysis",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Topic :: Software Development :: Libraries :: Python Modules",
@@ -29,15 +30,16 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 keywords = ["race", "ethnicity", "names", "demographics", "machine-learning", "census", "pytorch", "lstm"]
-requires-python = ">=3.11,<3.14"
+requires-python = ">=3.11"
 dependencies = [
     "click>=8.0.0",
     "pandas>=1.3.0",
     "torch==2.13.0",
     "joblib==1.5.3",
     "tqdm==4.69.0",
-    "scikit-learn==1.9.0",   # Use exact version that trained the models
+    "scikit-learn==1.9.0",
     "huggingface-hub>=0.23",
+    "pyarrow>=14.0.0",
 ]
 
 [project.urls]
@@ -49,7 +51,7 @@ dependencies = [
 "Model" = "https://huggingface.co/gojiberries/ethnicolr2"
 
 [dependency-groups]
-dev = ["check-manifest", "ruff>=0.7.0", "pre-commit>=3.0.0", "pydoclint", "pyright", "pandas-stubs", "types-tqdm"]
+dev = ["ruff>=0.7.0", "pre-commit>=3.0.0", "pydoclint", "pyright", "pandas-stubs", "types-tqdm"]
 test = ["coverage", "pytest", "numpy>=1.25.2"]
 docs = [
     "sphinx",
@@ -58,30 +60,6 @@ docs = [
     "myst-parser",
     "linkify-it-py",
     "sphinx-design",
-    "nbsphinx",
-    "jupyter",
-    "ipykernel",
-]
-all = [
-    "check-manifest",
-    "ruff>=0.7.0",
-    "pre-commit>=3.0.0",
-    "pydoclint",
-    "pyright",
-    "pandas-stubs",
-    "types-tqdm",
-    "coverage",
-    "pytest",
-    "numpy>=1.25.2",
-    "sphinx",
-    "furo",
-    "sphinx-autodoc-typehints",
-    "myst-parser",
-    "linkify-it-py",
-    "sphinx-design",
-    "nbsphinx",
-    "jupyter",
-    "ipykernel",
 ]
 
 [project.scripts]
@@ -134,13 +112,13 @@ ignore = [
 
 [tool.uv.build-backend]
 module-name = "ethnicolr2"
-module-root = ""
+module-root = "src"
 
 # Type checking configuration
 [tool.pyright]
-include = ["ethnicolr2"]
+include = ["src/ethnicolr2"]
 exclude = ["**/node_modules", "**/__pycache__", ".venv", "venv", "build", "dist"]
-strict = ["ethnicolr2"]
+strict = ["src/ethnicolr2"]
 reportMissingTypeStubs = false
 reportUnknownMemberType = false  # For external libraries without stubs
 reportUnknownVariableType = false  # For pandas/torch operations
@@ -164,7 +142,6 @@ exclude = ["docs/source/examples/", ".venv/", "venv/", "tests/test_input_edge_ca
 
 # Package name mappings for packages with different import vs install names
 [tool.deptry.package_module_name_map]
-"check-manifest" = ["check_manifest"]
 "linkify-it-py" = ["linkify_it_py"]
 
 # Known external dependencies for documentation examples (not part of the main package)
@@ -179,4 +156,4 @@ DEP004 = ["tests/test_input_edge_cases.py", "tests/test_validation.py"]  # Allow
 # here, essentially all of them real names it mistook for misspellings, which
 # drowned the handful of genuine typos in the source. Auto-"correcting" a name
 # would also silently corrupt the data these models are trained on.
-skip = "*.csv,*.parquet,*.joblib,./ethnicolr2/data,./docs/build,./.venv,uv.lock"
+skip = "*.csv,*.parquet,*.joblib,./src/ethnicolr2/data,./docs/build,./.venv,uv.lock"

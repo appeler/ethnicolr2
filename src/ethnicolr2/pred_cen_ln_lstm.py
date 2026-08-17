@@ -37,9 +37,13 @@ class CensusLastNameLstmModel(EthnicolrModelClass):
 
         """
 
-        df["__name"] = df[lname_col].str.title()
+        if lname_col not in df.columns:
+            raise ValueError(f"Column '{lname_col}' not found in DataFrame")
 
-        rdf = cls.predict(df=df, vocab_fn=cls.VOCAB_FN, model_fn=cls.MODEL_FN)
+        work_df = df.copy()
+        work_df["__name"] = work_df[lname_col].str.title()
+
+        rdf = cls.predict(df=work_df, vocab_fn=cls.VOCAB_FN, model_fn=cls.MODEL_FN)
 
         rdf = rdf.drop(columns=["__name"])
         return rdf
