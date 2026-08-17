@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.3] - 2026-08-17
+
+### Changed
+
+- Load model weights and vectorizers from the pinned `gojiberries/ethnicolr2`
+  Hugging Face revision instead of bundling them in the wheel.
+- Preserve input rows with missing names while leaving their predictions null.
+
 ## [0.3.1] - 2025-12-12
 
 ### 🔧 Python 3.11+ Modernizations
