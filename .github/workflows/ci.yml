@@ -19,4 +19,5 @@ jobs:
     uses: gojiplus/py-canon/.github/workflows/reusable-ci.yml@v1
     with:
       wheel-import: ethnicolr2
-      coverage-floor: 0
+      coverage-floor: 91
+      run-preen: true
