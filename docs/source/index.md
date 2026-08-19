@@ -35,8 +35,8 @@ import pandas as pd
 from ethnicolr2 import pred_fl_last_name
 
 # Predict from last names
-df = pd.DataFrame({'last': ['Smith', 'Zhang', 'Rodriguez']})
-result = pred_fl_last_name(df, lname_col='last')
+df = pd.DataFrame({"last": ["Smith", "Zhang", "Rodriguez"]})
+result = pred_fl_last_name(df, lname_col="last")
 print(result)
 ```
 
