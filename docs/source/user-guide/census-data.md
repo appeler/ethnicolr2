@@ -13,10 +13,10 @@ from ethnicolr2 import census_ln
 import pandas as pd
 
 # Create sample data
-df = pd.DataFrame({'surname': ['Smith', 'Zhang', 'Rodriguez', 'Johnson']})
+df = pd.DataFrame({"surname": ["Smith", "Zhang", "Rodriguez", "Johnson"]})
 
 # Get 2010 census statistics
-census_2010 = census_ln(df, 'surname', year=2010)
+census_2010 = census_ln(df, "surname", year=2010)
 print(census_2010)
 ```
 
@@ -36,7 +36,7 @@ Machine learning predictions using LSTM models trained on census data:
 from ethnicolr2 import pred_census_last_name
 
 # LSTM-based predictions
-ml_predictions = pred_census_last_name(df, 'surname', year=2010)
+ml_predictions = pred_census_last_name(df, "surname", year=2010)
 print(ml_predictions)
 ```
 
@@ -53,12 +53,12 @@ Both 2000 and 2010 census data are available:
 
 ```python
 # Compare across census years
-census_2000 = census_ln(df, 'surname', year=2000)
-census_2010 = census_ln(df, 'surname', year=2010)
+census_2000 = census_ln(df, "surname", year=2000)
+census_2010 = census_ln(df, "surname", year=2010)
 
 # ML predictions for different years
-pred_2000 = pred_census_last_name(df, 'surname', year=2000)
-pred_2010 = pred_census_last_name(df, 'surname', year=2010)
+pred_2000 = pred_census_last_name(df, "surname", year=2000)
+pred_2010 = pred_census_last_name(df, "surname", year=2010)
 ```
 
 ## Practical Examples
@@ -70,45 +70,45 @@ import pandas as pd
 from ethnicolr2 import census_ln, pred_census_last_name
 
 # Load research dataset
-authors_df = pd.read_csv('academic_authors.csv')
+authors_df = pd.read_csv("academic_authors.csv")
 # Columns: ['author_name', 'last_name', 'institution', 'field']
 
 # Get census statistics
-census_stats = census_ln(authors_df, 'last_name', year=2010)
+census_stats = census_ln(authors_df, "last_name", year=2010)
 
 # Add ML predictions
-ml_predictions = pred_census_last_name(authors_df, 'last_name', year=2010)
+ml_predictions = pred_census_last_name(authors_df, "last_name", year=2010)
 
 # Merge results
 research_results = pd.merge(
     authors_df,
-    census_stats[['last_name', 'pctwhite', 'pctblack', 'pctapi', 'pcthispanic']],
-    on='last_name'
+    census_stats[["last_name", "pctwhite", "pctblack", "pctapi", "pcthispanic"]],
+    on="last_name",
 )
 research_results = pd.merge(
     research_results,
-    ml_predictions[['last_name', 'race', 'asian', 'black', 'hispanic', 'white']],
-    on='last_name'
+    ml_predictions[["last_name", "race", "asian", "black", "hispanic", "white"]],
+    on="last_name",
 )
 
-print(research_results.groupby(['field', 'race']).size())
+print(research_results.groupby(["field", "race"]).size())
 ```
 
 ### Historical Analysis
 
 ```python
 # Compare demographic trends over time
-names = ['Kim', 'Patel', 'Martinez', 'Johnson']
-df = pd.DataFrame({'last_name': names})
+names = ["Kim", "Patel", "Martinez", "Johnson"]
+df = pd.DataFrame({"last_name": names})
 
 # Get both census years
-results_2000 = census_ln(df, 'last_name', year=2000)
-results_2010 = census_ln(df, 'last_name', year=2010)
+results_2000 = census_ln(df, "last_name", year=2000)
+results_2010 = census_ln(df, "last_name", year=2010)
 
 # Compare changes
 for name in names:
-    row_2000 = results_2000[results_2000['last_name'] == name].iloc[0]
-    row_2010 = results_2010[results_2010['last_name'] == name].iloc[0]
+    row_2000 = results_2000[results_2000["last_name"] == name].iloc[0]
+    row_2010 = results_2010[results_2010["last_name"] == name].iloc[0]
 
     print(f"\\n{name}:")
     print(f"  Hispanic 2000: {row_2000['pcthispanic']:.1f}%")
@@ -151,14 +151,14 @@ Not all surnames appear in census data:
 
 ```python
 # Check which names have census data
-census_result = census_ln(df, 'last_name', year=2010)
+census_result = census_ln(df, "last_name", year=2010)
 
 # Names not in census will have NaN values
-missing_census = census_result[census_result['pctwhite'].isna()]
+missing_census = census_result[census_result["pctwhite"].isna()]
 print(f"Names missing from census: {len(missing_census)}")
 
 # ML predictions work for all names (including those not in census)
-ml_result = pred_census_last_name(df, 'last_name', year=2010)
+ml_result = pred_census_last_name(df, "last_name", year=2010)
 print(f"ML predictions available: {len(ml_result)}")
 ```
 
@@ -166,19 +166,21 @@ print(f"ML predictions available: {len(ml_result)}")
 
 ```python
 # Assess prediction confidence
-ml_predictions = pred_census_last_name(df, 'last_name', year=2010)
+ml_predictions = pred_census_last_name(df, "last_name", year=2010)
 
 # Calculate max probability (confidence indicator)
-ml_predictions['confidence'] = ml_predictions[['asian', 'black', 'hispanic', 'white']].max(axis=1)
+ml_predictions["confidence"] = ml_predictions[
+    ["asian", "black", "hispanic", "white"]
+].max(axis=1)
 
 # High confidence predictions (>80%)
-high_confidence = ml_predictions[ml_predictions['confidence'] > 0.8]
+high_confidence = ml_predictions[ml_predictions["confidence"] > 0.8]
 print(f"High confidence predictions: {len(high_confidence)} / {len(ml_predictions)}")
 
 # Review uncertain predictions
-uncertain = ml_predictions[ml_predictions['confidence'] < 0.5]
+uncertain = ml_predictions[ml_predictions["confidence"] < 0.5]
 print("\\nUncertain predictions:")
-print(uncertain[['last_name', 'race', 'confidence']])
+print(uncertain[["last_name", "race", "confidence"]])
 ```
 
 ## Census vs Florida Models
@@ -202,20 +204,24 @@ When to use census models vs Florida models:
 # Compare census vs Florida predictions
 from ethnicolr2 import pred_census_last_name, pred_fl_last_name
 
-census_pred = pred_census_last_name(df, 'last_name')
-florida_pred = pred_fl_last_name(df, 'last_name')
+census_pred = pred_census_last_name(df, "last_name")
+florida_pred = pred_fl_last_name(df, "last_name")
 
 # Compare predictions
-comparison = pd.DataFrame({
-    'name': df['last_name'],
-    'census_race': census_pred['race'],
-    'florida_race': florida_pred['race'],
-    'census_conf': census_pred[['asian', 'black', 'hispanic', 'white']].max(axis=1),
-    'florida_conf': florida_pred[['asian', 'hispanic', 'nh_black', 'nh_white']].max(axis=1)
-})
+comparison = pd.DataFrame(
+    {
+        "name": df["last_name"],
+        "census_race": census_pred["race"],
+        "florida_race": florida_pred["race"],
+        "census_conf": census_pred[["asian", "black", "hispanic", "white"]].max(axis=1),
+        "florida_conf": florida_pred[["asian", "hispanic", "nh_black", "nh_white"]].max(
+            axis=1
+        ),
+    }
+)
 
 # Check agreement
-agreement = (comparison['census_race'] == comparison['florida_race']).mean()
+agreement = (comparison["census_race"] == comparison["florida_race"]).mean()
 print(f"Census vs Florida agreement: {agreement:.2%}")
 ```
 

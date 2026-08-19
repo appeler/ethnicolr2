@@ -23,7 +23,7 @@ from ethnicolr2.dataset import EthniDataset
 import torch
 
 # Create dataset from list of names
-names = ['Smith', 'Zhang', 'Rodriguez']
+names = ["Smith", "Zhang", "Rodriguez"]
 dataset = EthniDataset(names, max_length=30)
 
 print(f"Dataset size: {len(dataset)}")
@@ -37,7 +37,7 @@ from ethnicolr2.dataset import EthniDataset
 import torch
 
 # Create dataset
-names = ['Smith', 'Zhang', 'Rodriguez']
+names = ["Smith", "Zhang", "Rodriguez"]
 dataset = EthniDataset(names, max_length=30)
 
 # Create DataLoader for batch processing
@@ -45,7 +45,7 @@ dataloader = torch.utils.data.DataLoader(
     dataset,
     batch_size=32,
     shuffle=True,
-    num_workers=0  # Set to 0 for simple character data
+    num_workers=0,  # Set to 0 for simple character data
 )
 
 # Iterate through batches
@@ -60,13 +60,10 @@ for batch in dataloader:
 from ethnicolr2.dataset import EthniDataset
 
 # Create dataset with custom parameters
-dataset = EthniDataset(
-    names=['José', 'O\'Connor', 'van der Berg'],
-    max_length=20
-)
+dataset = EthniDataset(names=["José", "O'Connor", "van der Berg"], max_length=20)
 
 # Access the character vocabulary
-for i, name in enumerate(['José', 'O\'Connor', 'van der Berg']):
+for i, name in enumerate(["José", "O'Connor", "van der Berg"]):
     tensor = dataset[i]
     print(f"'{name}' -> {tensor[:10]}...")  # First 10 character indices
 ```
@@ -95,11 +92,12 @@ The dataset uses a standard ASCII character set with special handling for:
 # For large datasets, consider batch loading
 def create_batched_dataset(names, batch_size=1000):
     for i in range(0, len(names), batch_size):
-        batch_names = names[i:i+batch_size]
+        batch_names = names[i : i + batch_size]
         yield EthniDataset(batch_names, max_length=30)
 
+
 # Usage
-large_name_list = ['Smith'] * 10000  # Large list
+large_name_list = ["Smith"] * 10000  # Large list
 for batch_dataset in create_batched_dataset(large_name_list):
     # Process each batch
     loader = torch.utils.data.DataLoader(batch_dataset, batch_size=32)

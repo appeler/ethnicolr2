@@ -51,20 +51,19 @@ import subprocess
 import pandas as pd
 
 # Prepare input data
-df = pd.DataFrame({'surname': ['Smith', 'Zhang', 'Rodriguez']})
-df.to_csv('input.csv', index=False)
+df = pd.DataFrame({"surname": ["Smith", "Zhang", "Rodriguez"]})
+df.to_csv("input.csv", index=False)
 
 # Run prediction via command line
-result = subprocess.run([
-    'pred_fl_last_name',
-    'input.csv',
-    '-l', 'surname',
-    '-o', 'output.csv'
-], capture_output=True, text=True)
+result = subprocess.run(
+    ["pred_fl_last_name", "input.csv", "-l", "surname", "-o", "output.csv"],
+    capture_output=True,
+    text=True,
+)
 
 # Load results
 if result.returncode == 0:
-    predictions = pd.read_csv('output.csv')
+    predictions = pd.read_csv("output.csv")
     print(predictions)
 else:
     print(f"Error: {result.stderr}")

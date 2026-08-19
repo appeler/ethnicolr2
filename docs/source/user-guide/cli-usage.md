@@ -224,18 +224,18 @@ from airflow import DAG
 from airflow.operators.bash_operator import BashOperator
 from datetime import datetime
 
-dag = DAG('demographic_analysis',
-          start_date=datetime(2023, 1, 1),
-          schedule_interval='@daily')
+dag = DAG(
+    "demographic_analysis", start_date=datetime(2023, 1, 1), schedule_interval="@daily"
+)
 
 predict_demographics = BashOperator(
-    task_id='predict_demographics',
-    bash_command='''
+    task_id="predict_demographics",
+    bash_command="""
     pred_fl_last_name /data/daily_customers.csv \\
       -l last_name \\
       -o /data/demographics_{{ ds }}.csv
-    ''',
-    dag=dag
+    """,
+    dag=dag,
 )
 ```
 

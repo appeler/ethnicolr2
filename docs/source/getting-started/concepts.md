@@ -16,10 +16,10 @@ ethnicolr2 provides three main prediction models, each trained on different data
 from ethnicolr2 import census_ln, pred_census_last_name
 
 # Census statistics (no ML prediction)
-stats = census_ln(df, 'last_name', year=2010)
+stats = census_ln(df, "last_name", year=2010)
 
 # Census-trained LSTM predictions
-predictions = pred_census_last_name(df, 'last_name', year=2010)
+predictions = pred_census_last_name(df, "last_name", year=2010)
 ```
 
 **Use Cases**:
@@ -38,10 +38,10 @@ predictions = pred_census_last_name(df, 'last_name', year=2010)
 from ethnicolr2 import pred_fl_last_name, pred_fl_full_name
 
 # Last name only
-ln_predictions = pred_fl_last_name(df, 'last_name')
+ln_predictions = pred_fl_last_name(df, "last_name")
 
 # First + Last name (highest accuracy)
-full_predictions = pred_fl_full_name(df, 'last_name', 'first_name')
+full_predictions = pred_fl_full_name(df, "last_name", "first_name")
 ```
 
 **Use Cases**:
@@ -97,7 +97,7 @@ Used by main Florida models:
 Each prediction includes confidence scores:
 
 ```python
-result = pred_fl_last_name(df, 'last_name')
+result = pred_fl_last_name(df, "last_name")
 print(result.columns)
 # ['last_name', 'race', 'asian', 'hispanic', 'nh_black', 'nh_white']
 
@@ -110,19 +110,31 @@ print(result.columns)
 **High Confidence** (>0.8 for top category):
 ```python
 # Very confident prediction
-{'race': 'asian', 'asian': 0.95, 'hispanic': 0.02, 'nh_black': 0.01, 'nh_white': 0.02}
+{"race": "asian", "asian": 0.95, "hispanic": 0.02, "nh_black": 0.01, "nh_white": 0.02}
 ```
 
 **Medium Confidence** (0.5-0.8):
 ```python
 # Moderately confident
-{'race': 'nh_white', 'asian': 0.15, 'hispanic': 0.10, 'nh_black': 0.05, 'nh_white': 0.70}
+{
+    "race": "nh_white",
+    "asian": 0.15,
+    "hispanic": 0.10,
+    "nh_black": 0.05,
+    "nh_white": 0.70,
+}
 ```
 
 **Low Confidence** (<0.5):
 ```python
 # Uncertain prediction - use with caution
-{'race': 'hispanic', 'asian': 0.25, 'hispanic': 0.40, 'nh_black': 0.20, 'nh_white': 0.15}
+{
+    "race": "hispanic",
+    "asian": 0.25,
+    "hispanic": 0.40,
+    "nh_black": 0.20,
+    "nh_white": 0.15,
+}
 ```
 
 ## Data Quality and Limitations

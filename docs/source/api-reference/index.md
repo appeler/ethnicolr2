@@ -11,10 +11,9 @@ from ethnicolr2 import (
     # Census models
     census_ln,
     pred_census_last_name,
-
     # Florida models
     pred_fl_last_name,
-    pred_fl_full_name
+    pred_fl_full_name,
 )
 ```
 
@@ -56,14 +55,14 @@ import pandas as pd
 from ethnicolr2 import pred_fl_last_name
 
 # Create DataFrame
-df = pd.DataFrame({'names': ['Smith', 'Zhang', 'Rodriguez']})
+df = pd.DataFrame({"names": ["Smith", "Zhang", "Rodriguez"]})
 
 # Get predictions
-result = pred_fl_last_name(df, lname_col='names')
+result = pred_fl_last_name(df, lname_col="names")
 
 # Access predictions
-print(result['preds'])       # Predicted categories
-print(result['probs'])       # Probability distributions
+print(result["preds"])  # Predicted categories
+print(result["probs"])  # Probability distributions
 ```
 
 ### Advanced Usage
@@ -75,10 +74,10 @@ import torch
 
 # Load custom model
 model = LSTM(vocab_size=100, hidden_size=256, num_classes=5)
-model.load_state_dict(torch.load('custom_model.pt'))
+model.load_state_dict(torch.load("custom_model.pt"))
 
 # Create dataset
-dataset = EthniDataset(names=['Smith', 'Zhang'], max_length=30)
+dataset = EthniDataset(names=["Smith", "Zhang"], max_length=30)
 dataloader = torch.utils.data.DataLoader(dataset, batch_size=32)
 
 # Custom inference
@@ -95,12 +94,12 @@ All functions provide clear error messages for common issues:
 
 ```python
 try:
-    result = pred_fl_last_name(df, lname_col='nonexistent_column')
+    result = pred_fl_last_name(df, lname_col="nonexistent_column")
 except KeyError as e:
     print(f"Column error: {e}")
 
 try:
-    result = pred_fl_last_name("not_a_dataframe", lname_col='names')
+    result = pred_fl_last_name("not_a_dataframe", lname_col="names")
 except TypeError as e:
     print(f"Type error: {e}")
 ```
@@ -120,8 +119,8 @@ except TypeError as e:
 def process_large_dataset(df: pd.DataFrame, chunk_size: int = 1000) -> pd.DataFrame:
     results = []
     for i in range(0, len(df), chunk_size):
-        chunk = df[i:i+chunk_size]
-        chunk_result = pred_fl_last_name(chunk, lname_col='names')
+        chunk = df[i : i + chunk_size]
+        chunk_result = pred_fl_last_name(chunk, lname_col="names")
         results.append(chunk_result)
     return pd.concat(results, ignore_index=True)
 ```

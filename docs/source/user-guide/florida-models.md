@@ -15,8 +15,8 @@
 from ethnicolr2 import pred_fl_last_name, pred_fl_full_name
 
 # Last name only
-result = pred_fl_last_name(df, lname_col='last_name')
+result = pred_fl_last_name(df, lname_col="last_name")
 
 # Full name (highest accuracy)
-result = pred_fl_full_name(df, lname_col='last_name', fname_col='first_name')
+result = pred_fl_full_name(df, lname_col="last_name", fname_col="first_name")
 ```

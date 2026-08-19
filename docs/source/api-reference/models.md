@@ -69,8 +69,8 @@ For most use cases, use the high-level prediction functions rather than the inte
 import pandas as pd
 from ethnicolr2 import pred_fl_last_name
 
-df = pd.DataFrame({'last_name': ['Smith', 'Zhang']})
-result = pred_fl_last_name(df, 'last_name')
+df = pd.DataFrame({"last_name": ["Smith", "Zhang"]})
+result = pred_fl_last_name(df, "last_name")
 print(result)
 ```
 
@@ -82,11 +82,11 @@ import torch
 
 # Create custom LSTM
 model = LSTM(
-    vocab_size=128,      # Character vocabulary size
-    hidden_size=256,     # LSTM hidden units
-    num_layers=2,        # Number of LSTM layers
-    num_classes=5,       # Number of output classes
-    dropout=0.2          # Dropout rate
+    vocab_size=128,  # Character vocabulary size
+    hidden_size=256,  # LSTM hidden units
+    num_layers=2,  # Number of LSTM layers
+    num_classes=5,  # Number of output classes
+    dropout=0.2,  # Dropout rate
 )
 
 # Example forward pass

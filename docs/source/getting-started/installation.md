@@ -42,14 +42,15 @@ Test that the installation worked correctly:
 
 ```python
 import ethnicolr2
+
 print(ethnicolr2.__version__)
 
 # Quick test
 import pandas as pd
 from ethnicolr2 import census_ln
 
-df = pd.DataFrame({'last_name': ['Smith', 'Zhang']})
-result = census_ln(df, 'last_name')
+df = pd.DataFrame({"last_name": ["Smith", "Zhang"]})
+result = census_ln(df, "last_name")
 print(result)
 ```
 
@@ -91,6 +92,7 @@ pip install --upgrade "numpy>=2.3.5"
 ```python
 # Check if CUDA is available
 import torch
+
 print(torch.cuda.is_available())
 ```
 
