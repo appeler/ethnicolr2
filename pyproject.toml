@@ -52,7 +52,7 @@ dependencies = [
 
 [dependency-groups]
 dev = ["ruff>=0.7.0", "pre-commit>=3.0.0", "pydoclint", "pyright", "pandas-stubs", "types-tqdm"]
-test = ["coverage", "pytest", "numpy>=1.25.2"]
+test = ["coverage", "pytest", "pytest-cov>=6", "numpy>=1.25.2"]
 docs = [
     "sphinx",
     "furo",
