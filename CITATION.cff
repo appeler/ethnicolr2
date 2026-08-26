@@ -8,6 +8,6 @@ authors:
 - family-names: "Sood"
   given-names: "Gaurav"
 title: "ethnicolr2: Predict Race and Ethnicity From Name"
-version: 0.1.1
-date-released: 2023-08-17
+version: 0.3.3
+date-released: 2026-08-16
 url: "https://github.com/appeler/ethnicolr2"
