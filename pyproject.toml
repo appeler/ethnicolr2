@@ -157,3 +157,12 @@ DEP004 = ["tests/test_input_edge_cases.py", "tests/test_validation.py"]  # Allow
 # drowned the handful of genuine typos in the source. Auto-"correcting" a name
 # would also silently corrupt the data these models are trained on.
 skip = "*.csv,*.parquet,*.joblib,./src/ethnicolr2/data,./docs/build,./.venv,uv.lock"
+
+[tool.preen]
+link_ignore = [
+    # Alive, but not from a GitHub runner. Both surname tables answer 200 from
+    # a workstation; from Actions egress the request fails, and it has been
+    # failing CI on main since 2026-08-24 for a page that has not moved. The
+    # README that cites them is the right place for those citations.
+    "census\\.gov/topics/population/genealogy/",
+]
