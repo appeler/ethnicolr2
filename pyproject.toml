@@ -19,7 +19,6 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Intended Audience :: Developers",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
@@ -30,7 +29,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 keywords = ["race", "ethnicity", "names", "demographics", "machine-learning", "census", "pytorch", "lstm"]
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 dependencies = [
     "click>=8.0.0",
     "pandas>=1.3.0",
@@ -81,7 +80,7 @@ markers = ["live: reaches the Hugging Face Hub"]
 
 [tool.ruff]
 line-length = 88
-target-version = "py311"
+target-version = "py312"
 exclude = [
     ".git",
     "__pycache__",
@@ -124,7 +123,7 @@ reportUnknownMemberType = false  # For external libraries without stubs
 reportUnknownVariableType = false  # For pandas/torch operations
 reportUnknownParameterType = false  # For external library parameters
 reportUnknownArgumentType = false  # For external library arguments
-pythonVersion = "3.11"
+pythonVersion = "3.12"
 pythonPlatform = "All"
 
 # Docstring linting configuration
