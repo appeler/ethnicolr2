@@ -62,4 +62,4 @@ Rajashekar Chintalapati, Suriyan Laohaprapanon, and Gaurav Sood
 
 The project welcomes contributions from everyone. To maintain a welcoming
 atmosphere, contributors must abide by the [Contributor Code of
-Conduct](http://contributor-covenant.org/version/1/0/0/).
+Conduct](https://www.contributor-covenant.org/version/1/0/0/code-of-conduct/).
