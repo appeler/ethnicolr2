@@ -73,8 +73,12 @@ ethnicolr2_download_models = "ethnicolr2._setup_hooks:download_cli"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = "test_*.py"
-addopts = "--verbose"
+addopts = "--verbose --strict-config --strict-markers -ra"
 markers = ["live: reaches the Hugging Face Hub"]
+minversion = "6"
+log_level = "INFO"
+xfail_strict = true
+filterwarnings = ["error"]
 
 # Code quality and formatting tools
 
