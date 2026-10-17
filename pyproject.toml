@@ -155,6 +155,7 @@ DEP003 = ["docs/source/examples/"]  # Allow transitive dependencies in documenta
 DEP004 = ["tests/test_input_edge_cases.py", "tests/test_validation.py"]  # Allow test dependencies in test files
 
 [tool.codespell]
+builtin = "clear,rare,en-GB_to_en-US"
 # The census tables are surnames, not prose. codespell reported 1,800 findings
 # here, essentially all of them real names it mistook for misspellings, which
 # drowned the handful of genuine typos in the source. Auto-"correcting" a name
