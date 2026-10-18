@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import sys
 from importlib.resources import as_file, files
 from typing import TYPE_CHECKING
 
@@ -16,6 +15,7 @@ else:
 from .cli_utils import (
     common_options,
     name_column_options,
+    run_prediction,
     validate_input_file,
     year_option,
 )
@@ -129,30 +129,9 @@ def main(
         click.echo(f"Using Census {year} data")
         click.echo(f"Last name column: {last_name_col}")
 
-    try:
-        df = pd.read_csv(input_file)  # type: ignore[misc]
-
-        if verbose:
-            click.echo(f"Loaded {len(df)} rows")
-
-        rdf = census_ln(df, last_name_col, year_int)
-
-        rdf.to_csv(output, index=False)
-
-        if verbose:
-            click.echo(f"Results saved to: {output}")
-        else:
-            click.echo(f"Saving output to file: `{output}`")
-
-    except FileNotFoundError:
-        click.echo(f"Error: File '{input_file}' not found.", err=True)
-        sys.exit(1)
-    except KeyError as e:
-        click.echo(f"Error: Column {e} not found in input file.", err=True)
-        sys.exit(1)
-    except Exception as e:
-        click.echo(f"Error: {e}", err=True)
-        sys.exit(1)
+    run_prediction(
+        input_file, output, verbose, lambda df: census_ln(df, last_name_col, year_int)
+    )
 
 
 if __name__ == "__main__":
