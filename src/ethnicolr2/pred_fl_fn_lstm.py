@@ -12,7 +12,12 @@ if TYPE_CHECKING:
 else:
     import pandas as pd
 
-from .cli_utils import common_options, full_name_options, validate_input_file
+from .cli_utils import (
+    common_options,
+    full_name_options,
+    run_prediction,
+    validate_input_file,
+)
 from .ethnicolr_class import EthnicolrModelClass
 
 
@@ -150,35 +155,17 @@ def main(
             click.echo(f"Last name column: {last_name_col}")
         click.echo("Using Florida voter registration full name LSTM model")
 
-    try:
-        df = pd.read_csv(input_file, encoding="utf-8")  # type: ignore[misc]
-
-        if verbose:
-            click.echo(f"Loaded {len(df)} rows")
-
-        rdf = pred_fl_full_name(
+    run_prediction(
+        input_file,
+        output,
+        verbose,
+        lambda df: pred_fl_full_name(
             df=df,
             full_name_col=full_name_col,
             lname_col=last_name_col,
             fname_col=first_name_col,
-        )
-
-        rdf.to_csv(output, index=False)
-
-        if verbose:
-            click.echo(f"Predictions saved to: {output}")
-        else:
-            click.echo(f"Writing output to {output}")
-
-    except FileNotFoundError:
-        click.echo(f"Error: File '{input_file}' not found.", err=True)
-        sys.exit(1)
-    except KeyError as e:
-        click.echo(f"Error: Column {e} not found in input file.", err=True)
-        sys.exit(1)
-    except Exception as e:
-        click.echo(f"Error: {e}", err=True)
-        sys.exit(1)
+        ),
+    )
 
 
 if __name__ == "__main__":
