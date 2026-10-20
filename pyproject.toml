@@ -33,9 +33,10 @@ requires-python = ">=3.12"
 dependencies = [
     "click>=8.0.0",
     "pandas>=1.3.0",
-    "torch==2.13.0",
+    "torch==2.14.1",
     "joblib==1.6.0",
-    "tqdm==4.70.0",
+    "tqdm==4.70.1",
+    # The immutable published vectorizers were serialized with this version.
     "scikit-learn==1.9.0",
     "huggingface-hub>=1.27.0",
     "pyarrow>=14.0.0",
@@ -73,8 +74,12 @@ ethnicolr2_download_models = "ethnicolr2._setup_hooks:download_cli"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = "test_*.py"
-addopts = "--verbose"
+addopts = "--verbose --strict-config --strict-markers -ra"
 markers = ["live: reaches the Hugging Face Hub"]
+minversion = "6"
+log_level = "INFO"
+xfail_strict = true
+filterwarnings = ["error"]
 
 # Code quality and formatting tools
 
@@ -151,6 +156,7 @@ DEP003 = ["docs/source/examples/"]  # Allow transitive dependencies in documenta
 DEP004 = ["tests/test_input_edge_cases.py", "tests/test_validation.py"]  # Allow test dependencies in test files
 
 [tool.codespell]
+builtin = "clear,rare,en-GB_to_en-US"
 # The census tables are surnames, not prose. codespell reported 1,800 findings
 # here, essentially all of them real names it mistook for misspellings, which
 # drowned the handful of genuine typos in the source. Auto-"correcting" a name
