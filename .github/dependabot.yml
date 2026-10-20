@@ -8,6 +8,13 @@ updates:
     # grpcio 1.76 for eleven months). The grouped weekly PR absorbs the churn.
     allow:
       - dependency-type: "all"
+    # Coordinate estimator upgrades with a validated model artifact revision.
+    ignore:
+      - dependency-name: "scikit-learn"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
     schedule:
       interval: "weekly"
       day: "monday"

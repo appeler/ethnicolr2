@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+import sys
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
 import click
+import pandas as pd
 
 
 def validate_input_file(
@@ -136,3 +138,44 @@ def year_option(
         )(func)
 
     return decorator
+
+
+def run_prediction(
+    input_file: str,
+    output: str,
+    verbose: bool,
+    predict: Callable[[pd.DataFrame], pd.DataFrame],
+) -> None:
+    """Read a CSV, run one prediction over it, and write the result.
+
+    Errors are reported on stderr and end the process with status 1, so every
+    command fails the same way.
+
+    Args:
+        input_file: CSV file to read.
+        output: CSV file to write.
+        verbose: Report row counts and the output path in more detail.
+        predict: Turns the input rows into the rows to write.
+    """
+    try:
+        df = pd.read_csv(input_file, encoding="utf-8")  # type: ignore[misc]
+
+        if verbose:
+            click.echo(f"Loaded {len(df)} rows")
+
+        predict(df).to_csv(output, index=False)
+
+        if verbose:
+            click.echo(f"Predictions saved to: {output}")
+        else:
+            click.echo(f"Writing output to {output}")
+
+    except FileNotFoundError:
+        click.echo(f"Error: File '{input_file}' not found.", err=True)
+        sys.exit(1)
+    except KeyError as e:
+        click.echo(f"Error: Column {e} not found in input file.", err=True)
+        sys.exit(1)
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        sys.exit(1)
