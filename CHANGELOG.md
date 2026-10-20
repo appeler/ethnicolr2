@@ -6,6 +6,9 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- Keep scikit-learn at 1.9.0 to match the immutable published vectorizers;
+  routine dependency updates now leave this model compatibility pin intact.
+
 - Put `ethnicolr2` in maintenance mode and direct new models and features to
   `ethnicolr`.
 
