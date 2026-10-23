@@ -71,14 +71,11 @@ class CensusLnData:
                     )
 
             with as_file(resource) as path:
-                cls.census_df = pd.read_parquet(path)
+                census_df = pd.read_parquet(path)
 
-            cls.census_df.drop(
-                cls.census_df[cls.census_df.name.isnull()].index, inplace=True
-            )
-
-            cls.census_df.columns = ["name"] + CENSUS_COLS
-            cls.census_df.set_index("name", inplace=True)
+            census_df = census_df[census_df.name.notna()]
+            census_df.columns = ["name"] + CENSUS_COLS
+            cls.census_df = census_df.set_index("name")
             cls.census_year = year
 
         for column in CENSUS_COLS:
