@@ -1,0 +1,8 @@
+# Patterns are written without a scheme: preen's links check scans this file
+# too, and a pattern with one would be extracted and checked as a link.
+exclude = [
+  # Alive, but not from a GitHub runner. Both surname tables answer 200 from
+  # a workstation; from Actions egress the request fails, and it has been
+  # failing CI on main since 2026-08-24 for a page that has not moved.
+  'census\.gov/topics/population/genealogy/',
+]
