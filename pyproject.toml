@@ -10,7 +10,7 @@ readme = "README.md"
 authors = [
   { name = "Rajshekar", email = "rajshekar.ch@gmail.com" },
   { name = "Suriyan", email = "suriyant@gmail.com" },
-  { name = "Gaurav Sood", email = "gsood07@gmail.com" }
+  { name = "Gaurav Sood" }
 ]
 license = "MIT"
 license-files = ["LICENSE"]
