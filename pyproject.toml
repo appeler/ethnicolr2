@@ -19,7 +19,6 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Intended Audience :: Developers",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
     "Topic :: Scientific/Engineering :: Information Analysis",
@@ -29,7 +28,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 keywords = ["race", "ethnicity", "names", "demographics", "machine-learning", "census", "pytorch", "lstm"]
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 dependencies = [
     "click>=8.0.0",
     "pandas>=1.3.0",
@@ -88,7 +87,7 @@ source = ["src/ethnicolr2"]
 
 [tool.ruff]
 line-length = 88
-target-version = "py312"
+target-version = "py313"
 exclude = [
     ".git",
     "__pycache__",
@@ -131,7 +130,7 @@ reportUnknownMemberType = false  # For external libraries without stubs
 reportUnknownVariableType = false  # For pandas/torch operations
 reportUnknownParameterType = false  # For external library parameters
 reportUnknownArgumentType = false  # For external library arguments
-pythonVersion = "3.12"
+pythonVersion = "3.13"
 pythonPlatform = "All"
 
 # Docstring linting configuration
