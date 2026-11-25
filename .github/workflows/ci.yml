@@ -19,6 +19,7 @@ jobs:
   ci:
     uses: gojiplus/py-canon/.github/workflows/reusable-ci.yml@v1
     with:
+      run-lower-bounds: true
       wheel-import: ethnicolr2
       coverage-floor: 91
       run-preen: true
