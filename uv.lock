@@ -464,7 +464,7 @@ test = [
 
 [package.metadata]
 requires-dist = [
-    { name = "click", specifier = ">=8.0.0" },
+    { name = "click", specifier = ">=8.4.2" },
     { name = "huggingface-hub", specifier = ">=1.27.0" },
     { name = "joblib", specifier = "==1.6.0" },
     { name = "pandas", specifier = ">=2.2.3" },
